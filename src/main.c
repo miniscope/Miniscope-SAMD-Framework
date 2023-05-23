@@ -1,5 +1,3 @@
-#ifdef TEMPLATE_MODE
-
 #include <atmel_start.h>
 #include <hpl_dmac_config.h>
 #include <hpl_dma.h>
@@ -55,5 +53,3 @@ int main(void)
 		#endif
 	}
 }
-
-#endif

@@ -14,8 +14,6 @@
 #include <hpl_pcc_config.h>
 #include <hpl_dma.h>
 
-#include "dma_util.h"
-
 // Firmware mode
 //#define V4WF_MODE
 //#define WLMS_MODE
@@ -224,6 +222,7 @@ extern struct timer_task
 ;
 
 // ----------- FUNCTIONS ----------------
+
 void getBuffersPerFrame(void);
 void peripheralInit(void);
 void timerInit(void);
