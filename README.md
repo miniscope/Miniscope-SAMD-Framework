@@ -14,7 +14,7 @@ The goal is to:
 2. Go to the directory including main.c using git bash (or equivalent shell) 
 3. Execute the following command
 ```
-git submodule add https://[github-username]@github.com/Aharoni-Lab/Miniscope_SAMD_modules
+git submodule add https://[github-username]@github.com/Aharoni-Lab/Miniscope-SAMD-Framework
 ```
 Might need to do the following here. (not sure if safe)
 ```
