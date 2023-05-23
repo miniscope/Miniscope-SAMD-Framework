@@ -1,0 +1,55 @@
+#include <atmel_start.h>
+#include <hpl_dmac_config.h>
+#include <hpl_dma.h>
+
+#include "MS_definitions.h"
+#include "i2c_bb.h"
+
+#ifdef PYTHON480_ENABLE
+#include "python480.h"
+#endif
+
+int main(void)
+{
+	#ifdef PYTHON480_ENABLE
+	getBuffersPerFrame();
+	#endif
+	
+	/* Initializes MCU, drivers and middleware */
+	atmel_start_init();
+	
+	peripheralInit();
+	
+	timerInit();
+	irqInit();
+
+	#ifdef DMA_TO_SPI_ENABLE
+	TXLinkedListInit();
+	#endif
+
+	#ifdef PYTHON480_ENABLE
+	PCCLinkedListInit();	
+	imageSensorInit();
+	#endif
+
+	#ifdef DMA_TO_SD_ENABLE
+	debugHeaderProp();
+	#endif
+	
+	DataBufferInit(); // For testing buffer to SERCOM DMA
+	dmaEnable();
+	
+	while (1) {
+		#if defined(PYTHON480_ENABLE)
+		if (deviceState & DEVICE_STATE_START_RECORDING) {
+			startRecording();
+		}
+		if (deviceState & DEVICE_STATE_RECORDING) {
+			recording();
+		}
+		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
+			stopRecording();
+		}
+		#endif
+	}
+}
