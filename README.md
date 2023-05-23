@@ -1,9 +1,16 @@
-# Coding rule draft
-The goal is to:
+# Coding framework
+## Current state / notes
+- Only the DMA to SPI testmode is working now. Documentation is still a draft.
+- Probably there are better rules but prioterizing making a minimum working prototype that people can add to.
+- Open questions / discussions are in the bottom (anyone is welcome to add).
+- Working toward running v4WF and Wireless using this code.
+
+The goal of this framework is to:
 - Run all SAMD-based Miniscope devices with the same code.
 - Allow automatic configuration updates using Atmel START (no more manual driver file update and fixing).
 - Make mantainance/development/debug easier.
 
+---
 ## General tips
 - Use this as a Git submodule.
     - If you're not building a Atmel project inside a git repository, you can do a normal clone too.
@@ -126,6 +133,19 @@ TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
 ## Declarations
 - Application specific function declerations in MS_definitions.h
 
-## Open questions
-- Namespace
-- If conditional compile should be defined in main.c or not
+## Open questions / to do
+- Write everything for minimum prototype
+- Ask someone to add module
+    - I think Marcel is interesting in adding the LUTmodule
+- More safe/efficient coding rule
+- Branch protection
+- Code organization
+    - Probably the functions should be organized by peripherals? or Projects?
+    - Might need to narrow down namespaces
+- Using custom Makefile or not  
+    - Avoiding for now
+- Good way to add error handling (if we need it)
+- Namespace is probably too wide than it should be
+    - Almost all global now
+    - Might be ok for this scale project
+- If conditional compile should be defined in main.c or in each function
