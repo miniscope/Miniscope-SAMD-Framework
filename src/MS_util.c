@@ -8,12 +8,15 @@
 #include <atmel_start.h>
 #include "MS_definitions.h"
 
+#ifdef DMA_TO_SD_ENABLE
+#include "sd_mmc_ms.h"
+#endif
+
 #ifdef EWL_ENABLE
 #include "i2c_bb.h"
 #endif
 
 // ----------- GLOBAL VARIABLES -----------
-
 volatile uint8_t headerBlock[SD_BLOCK_SIZE] = {0}; // Will hold the 512 bytes from the header block of sd card
 volatile uint8_t configBlock[SD_BLOCK_SIZE]; // Will hold the device config information to be written to the starting block
 volatile uint32_t currentBlock = STARTING_BLOCK;
@@ -48,8 +51,6 @@ volatile uint32_t frameratevalue;
 volatile uint32_t delayvalue;
 volatile uint32_t reclengthvalue;
 
-
-
 volatile uint16_t regValue[2];
 volatile uint32_t tempPCC[4];
 volatile uint32_t tempHeader[100][4];
@@ -60,14 +61,14 @@ volatile uint8_t timerIndex = 0;
 struct timer_task TIMER_0_task1;
 struct timer_task TIMER_0_task2;
 
-#ifdef MODE_SDCARD
+#ifdef DMA_TO_SD_ENABLE
 volatile uint32_t initBlocksRemaining = 0;
 uint32_t lastTime = 0;
 bool lastMonitor0 = 0;
 bool thisMonitor0 = 0;
 #endif
 
-#ifdef MODE_SDCARD
+#ifdef DMA_TO_SD_ENABLE
 uint8_t loadSDCardHeader(void){
 	sd_mmc_init_read_blocks(0,HEADER_BLOCK,1);
 	sd_mmc_start_read_blocks(headerBlock,1);
@@ -76,7 +77,7 @@ uint8_t loadSDCardHeader(void){
 	else
 	return MS_ERROR;
 }
-#endif // MODE_SDCARD
+#endif // DMA_TO_SD_ENABLE
 
 uint32_t getPropFromHeader(uint8_t headerPos) {
 	uint32_t *header32bit = (uint32_t *)headerBlock;
@@ -147,9 +148,9 @@ void peripheralInit(void)
 	usart_async_enable(&USART_0);
 	#endif
 	
-	#ifdef MODE_SDCARD
+	#ifdef DMA_TO_SD_ENABLE
 	SDCardInit();
-	#endif // MODE_SDCARD
+	#endif // DMA_TO_SD_ENABLE
 
 	//Test for no DMA
 	/*
@@ -189,7 +190,7 @@ void dmaEnable(void){
 		#endif
 }
 
-#ifdef MODE_SDCARD
+#ifdef DMA_TO_SD_ENABLE
 void SDCardInit(void){
 	// Wait for SD Card and then load config from it
 	while (SD_MMC_OK != sd_mmc_check(0)) {}
@@ -211,7 +212,7 @@ void SDCardInit(void){
 	sd_mmc_wait_end_of_write_blocks(false);
 
 }
-#endif // MODE_SDCARD
+#endif // DMA_TO_SD_ENABLE
 
 #ifdef PYTHON480_ENABLE
 void imageSensorInit(void){

@@ -9,6 +9,8 @@
 #include "python480.h"
 #endif
 
+
+
 int main(void)
 {
 	#ifdef PYTHON480_ENABLE
@@ -17,7 +19,6 @@ int main(void)
 	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
-	
 	peripheralInit();
 	
 	timerInit();
