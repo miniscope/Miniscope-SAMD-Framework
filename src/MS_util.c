@@ -258,7 +258,7 @@ void timerInit(void)
 
 void irqInit(void){
 	// Setup callbacks for external interrupts
-	#ifdef IR_RX_ENABLE
+	#ifdef IR_TRIGGER_ENABLE
 	ext_irq_register(PIN_PB22, irReceive_cb);
 	#endif
 	
