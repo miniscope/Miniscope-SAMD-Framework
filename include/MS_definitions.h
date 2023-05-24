@@ -14,10 +14,10 @@
 #include <hpl_pcc_config.h>
 #include <hpl_dma.h>
 
-// Firmware mode
-//#define V4WF_MODE
+// ------ FIRMWARE MODE ------------------------
+#define V4WF_MODE
 //#define WLMS_MODE
-#define DMA_TO_SPI_TESTMODE
+//#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -34,7 +34,7 @@
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
-#define IR_RX_ENABLE
+#define IR_TRIGGER_ENABLE
 #endif
 
 #ifdef WLMS_MODE
@@ -46,7 +46,7 @@
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
-#define IR_RX_ENABLE
+#define IR_UART_ENABLE
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE
