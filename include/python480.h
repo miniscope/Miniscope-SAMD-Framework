@@ -70,51 +70,51 @@ void spi_BB_Write(uint16_t address, uint16_t value)
 {
 	int8_t i = 0;
 	//Bitbang SPI Master.
-	gpio_set_pin_level(SPI_NSS, 1); // Make sure NSS is high
+	gpio_set_pin_level(SPI_BB_NSS, 1); // Make sure NSS is high
 	delay_us(10);
-	gpio_set_pin_level(SPI_NSS, 0); // Pull SPI chip select pin low
+	gpio_set_pin_level(SPI_BB_NSS, 0); // Pull SPI chip select pin low
 	delay_us(10);
 	
 	for (i = 8; i >= 0 ;i--) { // 9bit address
-		gpio_set_pin_level(SPI_SCK, 0);
+		gpio_set_pin_level(SPI_BB_SCK, 0);
 		// Set MOSI pin to next bit value
 		if (0x0001&(address>>i)) //a 1
-			gpio_set_pin_level(SPI_MOSI, 1);
+			gpio_set_pin_level(SPI_BB_MOSI, 1);
 		else // a 0
-			gpio_set_pin_level(SPI_MOSI, 0);
+			gpio_set_pin_level(SPI_BB_MOSI, 0);
 			
 		delay_us(10);
-		gpio_set_pin_level(SPI_SCK, 1);
+		gpio_set_pin_level(SPI_BB_SCK, 1);
 		delay_us(10);
 	}
 	// Write bit
-	gpio_set_pin_level(SPI_SCK, 0);
-	gpio_set_pin_level(SPI_MOSI, 1);
+	gpio_set_pin_level(SPI_BB_SCK, 0);
+	gpio_set_pin_level(SPI_BB_MOSI, 1);
 	delay_us(10);
-	gpio_set_pin_level(SPI_SCK, 1);
+	gpio_set_pin_level(SPI_BB_SCK, 1);
 	delay_us(10);
 		
 	// Value
 	for (i=15; i >=0 ;i--) {
-		gpio_set_pin_level(SPI_SCK, 0);
+		gpio_set_pin_level(SPI_BB_SCK, 0);
 		// Set MOSI pin to next bit value
 		if (0x0001&(value>>i)) //a 1
-			gpio_set_pin_level(SPI_MOSI, 1);
+			gpio_set_pin_level(SPI_BB_MOSI, 1);
 		else // a 0
-			gpio_set_pin_level(SPI_MOSI, 0);
+			gpio_set_pin_level(SPI_BB_MOSI, 0);
 			
 		delay_us(10);
 			
-		gpio_set_pin_level(SPI_SCK, 1);
+		gpio_set_pin_level(SPI_BB_SCK, 1);
 		delay_us(10);
 	}
 		
-	gpio_set_pin_level(SPI_SCK, 0);
+	gpio_set_pin_level(SPI_BB_SCK, 0);
 	//delay_us(10);
-	//gpio_set_pin_level(SPI_SCK, 1);
+	//gpio_set_pin_level(SPI_BB_SCK, 1);
 	delay_us(10);
 	delay_us(10);
-	gpio_set_pin_level(SPI_NSS, 1); // Pull SPI chip select pin high
+	gpio_set_pin_level(SPI_BB_NSS, 1); // Pull SPI chip select pin high
 	
 }
 
@@ -123,45 +123,45 @@ uint16_t spi_BB_Read(uint16_t address)
 	int8_t i = 0;
 	uint16_t value = 0;
 	//Bitbang SPI Master.
-	gpio_set_pin_level(SPI_NSS, 1); // Make sure NSS is high
+	gpio_set_pin_level(SPI_BB_NSS, 1); // Make sure NSS is high
 	delay_us(10);
-	gpio_set_pin_level(SPI_NSS, 0); // Pull SPI chip select pin low
+	gpio_set_pin_level(SPI_BB_NSS, 0); // Pull SPI chip select pin low
 	delay_us(10);
 	
 	for (i = 8; i >= 0 ;i--) { // 9bit address
-		gpio_set_pin_level(SPI_SCK, 0);
+		gpio_set_pin_level(SPI_BB_SCK, 0);
 		// Set MOSI pin to next bit value
 		if (0x0001&(address>>i)) //a 1
-			gpio_set_pin_level(SPI_MOSI, 1);
+			gpio_set_pin_level(SPI_BB_MOSI, 1);
 		else // a 0
-			gpio_set_pin_level(SPI_MOSI, 0);
+			gpio_set_pin_level(SPI_BB_MOSI, 0);
 		
 		delay_us(10);
-		gpio_set_pin_level(SPI_SCK, 1);
+		gpio_set_pin_level(SPI_BB_SCK, 1);
 		delay_us(10);
 	}
 	// Write bit
-	gpio_set_pin_level(SPI_SCK, 0);
-	gpio_set_pin_level(SPI_MOSI, 0); // Set read bit to 0
+	gpio_set_pin_level(SPI_BB_SCK, 0);
+	gpio_set_pin_level(SPI_BB_MOSI, 0); // Set read bit to 0
 	delay_us(10);
-	gpio_set_pin_level(SPI_SCK, 1);
+	gpio_set_pin_level(SPI_BB_SCK, 1);
 	delay_us(10);
 	// extra sck transitions for read operation
-	gpio_set_pin_level(SPI_SCK, 0);
+	gpio_set_pin_level(SPI_BB_SCK, 0);
 	delay_us(10);
 	
 	
 	// Value
 	for (i=15; i >=0 ;i--) {
-		gpio_set_pin_level(SPI_SCK, 1);
+		gpio_set_pin_level(SPI_BB_SCK, 1);
 		delay_us(10);
-		gpio_set_pin_level(SPI_SCK, 0);
+		gpio_set_pin_level(SPI_BB_SCK, 0);
 		// read bit
-		value |= (gpio_get_pin_level(SPI_MISO) << i);		
+		value |= (gpio_get_pin_level(SPI_BB_MISO) << i);		
 		delay_us(10);	
 	}
 	delay_us(10);
-	gpio_set_pin_level(SPI_NSS, 1); // Pull SPI chip select pin high
+	gpio_set_pin_level(SPI_BB_NSS, 1); // Pull SPI chip select pin high
 	return value;
 }
 

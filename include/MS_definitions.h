@@ -218,8 +218,7 @@ extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the heade
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
 
 extern struct timer_task TIMER_0_task1;
-extern struct timer_task 
-;
+extern struct timer_task TIMER_0_task2;
 
 // ----------- FUNCTIONS ----------------
 
