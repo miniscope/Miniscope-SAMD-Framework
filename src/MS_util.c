@@ -76,7 +76,7 @@ uint8_t loadSDCardHeader(void){
 	else
 	return MS_ERROR;
 }
-#endif // MODE_SDCARD
+#endif
 
 uint32_t getPropFromHeader(uint8_t headerPos) {
 	uint32_t *header32bit = (uint32_t *)headerBlock;
@@ -257,7 +257,7 @@ void timerInit(void)
 
 void irqInit(void){
 	// Setup callbacks for external interrupts
-	#ifdef IR_RX_ENABLE
+	#ifdef IR_TRIGGER_ENABLE
 	ext_irq_register(PIN_PB22, irReceive_cb);
 	#endif
 	

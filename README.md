@@ -74,7 +74,7 @@ Define in MS_definition.h
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
-#define IR_RX_ENABLE
+#define IR_UART_ENABLE
 #endif
 ```
 
