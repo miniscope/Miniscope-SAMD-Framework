@@ -9,18 +9,14 @@
 #ifndef MS_CUSTOM_DRIVER_H_
 #define MS_CUSTOM_DRIVER_H_
 
+#include <utils.h>
+#include <sd_mmc_ms.h>
+#include <sd_mmc_protocol_ms.h>
 
 int32_t dma_set_BTCTRL(const uint8_t channel, uint32_t src);
 int32_t dma_set_DESCADDR(const uint8_t channel, uint32_t src);
 uint32_t dma_get_DESCADDR(const uint8_t channel);
 uint16_t dma_get_WRB_data(uint8_t channel);
-
-//Added by DAharoni
-bool mci_send_cmd_execute(Sdhc *mci, uint32_t cmdr, uint32_t cmd, uint32_t arg);
-
-// Moved by DAharoni after removing static type
-// Is this needed (Takuya)
-bool _mci_send_cmd_execute(const void *const hw, uint32_t cmdr, uint32_t cmd, uint32_t arg);
 
 #ifdef DMA_TO_SD_ENABLE
 // Added by DAharoni.

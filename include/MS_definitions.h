@@ -15,9 +15,9 @@
 #include <hpl_dma.h>
 
 // Firmware mode
-//#define V4WF_MODE
+#define V4WF_MODE
 //#define WLMS_MODE
-#define DMA_TO_SPI_TESTMODE
+//#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -218,8 +218,7 @@ extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the heade
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
 
 extern struct timer_task TIMER_0_task1;
-extern struct timer_task 
-;
+extern struct timer_task TIMER_0_task2;
 
 // ----------- FUNCTIONS ----------------
 
