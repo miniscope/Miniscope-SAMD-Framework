@@ -3,7 +3,10 @@
 #include <hpl_dma.h>
 
 #include "MS_definitions.h"
+#include "driver_init_ms.h"
+#include "dma_custom_driver.h"
 #include "i2c_bb.h"
+#include "sd_mmc_start_ms.h"
 
 #ifdef PYTHON480_ENABLE
 #include "python480.h"
@@ -18,7 +21,9 @@ int main(void)
 	#endif
 	
 	/* Initializes MCU, drivers and middleware */
-	atmel_start_init();
+	system_init();
+	IO_BUS_init();
+	sd_mmc_stack_init();
 	peripheralInit();
 	
 	timerInit();
@@ -29,7 +34,7 @@ int main(void)
 	#endif
 
 	#ifdef PYTHON480_ENABLE
-	PCCLinkedListInit();	
+	PCCLinkedListInit();
 	imageSensorInit();
 	#endif
 

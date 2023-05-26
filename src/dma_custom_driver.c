@@ -5,13 +5,9 @@
  *  Author: Takuya
  */ 
 #include "MS_definitions.h"
-#include "MS_custom_driver.h"
+#include "dma_custom_driver.h"
 #include <hpl_dma.h>
 #include <hpl_dmac_config.h>
-#
-
-#ifdef DMA_TO_SD_ENABLE
-#endif
 
 int32_t dma_set_BTCTRL(const uint8_t channel, uint32_t src)
 // Added by DAharoni

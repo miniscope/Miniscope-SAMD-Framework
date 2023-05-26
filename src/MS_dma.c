@@ -6,16 +6,27 @@
  */ 
 
 #include "MS_definitions.h"
+#include "dma_custom_driver.h"
 
-COMPILER_ALIGNED(4)
-volatile uint32_t dataBuffer[NUM_BUFFERS][BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS]; //Allocate memory for DMA image buffers
+void dmaEnable(void){
+	#ifdef PYTHON480_ENABLE
+	// Enables DMA Transfer complete interrupt. Should be put in better place
+	DMAC->Channel[CONF_PCC_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL;
+	
+	// Sets the callback for when each DMA buffer is full
+	camera_async_register_callback(&CAMERA_0, pcc_dma_cb);
 
-COMPILER_ALIGNED(16)
-volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
+	// This should already be done in init but trying here as well
+	PCC->MR.reg = PCC_MR_CID(0x3) | PCC_MR_ISIZE(CONF_PCC_ISIZE) | CONF_PCC_FRSTS << PCC_MR_FRSTS_Pos
+	| CONF_PCC_HALFS << PCC_MR_HALFS_Pos | CONF_PCC_ALWYS << PCC_MR_ALWYS_Pos
+	| CONF_PCC_SCALE << PCC_MR_SCALE_Pos | PCC_MR_DSIZE(CONF_PCC_DSIZE);
+	#endif
 
-COMPILER_ALIGNED(16)
-volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
-		
+	#ifdef DMA_TO_SPI_ENABLE
+	_dma_enable_transaction(SPI_DMA_CHANNEL, false);
+	#endif
+}
+
 void TXLinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {

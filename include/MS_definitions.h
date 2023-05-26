@@ -47,6 +47,8 @@
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
+#define SPI_SERCOM0_ENABLE
+#define SPI_LUT_ENABLE
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE
@@ -271,7 +273,7 @@ void setPCCLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
 
-void testDataBufferInit(void);
+void DataBufferInit(void);
 void PCCLinkedListInit(void);
 
 

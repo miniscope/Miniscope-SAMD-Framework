@@ -6,6 +6,7 @@
  */
 
 #include "MS_definitions.h"
+#include "python480.h"
 
 #ifdef DMA_TO_SD_ENABLE
 #include "sd_mmc_ms.h"

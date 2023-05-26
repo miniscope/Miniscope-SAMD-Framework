@@ -16,58 +16,6 @@
 #include "i2c_bb.h"
 #endif
 
-// ----------- GLOBAL VARIABLES -----------
-volatile uint8_t headerBlock[SD_BLOCK_SIZE] = {0}; // Will hold the 512 bytes from the header block of sd card
-volatile uint8_t configBlock[SD_BLOCK_SIZE]; // Will hold the device config information to be written to the starting block
-volatile uint32_t currentBlock = STARTING_BLOCK;
-volatile uint32_t initBlocksRemaining;
-
-volatile uint32_t deviceState = DEVICE_STATE_IDLE;
-volatile uint8_t battVolt;
-
-volatile uint32_t startTimeMS;
-volatile uint32_t timeMS = 0;
-volatile uint32_t frameBufferCount = 0;
-volatile uint32_t frameNum = 0;
-volatile uint32_t bufferCount = 0;
-volatile uint32_t frameBufferCount;
-
-// used for tracking recording and inc. DMA buffers
-volatile uint32_t writeFrameNum;
-volatile uint32_t writeBufferCount;
-volatile uint32_t droppedBufferCount;
-volatile uint32_t droppedFrameCount;
-volatile uint32_t framesToDrop;
-volatile uint32_t *bufferToWrite;
-volatile uint32_t numBlocks = BUFFER_BLOCK_LENGTH;
-volatile uint32_t numBuffersPerFrame = 0;
-
-// Debugging and checking stuff
-volatile uint16_t chip_id; // Reads the chip id from Python480 to make sure we can talk to it
-volatile uint32_t ewlvalue;
-volatile uint32_t batteryvalue;
-volatile uint32_t ledvalue;
-volatile uint32_t frameratevalue;
-volatile uint32_t delayvalue;
-volatile uint32_t reclengthvalue;
-
-volatile uint16_t regValue[2];
-volatile uint32_t tempPCC[4];
-volatile uint32_t tempHeader[100][4];
-volatile uint32_t tempCount = 0;
-volatile uint32_t tempTimestamp[100];
-volatile uint8_t timerIndex = 0;
-
-struct timer_task TIMER_0_task1;
-struct timer_task TIMER_0_task2;
-
-#ifdef DMA_TO_SD_ENABLE
-volatile uint32_t initBlocksRemaining = 0;
-uint32_t lastTime = 0;
-bool lastMonitor0 = 0;
-bool thisMonitor0 = 0;
-#endif
-
 #ifdef DMA_TO_SD_ENABLE
 uint8_t loadSDCardHeader(void){
 	sd_mmc_init_read_blocks(0,HEADER_BLOCK,1);
@@ -150,14 +98,12 @@ void peripheralInit(void)
 	
 	#ifdef DMA_TO_SD_ENABLE
 	SDCardInit();
-	#endif // DMA_TO_SD_ENABLE
+	#endif
 
-	//Test for no DMA
-	/*
+	#if defined(NODMA_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 0x01;
 	SERCOM0->SPI.DATA.reg = (uint32_t) dataBuffer[0][1];
-	*/
-
+	#endif	
 }
 
 void configPropInit(void){
@@ -169,25 +115,6 @@ void configPropInit(void){
 	setConfigBlockProp(CONFIG_BLOCK_BUFFER_SIZE_POS, BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE);
 	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, 0);
 	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS,0);
-}
-
-void dmaEnable(void){
-		#ifdef PYTHON480_ENABLE
-		// Enables DMA Transfer complete interrupt. Should be put in better place
-		DMAC->Channel[CONF_PCC_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL;
-		
-		// Sets the callback for when each DMA buffer is full
-		camera_async_register_callback(&CAMERA_0, pcc_dma_cb);
-
-		// This should already be done in init but trying here as well
-		PCC->MR.reg = PCC_MR_CID(0x3) | PCC_MR_ISIZE(CONF_PCC_ISIZE) | CONF_PCC_FRSTS << PCC_MR_FRSTS_Pos
-		| CONF_PCC_HALFS << PCC_MR_HALFS_Pos | CONF_PCC_ALWYS << PCC_MR_ALWYS_Pos
-		| CONF_PCC_SCALE << PCC_MR_SCALE_Pos | PCC_MR_DSIZE(CONF_PCC_DSIZE);
-		#endif
-
-		#ifdef DMA_TO_SPI_ENABLE 
-		_dma_enable_transaction(SPI_DMA_CHANNEL, false);
-		#endif
 }
 
 #ifdef DMA_TO_SD_ENABLE
@@ -214,48 +141,6 @@ void SDCardInit(void){
 }
 #endif // DMA_TO_SD_ENABLE
 
-#ifdef PYTHON480_ENABLE
-void imageSensorInit(void){
-	// Setup Image Sensor
-	// TODO: Work on minimizing power draw
-	// Trigger pin gets init'ed as output low and shouldn't need to be adjusted
-	gpio_set_pin_level(RESET_CMOS, 0); // Make sure N_RESET of the PYTHON480 is low for a bit before going high. Shouldn't be needed
-	delay_ms(100);
-	gpio_set_pin_level(RESET_CMOS, 1);
-	delay_us(100); // minimum delay is 10us
-	chip_id = spi_BB_Read(0x00); // can use this to make sure MCU can talk to Python480
-	
-	python480Init();
-	Enable_Subsample();
-	python480SetGain(getPropFromHeader(HEADER_GAIN_POS));
-	python480SetFPS(getPropFromHeader(HEADER_FRAME_RATE_POS));
-	python480SetFPS(FRAME_RATE);
-}
-#endif
-
-
-void timerInit(void)
-{
-	#if defined(PYTHON480_ENABLE)
-	// Setup a timer to count in milliseconds
-	TIMER_0_task1.interval	= 1; // Need to check this value
-	TIMER_0_task1.cb		= millisecondTimer_cb;
-	TIMER_0_task1.mode		= TIMER_TASK_REPEAT;
-	timer_add_task(&TIMER_0, &TIMER_0_task1);
-	#endif
-	
-	#if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE)
-	TIMER_0_task2.interval = 1000; // Units are in ms so 1000 should check every 1 second
-	TIMER_0_task2.cb       = checkBattVoltage_cb;
-	TIMER_0_task2.mode     = TIMER_TASK_REPEAT;
-	timer_add_task(&TIMER_0, &TIMER_0_task2);
-	#endif
-	
-	#if defined(PYTHON480_ENABLE) || defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE)
-	timer_start(&TIMER_0);
-	#endif
-}
-
 void irqInit(void){
 	// Setup callbacks for external interrupts
 	#ifdef IR_TRIGGER_ENABLE
@@ -279,11 +164,6 @@ void setConfigBlockProp(uint8_t position, uint32_t value) {
 	uint32_t *configBlock32bit = (uint32_t *)configBlock;
 	
 	configBlock32bit[position] = value;
-}
-
-uint32_t getCurrentTimeMS(void)
-{
-	return timeMS;
 }
 
 #if defined(PYTHON480_ENABLE)
