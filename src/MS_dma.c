@@ -84,10 +84,10 @@ void setTXLinkedListPosition(uint8_t pos)
 	_dma_set_source_address(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg);
 	_dma_set_destination_address(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].DSTADDR.reg);
 	_dma_set_data_amount(SPI_DMA_CHANNEL, TXLinkedList[pos].BTCNT.reg);
-	dma_set_BTCTRL(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].BTCTRL.reg);//block transfer control
+	_dma_set_BTCTRL(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].BTCTRL.reg);//block transfer control
 	_dma_set_source_address(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
 	
-	dma_set_DESCADDR(SPI_DMA_CHANNEL, TXLinkedList[pos].DESCADDR.reg);
+	_dma_set_DESCADDR(SPI_DMA_CHANNEL, TXLinkedList[pos].DESCADDR.reg);
 }
 
 void PCCLinkedListInit(void)
@@ -120,10 +120,10 @@ void setPCCLinkedListPosition(uint8_t pos)
 	_dma_set_source_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].SRCADDR.reg);
 	_dma_set_destination_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].DSTADDR.reg);
 	_dma_set_data_amount(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].BTCNT.reg);
-	dma_set_BTCTRL(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].BTCTRL.reg);
+	_dma_set_BTCTRL(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].BTCTRL.reg);
 	_dma_set_destination_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].DSTADDR.reg); // Overwrite destination address since set_data_amount function modifies this
 
-	dma_set_DESCADDR(CONF_PCC_DMA_CHANNEL, PCCLinkedList[pos].DESCADDR.reg);
+	_dma_set_DESCADDR(CONF_PCC_DMA_CHANNEL, PCCLinkedList[pos].DESCADDR.reg);
 }
 
 

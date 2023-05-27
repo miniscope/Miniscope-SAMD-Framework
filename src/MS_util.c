@@ -9,11 +9,18 @@
 #include "MS_definitions.h"
 
 #ifdef DMA_TO_SD_ENABLE
-#include "sd_mmc_ms.h"
+#include "sd_mmc.h"
 #endif
 
 #ifdef EWL_ENABLE
 #include "i2c_bb.h"
+#endif
+
+#ifdef DMA_TO_SD_ENABLE
+volatile uint32_t initBlocksRemaining = 0;
+uint32_t lastTime = 0;
+bool lastMonitor0 = 0;
+bool thisMonitor0 = 0;
 #endif
 
 #ifdef DMA_TO_SD_ENABLE
@@ -46,7 +53,8 @@ void getBuffersPerFrame(void)
 {
 	#ifdef PYTHON480_ENABLE
 	numBuffersPerFrame = (WIDTH * HEIGHT) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
-	if((WIDTH * HEIGHT) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0) numBuffersPerFrame += 1;
+	if((WIDTH * HEIGHT) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0)
+		numBuffersPerFrame += 1;
 	// Need to add 1 to account for partially filled buffer
 	#endif
 }
@@ -62,7 +70,6 @@ void peripheralInit(void)
 	#ifdef PYTHON480_ENABLE
 	// Enable the 3.3V regulator
 	gpio_set_pin_level(EN_3V3, true);
-	I2C_BB_init();
 	#endif
 
 	#ifdef BATTERY_ENABLE
@@ -75,6 +82,30 @@ void peripheralInit(void)
 	adc_sync_enable_channel(&ADC_0, 1);
 	#endif
 	
+	#ifdef PYTHON480_ENABLE
+	I2C_BB_init();
+	#endif
+
+	timerInit();
+	
+	irqInit();
+	
+	#ifdef PYTHON480_ENABLE
+	PCCLinkedListInit();
+	#endif
+	
+	#ifdef DMA_TO_SPI_ENABLE
+	TXLinkedListInit();
+	#endif
+	
+	#ifdef DMA_TO_SD_ENABLE
+	SDCardInit();
+	#endif
+
+	
+	#ifdef PYTHON480_ENABLE
+	imageSensorInit();
+	#endif
 	#ifdef EWL_ENABLE
 	setEWL(getPropFromHeader(HEADER_EWL_POS));
 	//setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);
@@ -94,10 +125,6 @@ void peripheralInit(void)
 	
 	#ifdef DMA_TO_USART
 	usart_async_enable(&USART_0);
-	#endif
-	
-	#ifdef DMA_TO_SD_ENABLE
-	SDCardInit();
 	#endif
 
 	#if defined(NODMA_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)

@@ -9,7 +9,7 @@
 #include "python480.h"
 
 #ifdef DMA_TO_SD_ENABLE
-#include "sd_mmc_ms.h"
+#include "sd_mmc.h"
 #endif
 
 #ifdef PYTHON480_ENABLE

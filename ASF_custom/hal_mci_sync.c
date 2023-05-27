@@ -31,10 +31,8 @@
  *
  */
 
-#include "hal_mci_sync_ms.h"
+#include "hal_mci_sync.h"
 #include <utils_assert.h>
-#include "hpl_sdhc_ms.h"
-
 
 #ifdef __cplusplus
 extern "C" {

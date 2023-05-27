@@ -110,7 +110,7 @@ void frameValid_cb(void)
 			//if (tempCount < 99)
 			//tempCount++;
 			
-			setBufferHeader((BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH) - dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
+			setBufferHeader((BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH) - _dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
 			
 			frameBufferCount = 0;
 			bufferCount++; // A buffer has been filled (likely partially) and is ready for writing to SD card

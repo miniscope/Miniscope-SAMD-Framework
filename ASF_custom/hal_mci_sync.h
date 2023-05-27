@@ -34,7 +34,7 @@
 #ifndef _HAL_MCI_INCLUDED
 #define _HAL_MCI_INCLUDED
 
-#include <hpl_mci_sync_ms.h>
+#include <hpl_mci_sync.h>
 
 #ifdef __cplusplus
 extern "C" {

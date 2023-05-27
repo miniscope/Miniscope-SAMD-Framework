@@ -62,10 +62,3 @@ volatile uint8_t timerIndex = 0;
 
 struct timer_task TIMER_0_task1;
 struct timer_task TIMER_0_task2;
-
-#ifdef DMA_TO_SD_ENABLE
-volatile uint32_t initBlocksRemaining = 0;
-uint32_t lastTime = 0;
-bool lastMonitor0 = 0;
-bool thisMonitor0 = 0;
-#endif

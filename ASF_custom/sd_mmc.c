@@ -36,10 +36,10 @@
 
 #include <string.h>
 
-#include "conf_sd_mmc_ms.h"
+#include "conf_sd_mmc.h"
 
-#include "sd_mmc_protocol_ms.h"
-#include "sd_mmc_ms.h"
+#include "sd_mmc_protocol.h"
+#include "sd_mmc.h"
 
 #if CONF_OS_SUPPORT
 #include <hal_rtos.h>
@@ -67,7 +67,7 @@
 #if CONF_MCI_OS_SUPPORT
 #include "hal_mci_os.h"
 #else
-#include "hal_mci_sync_ms.h"
+#include "hal_mci_sync.h"
 #endif
 #define driver mci
 #else

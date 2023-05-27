@@ -32,16 +32,15 @@
  */
 
 #include <utils_assert.h>
-#include "hpl_mci_sync_ms.h"
-#include <hpl_sdhc_config_ms.h>
-#include "hri_sdhc_d51.h"
+#include "hpl_mci_sync.h"
+#include <hpl_sdhc_config.h>
 
 #define HSMCI_SLOT_0_SIZE 4
 
 static void _mci_reset(const void *const hw);
 static void _mci_set_speed(const void *const hw, uint32_t speed, uint8_t prog_clock_mode);
 static bool _mci_wait_busy(const void *const hw);
-bool _mci_send_cmd_execute(const void *const hw, uint32_t cmdr, uint32_t cmd, uint32_t arg);
+
 
 /**
  * \brief Reset the SDHC interface
