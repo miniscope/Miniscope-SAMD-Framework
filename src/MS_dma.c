@@ -8,6 +8,12 @@
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
 
+
+COMPILER_ALIGNED(16)
+volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
+COMPILER_ALIGNED(16)
+volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
+
 void dmaEnable(void){
 	#ifdef PYTHON480_ENABLE
 	// Enables DMA Transfer complete interrupt. Should be put in better place

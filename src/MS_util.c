@@ -17,7 +17,6 @@
 #endif
 
 #ifdef DMA_TO_SD_ENABLE
-volatile uint32_t initBlocksRemaining = 0;
 uint32_t lastTime = 0;
 bool lastMonitor0 = 0;
 bool thisMonitor0 = 0;
@@ -54,7 +53,7 @@ void getBuffersPerFrame(void)
 	#ifdef PYTHON480_ENABLE
 	numBuffersPerFrame = (WIDTH * HEIGHT) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
 	if((WIDTH * HEIGHT) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0)
-		numBuffersPerFrame += 1;
+	numBuffersPerFrame += 1;
 	// Need to add 1 to account for partially filled buffer
 	#endif
 }
@@ -130,18 +129,13 @@ void peripheralInit(void)
 	#if defined(NODMA_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 0x01;
 	SERCOM0->SPI.DATA.reg = (uint32_t) dataBuffer[0][1];
-	#endif	
+	#endif
 }
 
 void configPropInit(void){
 	// Set some parameters in config buffer to be written to SD card at end of recording
 	// TODO: Add additional info in the config block to cover everything needed for offline processing
-	setConfigBlockProp(CONFIG_BLOCK_WIDTH_POS, WIDTH / BINNING);
-	setConfigBlockProp(CONFIG_BLOCK_HEIGHT_POS, HEIGHT / BINNING);
-	setConfigBlockProp(CONFIG_BLOCK_FRAME_RATE_POS, getPropFromHeader(HEADER_FRAME_RATE_POS));
-	setConfigBlockProp(CONFIG_BLOCK_BUFFER_SIZE_POS, BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE);
-	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, 0);
-	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS,0);
+
 }
 
 #ifdef DMA_TO_SD_ENABLE
@@ -161,11 +155,32 @@ void SDCardInit(void){
 	// Select ADMA as the DMA to use. This should be moved to where other bits of HC1R get set.
 	SDHC0->HC1R.reg |= 1<<4;
 	
+	// Set some parameters in config buffer to be written to SD card at end of recording
+	// TODO: Add additional info in the config block to cover everything needed for offline processing
+
+	setConfigBlockProp(CONFIG_BLOCK_WIDTH_POS, WIDTH / BINNING);
+	setConfigBlockProp(CONFIG_BLOCK_HEIGHT_POS, HEIGHT / BINNING);
+	setConfigBlockProp(CONFIG_BLOCK_FRAME_RATE_POS, getPropFromHeader(HEADER_FRAME_RATE_POS));
+	setConfigBlockProp(CONFIG_BLOCK_BUFFER_SIZE_POS, BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE);
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, 0);
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS,0);
+	
 	sd_mmc_init_write_blocks(0, CONFIG_BLOCK, 1);
 	sd_mmc_start_write_blocks(configBlock, 1); // We will re-write this block at the end of recording too
 	sd_mmc_wait_end_of_write_blocks(false);
-
 }
+
+
+void setSDDescriptor(uint32_t *address, uint16_t length, uint8_t attribute)
+// address holds the pointer location to the front of a data buffer
+// Length is in bytes
+// attribute holds the lower 6 bits of the descriptor table
+{
+	uint64_t temp = address;
+	temp = temp<<32;
+	SDTransferDescriptor = (temp)|attribute|SD_DESCRIPTOR_LENGTH(length);
+}
+
 #endif // DMA_TO_SD_ENABLE
 
 void irqInit(void){
