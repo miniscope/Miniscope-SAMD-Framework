@@ -65,17 +65,19 @@
 #define SPI_SERCOM7_ENABLE
 #endif
 
+// SPI
+#define SPI_ICSPACE_MS				10 // Clock cycle between word
+#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
+
+
 // Peripheral address
 #define EWL_I2C_ADDR					0x23  //7 bit address!
+
 
 // ------ OTHER STUFF ------------------------
 #define MS_SUCCESS						1
 #define MS_ERROR						0
 // -------------------------------------------
-
-// SPI
-#define SPI_ICSPACE_MS				10 // Clock cycle between word
-#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
 
 // ---------- Device State Definitions -------
 #define DEVICE_STATE_IDLE				1<<1
@@ -219,9 +221,6 @@ extern volatile uint8_t timerIndex;
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
 
-extern struct timer_task TIMER_0_task1;
-extern struct timer_task TIMER_0_task2;
-
 // ----------- FUNCTIONS ----------------
 
 void getBuffersPerFrame(void);
@@ -234,6 +233,8 @@ void setConfigBlockProp(uint8_t position, uint32_t value);
 void setBufferHeader(uint32_t dataWordLength);
 
 void setSDDescriptor(uint32_t *address, uint16_t length, uint8_t attribute);
+volatile uint64_t SDTransferDescriptor; // I think we will only use 1 of these for now. Each descriptor is 64bits long
+
 
 void imageSensorInit(void);
 void SDCardInit(void);

@@ -7,6 +7,8 @@
 
 #include "MS_definitions.h"
 
+static struct timer_task TIMER_0_task1, TIMER_0_task2;
+
 void timerInit(void)
 {
 	#if defined(PYTHON480_ENABLE)
