@@ -32,7 +32,7 @@ For ($i=0; $i -lt $headerpatharray.Length; $i++) {
         $filepath = Get-ChildItem ($prjroot +  $headerpatharray[$i] + "tmp")
         if (Test-Path -Path ($prjroot + $headerpatharray[$i]) -PathType Leaf) {
             Remove-Item ($prjroot + $headerpatharray[$i])
-            Write-Host ($prjroot +  $headerpatharray[$i] + "has been deleted.")
+            Write-Host ($prjroot +  $headerpatharray[$i] + " has been deleted.")
         }
         try {
             Rename-Item -Path ($filepath) -NewName ($filepath.BaseName + ".h")
