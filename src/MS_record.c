@@ -22,13 +22,11 @@ void startRecording()
 	framesToDrop = 0;
 	
 	// This gets the next set of blocks ready to be written into
-	#ifdef DMA_TO_SD_ENABLE
 	#ifndef ADMA_ENABLE
 	sd_mmc_init_write_blocks(0, currentBlock, BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK);
-	#endif // DMA_TO_SD_ENABLE
 	initBlocksRemaining = BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK;
 	#endif // not ADMA_ENABLE
-
+	
 	startTimeMS = getCurrentTimeMS();
 	
 	setEWL(getPropFromHeader(HEADER_EWL_POS));
@@ -56,20 +54,16 @@ void stopRecording()
 	
 	#ifndef ADMA_ENABLE
 	while (initBlocksRemaining > BUFFER_BLOCK_LENGTH) {
-		#ifdef DMA_TO_SD_ENABLE
 		if (sd_mmc_start_write_blocks(dataBuffer[0], BUFFER_BLOCK_LENGTH) != SD_MMC_OK)
 		deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 		initBlocksRemaining -= BUFFER_BLOCK_LENGTH;
 		sd_mmc_wait_end_of_write_blocks(false);
-		#endif // DMA_TO_SD_ENABLE
 	}
 	if (initBlocksRemaining > 0) {
-		#ifdef DMA_TO_SD_ENABLE
 		if (sd_mmc_start_write_blocks(dataBuffer[0], initBlocksRemaining) != SD_MMC_OK)
 		deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 		initBlocksRemaining = 0;
 		sd_mmc_wait_end_of_write_blocks(false);
-		#endif // DMA_TO_SD_ENABLE
 	}
 	#endif // not ADMA_ENABLE
 	
@@ -83,25 +77,14 @@ void stopRecording()
 	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, writeBufferCount);
 	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS, droppedBufferCount);
 	
-	#ifdef DMA_TO_SD_ENABLE
 	// Currently not using ADMA. Might consider switching everything over to ADMA to be consistent
 	sd_mmc_init_write_blocks(0,CONFIG_BLOCK, 1);
 	sd_mmc_start_write_blocks(configBlock, 1);
 	sd_mmc_wait_end_of_write_blocks(false);
-	#endif // DMA_TO_SD_ENABLE
 	
-	#ifdef EXLED_PWM_ENABLE
 	setExcitationLED(0, false);
-	#endif
-	
-	#ifdef EWL_ENABLE
 	setEWL(0x00);	//Sets the EWL to standby mode
-	#endif
-	
-	#ifdef STATUS_LED_ENABLE
 	setStatusLED(0);
-	#endif
-	
 }
 
 void recording()
@@ -139,38 +122,34 @@ void recording()
 			setSDDescriptor(bufferToWrite, numBlocks * SD_BLOCK_SIZE,
 			SD_DESCRIPTOR_ATT_TRANSFER|SD_DESCRIPTOR_ATT_VALID|SD_DESCRIPTOR_ATT_END);
 			
-			#ifdef DMA_TO_SD_ENABLE
-			sd_mmc_write_with_ADMA(0, currentBlock, (uint32_t)&SDTransferDescriptor, numBlocks);			
-			sd_mmc_wait_end_of_ADMA_write(false);
-			#endif // DMA_TO_SD_ENABLE
 			
+			sd_mmc_write_with_ADMA(0, currentBlock, (uint32_t)&SDTransferDescriptor, numBlocks);
+			
+			
+			sd_mmc_wait_end_of_ADMA_write(false);
 			currentBlock += numBlocks;
+			
+			
 			
 			#else // not ADMA_ENABLE
 			if (numBlocks < initBlocksRemaining) {
 				// There are enough init blocks for this write
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_start_write_blocks(bufferToWrite, numBlocks) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 				sd_mmc_wait_end_of_write_blocks(false);
-				#endif // DMA_TO_SD_ENABLE
 				
 				initBlocksRemaining -= numBlocks;
 				currentBlock += numBlocks;
 			}
 			else if (numBlocks == initBlocksRemaining)
 			{
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_start_write_blocks(bufferToWrite, numBlocks) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 				sd_mmc_wait_end_of_write_blocks(false);
-				#endif // DMA_TO_SD_ENABLE
 				currentBlock += numBlocks;
 				
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_init_write_blocks(0, currentBlock, BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
-				#endif // DMA_TO_SD_ENABLE
 				
 				initBlocksRemaining = (BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK);
 			}
@@ -178,26 +157,20 @@ void recording()
 				// TODO: error checking with LED showing status
 				
 				// This finishes up the remaining blocks in the current set of initialized blocks
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_start_write_blocks(bufferToWrite, initBlocksRemaining) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 				sd_mmc_wait_end_of_write_blocks(false);
-				#endif // DMA_TO_SD_ENABLE
 				currentBlock += initBlocksRemaining;
 				
 				// We now initialize the next set of blocks
 				// TODO: Probably handle errors better here and don't go forward with writing if init fails
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_init_write_blocks(0, currentBlock, BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_INIT_WRITE_ERROR;
-				#endif // DMA_TO_SD_ENABLE
 				
 				// And write remaining data from buffer
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_start_write_blocks((uint32_t)(&bufferToWrite[initBlocksRemaining * SD_BLOCK_SIZE / 4]), numBlocks - initBlocksRemaining) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 				sd_mmc_wait_end_of_write_blocks(false);
-				#endif // DMA_TO_SD_ENABLE
 				
 				currentBlock += numBlocks - initBlocksRemaining;
 				initBlocksRemaining = (BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK) - (numBlocks - initBlocksRemaining);
