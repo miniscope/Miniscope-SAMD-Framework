@@ -1,4 +1,7 @@
+$currentpath = $PWD
+Write-Host ("original path: "+$currentpath)
 $scriptpath = Split-Path $MyInvocation.MyCommand.Path
+Write-Host ("command path: "+$scriptpath)
 Set-Location $scriptpath
 $prjroot = "..\..\"
 
@@ -40,3 +43,5 @@ For ($i=0; $i -lt $headerpatharray.Length; $i++) {
         }
     }
 }
+Write-Host ("MS_framework_init.ps1: done")
+Set-Location $currentpath
