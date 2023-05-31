@@ -25,7 +25,7 @@ function Install-Drivers {
         # change original .c file to .ctmp file to avoid compile
         if (Test-Path -Path ($originalfiledir + "\" + $originalfilename) -PathType Leaf) {
             try {
-                #$filepath = Get-ChildItem ($originalfiledir + "\" + $originalfilename)
+                # $filepath = Get-ChildItem ($originalfiledir + "\" + $originalfilename)
     
                 # if .ctmp file exists, delete first
                 if (Test-Path -Path ($originalfiledir + "\" + $originalfilename + "tmp") -PathType Leaf) {
@@ -77,5 +77,8 @@ function Install-Main {
 }
 
 Install-Drivers -DriverList $cfilepatharray
+Write-Host (".c files installed")
 Install-Drivers -DriverList $headerpatharray
+Write-Host (".h files installed")
 Install-Main -FilePath $submodulepath -HardLinkPath $prjroot
+Write-Host ("main.c installed")
