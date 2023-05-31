@@ -13,7 +13,7 @@ volatile uint32_t dataBuffer[NUM_BUFFERS][BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WO
 
 volatile uint8_t headerBlock[SD_BLOCK_SIZE] = {0}; // Will hold the 512 bytes from the header block of sd card
 volatile uint8_t configBlock[SD_BLOCK_SIZE] = {0}; // Will hold the device config information to be written to the starting block
-	
+
 volatile uint32_t currentBlock = STARTING_BLOCK;
 volatile uint32_t initBlocksRemaining = 0;
 
