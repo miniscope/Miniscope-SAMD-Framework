@@ -278,9 +278,5 @@ void DataBufferInit(void);
 void PCCLinkedListInit(void);
 
 
-//Needed for the custom driver to access pointers defined in hpl_dmac.c
-extern volatile DmacDescriptor _write_back_section[];
-extern volatile DmacDescriptor _descriptor_section[];
-
 
 #endif /* MS_DEFINITIONS_H_ */
