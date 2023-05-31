@@ -15,9 +15,9 @@
 #include <hpl_dma.h>
 
 // ------ FIRMWARE MODE ------------------------
-#define V4WF_MODE
+//#define V4WF_MODE
 //#define WLMS_MODE
-//#define DMA_TO_SPI_TESTMODE
+#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode

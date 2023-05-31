@@ -1,7 +1,7 @@
 $currentpath = $PWD
-Write-Host ("original path: "+$currentpath)
+Write-Host ("original path: " + $currentpath)
 $scriptpath = Split-Path $MyInvocation.MyCommand.Path
-Write-Host ("command path: "+$scriptpath)
+Write-Host ("command path: " + $scriptpath)
 Set-Location $scriptpath
 
 # Convert path to absolute path
@@ -18,36 +18,40 @@ function Install-Drivers {
         [Parameter()]
         [String[]]$DriverList
     )
-    For ($i=0; $i -lt $DriverList.Length; $i++) {
+    For ($i = 0; $i -lt $DriverList.Length; $i++) {
         $originalfiledir = Split-Path -Path ($prjroot.Path + "\" + $DriverList[$i]) #directory of original file
         $originalfilename = Split-Path -Path ($prjroot.Path + "\" + $DriverList[$i]) -Leaf #name of original file
+        
+        # check if driver is installed by Atmel START
+        if ((Test-Path -Path ($originalfiledir + "\" + $originalfilename) -PathType Leaf) -or (Test-Path -Path ($originalfiledir + "\" + $originalfilename + "tmp") -PathType Leaf)) {
+            # change original .c file to .ctmp file to avoid compile
+            if (Test-Path -Path ($originalfiledir + "\" + $originalfilename) -PathType Leaf) {
+                try {
+                    # $filepath = Get-ChildItem ($originalfiledir + "\" + $originalfilename)
     
-        # change original .c file to .ctmp file to avoid compile
-        if (Test-Path -Path ($originalfiledir + "\" + $originalfilename) -PathType Leaf) {
-            try {
-                # $filepath = Get-ChildItem ($originalfiledir + "\" + $originalfilename)
-    
-                # if .ctmp file exists, delete first
-                if (Test-Path -Path ($originalfiledir + "\" + $originalfilename + "tmp") -PathType Leaf) {
-                    Remove-Item ($originalfiledir + "\" + $originalfilename + "tmp")
-                    Write-Host ($originalfiledir + "\" + $originalfilename + "tmp has been deleted.")
+                    # if .ctmp file exists, delete first
+                    if (Test-Path -Path ($originalfiledir + "\" + $originalfilename + "tmp") -PathType Leaf) {
+                        Remove-Item ($originalfiledir + "\" + $originalfilename + "tmp")
+                        Write-Host ($originalfiledir + "\" + $originalfilename + "tmp has been deleted.")
+                    }
+                    # change .c file to .ctmp file
+                    Rename-Item -Path ($originalfiledir + "\" + $originalfilename) -NewName ($originalfilename + "tmp")
+                    Write-Host ($originalfilename + "tmp has been created.")
                 }
-                # change .c file to .ctmp file
-                Rename-Item -Path ($originalfiledir + "\" + $originalfilename) -NewName ($originalfilename + "tmp")
-                Write-Host ($originalfilename + "tmp has been created.")
+                catch {
+                    throw $_.Exception.Message
+                }
+            }
+            # copy custom file into original directory
+            try {
+                $customfile = Get-Childitem $submodulepath -Filter ($originalfilename + "src") -Recurse
+                New-Item -ItemType HardLink -Path ($originalfiledir + "\" + $originalfilename) -Value $customfile.FullName
+                Write-Host ($originalfiledir + "\" + $originalfilename + " linked to " + $customfile.Name)            
             }
             catch {
                 throw $_.Exception.Message
             }
-        }
-        # copy custom file into original directory
-        try {
-            $customfile = Get-Childitem $submodulepath -Filter ($originalfilename + "src") -Recurse
-            New-Item -ItemType HardLink -Path ($originalfiledir + "\" + $originalfilename) -Value $customfile.FullName
-            Write-Host ($originalfiledir + "\" + $originalfilename + " linked to " + $customfile.Name)            
-        }
-        catch {
-            throw $_.Exception.Message
+
         }
     }
 }
