@@ -23,6 +23,7 @@ The goal of this framework is to:
 - src: custom functions
 - include: header files for files in src
 - ASF_custom: customized ASF drivers
+- script: scripts for taking care of conflicts with Atmel START
 
 ## How to configure the git submodule
 1. Set up an Atmel START project

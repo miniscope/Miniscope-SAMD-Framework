@@ -6,7 +6,7 @@ Set-Location $scriptpath
 
 # Convert path to absolute path
 $prjroot = Resolve-Path "..\..\"
-$submodulepath = Resolve-Path "..\..\MS_module\"
+#$submodulepath = Resolve-Path "..\..\MS_module\"
 
 # Array of excluded c files and header files
 $cfilepatharray = @("sd_mmc\sd_mmc.c", "hal\src\hal_mci_sync.c", "hpl\dmac\hpl_dmac.c", "hpl\sdhc\hpl_sdhc.c")
