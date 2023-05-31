@@ -1,9 +1,8 @@
 # Coding framework
 ## Current state / notes
-- Only the DMA to SPI testmode is working now. Documentation is still a draft.
-- Probably there are better rules but prioterizing making a minimum working prototype that people can add to.
-- Open questions / discussions are in the bottom (anyone is welcome to add).
-- Working toward running v4WF and Wireless using this code.
+Working modes
+- v4WF (parameters aren't correct)
+- DMA to SPI testmode
 
 The goal of this framework is to:
 - Run all SAMD-based Miniscope devices with the same code.
@@ -15,15 +14,15 @@ The goal of this framework is to:
 - Use this as a Git submodule.
     - If you're not building a Atmel project inside a git repository, you can do a normal clone too.
 - Only edit the files in Miniscope-SAMD-Framework
-    - Don't directly modify ATMEL START generated driver files. Driver modifications should be defined in "MS_driver_update.c".
-- Follow git flow (main, dev, feature) [to do: add link]
+    - To modify ASF drivers, add modified driver files to ASF_custom and add file path to ```MS_prebuild.ps1``` and ```MS_pre_reconfig.ps1``` as ```$cfilepatharray``` and ```$headerpatharray```.
+    - Don't directly modify ATMEL START generated driver files.
+- Follow git flow (main, dev, feature)
     - You need to make a branch **inside** the nested git submodule.
 
 ## Repository structure
 - src: custom functions
 - include: header files for files in src
-- ASF_custom: customized ASF headers
-- atzip: corresponding atmel start files
+- ASF_custom: customized ASF drivers
 
 ## How to configure the git submodule
 1. Set up an Atmel START project
@@ -38,20 +37,21 @@ Might need to do the following here. (not sure if this is safe though)
 git config --global protocol.file.allow always
 ```
 4. In Solution Explorer (Microchip Studio), click "Show All Files".
-5. Right click on "Miniscope-SAMD-Framework" and select "Include in Project"
+5. Right click on ```MS_module``` and select "Include in Project"
 6. Add following to the include path (Project -> Properties -> Toolchain -> ARM/GNU C Compiler -> Directories) (configuration: All configurations)
 ```
 ../MS_module/include
 ```
-7. Add Build events (configuration: All configurations)
-
-- Pre-build event command line
+7. Add pre-build eventBuild events (configuration: All configurations)
 ```ps
 powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "..\MS_module\script\MS_prebuild.ps1"
 ```
 
 ## Conditional compile flag
-Define in MS_definition.h
+- All mode/peripheral enable should be defined in MS_definitions.h
+    - Firmware mode: end by _MODE or _TESTMODE
+    - Peripheral mode  : end by _ENABLE or _DISABLE
+- Conditional compile should be flagged by _ENABLE or _DISABLE
 
 ### Mode flag
 - Select/define one of the modes using #define
@@ -101,6 +101,15 @@ spi_m_sync_enable(&SPI_0);
 #endif
    ```
 
+### SERCOM for DMA
+- Define SERCOM setting in ATMEL START
+- Only part that should be manually changed is the DMA's DSTADDR.reg in MS_dma.c. This should be defined using conditional compile.
+```c
+#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
+TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
+#endif
+```
+
 ## Peripheral requirements (Atmel START config)
 ### PYTHON480_ENABLE
 Drivers
@@ -127,74 +136,62 @@ MONITOR0
 GCLK1_OUT
 ```
 
-BATTERY_ENABLE
+### BATTERY_ENABLE
 ```
 BATT_VOLT
 ```
 
-WPT_ENABLE
+### WPT_ENABLE
 ```
 WPT_VOLT
 ```
 
-EWL_ENABLE
+### EWL_ENABLE
 ```
 I2C_BB_SCL
 I2C_BB_SDA
 ```
 
-IR_TRIGGER_ENABLE
+### IR_TRIGGER_ENABLE
 ```
 IR_RX
 ```
 
-IR_UART_ENABLE
+### IR_UART_ENABLE
 ```
 IR_RX
 ```
 
-EXLED_PWM_ENABLE
+### EXLED_PWM_ENABLE
 ```
 LED_PWM
 ENT_LED
 ```
 
-DMA_TO_SPI_ENABLE
+### DMA_TO_SPI_ENABLE
 ```
 
 ```
 
 ## Global variables
-- Define in MS_util.c
-- Declare in MS_definitions.h
+- Define in ```MS_global_variable.c```
+- Declare in ```MS_definitions.h```
 
 ## Functions
 - All application specific functions should be declared in MS_definitions.h
-File locations
-- MS_util.c: for utility functions
-- MS_cb.c: callback functions
+### Application functions
+- i2c_bb.c: bit-bang I2C 
+- MS_util.c: general application functions
+- MS_callback.c: callback functions
 - MS_dma.c: project specific DMA functions
-- MS_drive_update.c: for adding drivers (currently empty)
 - MS_record.c: for recording fuction
-- dma_util (.c and .h): driver functions added in v4WF project
-
-## Conditional compiling
-- All mode/peripheral enable should be defined in MS_definitions.h
-    - Firmware mode: end by _MODE or _TESTMODE
-    - Peripheral mode  : end by _ENABLE or _DISABLE
-- Conditional compile should be flagged by _ENABLE or _DISABLE
-
-## SERCOM for DMA
-- Define SERCOM setting in ATMEL START
-- Only part that should be manually changed is the DMA's DSTADDR.reg in MS_dma.c. This should be defined using conditional compile.
-```
-#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
-TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
-#endif
-```
+- MS_camera.c: for camera
+- MS_global_variable.c: for global variables
+- MS_timer.c: timer related
+- python480.c: python 480 utilities
 
 ## Declarations
-- Application specific function declerations in MS_definitions.h
+- MS_definitions.h: Application specific function declerations
 
 ## Open questions / to do
 - Write everything for minimum prototype
@@ -205,11 +202,8 @@ TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
 - Code organization
     - Probably the functions should be organized by peripherals? or Projects?
     - Might need to narrow down namespaces
-- Using custom Makefile or not  
-    - Avoiding for now
 - Good way to add error handling (if we need it)
 - Namespace is probably too wide than it should be
     - Almost all global now
     - Might be ok for this scale project
 - If conditional compile should be defined in main.c or in each function
-- sd_mmc.c has some static functions that need to be accessed from outside.
