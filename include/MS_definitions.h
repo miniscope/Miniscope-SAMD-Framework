@@ -11,8 +11,12 @@
 #include <utils.h>
 
 #include <hpl_dmac_config.h>
-#include <hpl_pcc_config.h>
 #include <hpl_dma.h>
+
+#ifdef PYTHON480_ENABLE
+#include <hpl_pcc_config.h>
+#endif
+
 
 // ------ FIRMWARE MODE ------------------------
 //#define V4WF_MODE

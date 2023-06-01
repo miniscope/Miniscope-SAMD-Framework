@@ -7,7 +7,9 @@
 
 #include "MS_definitions.h"
 
+#if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE)
 static struct timer_task TIMER_0_task1, TIMER_0_task2;
+#endif
 
 void timerInit(void)
 {

@@ -120,6 +120,8 @@ void PCCLinkedListInit(void)
 	}
 	setPCCLinkedListPosition(0);
 }
+
+#ifdef PYTHON480_ENABLE
 void setPCCLinkedListPosition(uint8_t pos)
 {
 	// Set up initial DMA descriptor for DMA channel handling PCC. BTCNT is already setup in DMA init step
@@ -131,5 +133,4 @@ void setPCCLinkedListPosition(uint8_t pos)
 
 	_dma_set_DESCADDR(CONF_PCC_DMA_CHANNEL, PCCLinkedList[pos].DESCADDR.reg);
 }
-
-
+#endif
