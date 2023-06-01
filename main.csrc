@@ -19,13 +19,14 @@ int main(void)
 	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
+	DataBufferInit(); // For testing buffer to SERCOM DMA
+
 	peripheralInit();
 
 	#ifdef DMA_TO_SD_ENABLE
 	debugHeaderProp();
 	#endif
 	
-	DataBufferInit(); // For testing buffer to SERCOM DMA
 	dmaEnable();
 	
 	while (1) {
