@@ -16,8 +16,8 @@
 
 // ------ FIRMWARE MODE ------------------------
 //#define V4WF_MODE
-//#define WLMS_MODE
-#define DMA_TO_SPI_TESTMODE
+#define WLMS_MODE
+//#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -49,6 +49,7 @@
 #define IR_UART_ENABLE
 #define SPI_SERCOM0_ENABLE
 #define SPI_LUT_ENABLE
+#define DUMMY_HEADER_ENABLE // For dev
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE
@@ -66,7 +67,7 @@
 #endif
 
 // SPI
-#define SPI_ICSPACE_MS				10 // Clock cycle between word
+#define SPI_ICSPACE_MS				1 // Clock cycle between word
 #define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
 
 
@@ -160,8 +161,8 @@
 
 // ------- Image Sensor Definitions ----------
 #define FRAME_RATE					20
-#define WIDTH						608
-#define HEIGHT						608
+#define WIDTH						304
+#define HEIGHT						304
 #define BINNING						2
 
 #define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))

@@ -28,6 +28,8 @@ int main(void)
 	DataBufferInit(); // For testing buffer to SERCOM DMA
 	dmaEnable();
 	
+	deviceState = DEVICE_STATE_START_RECORDING;
+	
 	while (1) {
 		#if defined(PYTHON480_ENABLE)
 		if (deviceState & DEVICE_STATE_START_RECORDING) {
