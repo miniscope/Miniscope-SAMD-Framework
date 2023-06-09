@@ -7,6 +7,8 @@
 
 #include "python480.h"
 
+#ifdef PYTHON480_ENABLE
+
 void python480Init()
 {
 	// Sets up initial register values in the PYTHON 480
@@ -426,3 +428,5 @@ void EnableSeq () {
 void DisableSeq () {
 	spi_BB_Write(192,0x0802);
 }
+
+#endif

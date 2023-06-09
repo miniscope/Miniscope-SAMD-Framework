@@ -5,6 +5,7 @@
  *  Author: dbaha
  */ 
 
+#ifdef EWL_ENABLE
 
 #ifndef I2C_BB_H_
 #define I2C_BB_H_
@@ -35,3 +36,5 @@ void SCL_high(void);
 void I2C_BB_sleep(void);
 
 #endif /* I2C_BB_H_ */
+
+#endif

@@ -5,6 +5,8 @@
  *  Author: dbaha
  */ 
 
+#ifdef EWL_ENABLE
+
 #include "i2c_bb.h"
 #include "MS_definitions.h"
 //I2C_BB_SDA and I2C_BB_SCL pins are defined in atmel_start_pins.h
@@ -123,3 +125,4 @@ uint8_t I2C_BB_write(uint8_t addr, uint8_t value)
 	return 0;
 }
 
+#endif
