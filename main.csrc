@@ -1,15 +1,5 @@
 #include <atmel_start.h>
-#include <hpl_dmac_config.h>
-#include <hpl_dma.h>
-
 #include "MS_definitions.h"
-#include "dma_custom_driver.h"
-#include "i2c_bb.h"
-
-#ifdef PYTHON480_ENABLE
-#include "python480.h"
-#endif
-
 
 int main(void)
 {

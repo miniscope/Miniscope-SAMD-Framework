@@ -5,10 +5,9 @@
  *  Author: Takuya
  */ 
 
-#include <MS_definitions.h>
+#include "MS_definitions.h"
 #include "python480.h"
 
-#ifdef PYTHON480_ENABLE
 void imageSensorInit(void){
 	// Setup Image Sensor
 	// TODO: Work on minimizing power draw
@@ -25,5 +24,3 @@ void imageSensorInit(void){
 	python480SetFPS(getPropFromHeader(HEADER_FRAME_RATE_POS));
 	python480SetFPS(FRAME_RATE);
 }
-#endif
-

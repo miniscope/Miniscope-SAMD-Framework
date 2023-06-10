@@ -8,12 +8,12 @@
 #include <atmel_start.h>
 #include "MS_definitions.h"
 
+#include "python480.h"
+#include "i2c_bb.h"
+
+
 #ifdef DMA_TO_SD_ENABLE
 #include "sd_mmc.h"
-#endif
-
-#ifdef EWL_ENABLE
-#include "i2c_bb.h"
 #endif
 
 #ifdef DMA_TO_SD_ENABLE
@@ -81,7 +81,7 @@ void peripheralInit(void)
 	adc_sync_enable_channel(&ADC_0, 1);
 	#endif
 	
-	#ifdef PYTHON480_ENABLE
+	#ifdef EWL_ENABLE
 	I2C_BB_init();
 	#endif
 
@@ -101,10 +101,9 @@ void peripheralInit(void)
 	SDCardInit();
 	#endif
 
-	
-	#ifdef PYTHON480_ENABLE
+
 	imageSensorInit();
-	#endif
+
 	#ifdef EWL_ENABLE
 	setEWL(getPropFromHeader(HEADER_EWL_POS));
 	//setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);

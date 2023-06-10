@@ -11,6 +11,7 @@
 
 #include <utils.h>
 
+// probably should move to hpl_dmac.hsrc
 int32_t _dma_set_BTCTRL(const uint8_t channel, uint32_t src);
 uint32_t _dma_get_DESCADDR(const uint8_t channel);
 

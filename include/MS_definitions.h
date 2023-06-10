@@ -10,14 +10,6 @@
 #include <atmel_start.h>
 #include <utils.h>
 
-#include <hpl_dmac_config.h>
-#include <hpl_dma.h>
-
-#ifdef PYTHON480_ENABLE
-#include <hpl_pcc_config.h>
-#endif
-
-
 // ------ FIRMWARE MODE ------------------------
 //#define V4WF_MODE
 #define WLMS_MODE
@@ -29,18 +21,8 @@
 // DMA_TO_SD_ENABLE: enables DMA to SD card ADMA
 // DMA_TO_SPI_ENABLE: enables DMA to SPI via DMA
 
-// ------ PERIPHERAL ENABLE ------------------------
-#ifdef V4WF_MODE
-#define PYTHON480_ENABLE
-#define DMA_TO_SD_ENABLE
-#define EXLED_PWM_ENABLE
-#define BATTERY_ENABLE
-#define EWL_ENABLE
-#define PUSH_BUT_ENABLE
-#define STATUS_LED_ENABLE
-#define IR_TRIGGER_ENABLE
-#endif
 
+// ------ PERIPHERAL ENABLE ------------------------
 #ifdef WLMS_MODE
 #define PYTHON480_ENABLE
 #define DMA_TO_SPI_ENABLE
@@ -56,6 +38,17 @@
 #define DUMMY_HEADER_ENABLE // For dev
 #endif
 
+#ifdef V4WF_MODE
+#define PYTHON480_ENABLE
+#define DMA_TO_SD_ENABLE
+#define EXLED_PWM_ENABLE
+#define BATTERY_ENABLE
+#define EWL_ENABLE
+#define PUSH_BUT_ENABLE
+#define STATUS_LED_ENABLE
+#define IR_TRIGGER_ENABLE
+#endif
+
 #ifdef DMA_TO_SPI_TESTMODE
 #define DMA_TO_SPI_ENABLE
 #define HEADER_DISABLE
@@ -69,6 +62,7 @@
 #define	TEST_BUFFER_ENABLE
 #define SPI_SERCOM7_ENABLE
 #endif
+
 
 // SPI
 #define SPI_ICSPACE_MS				1 // Clock cycle between word
@@ -285,7 +279,5 @@ void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
 
 void DataBufferInit(void);
-
-
 
 #endif /* MS_DEFINITIONS_H_ */

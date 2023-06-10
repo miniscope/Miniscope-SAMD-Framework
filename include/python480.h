@@ -9,8 +9,8 @@
 #ifndef PYTHON480_H_
 #define PYTHON480_H_
 
-#include "driver_init.h"
-#include "utils.h"
+#include <driver_init.h>
+#include <utils.h>
 
 #define DISABLE_PLL
 

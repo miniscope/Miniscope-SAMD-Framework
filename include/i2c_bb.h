@@ -5,8 +5,6 @@
  *  Author: dbaha
  */ 
 
-#ifdef EWL_ENABLE
-
 #ifndef I2C_BB_H_
 #define I2C_BB_H_
 
@@ -16,10 +14,9 @@
 
 
 void I2C_BB_init(void);
-
+uint8_t I2C_BB_write(uint8_t addr, uint8_t value);
 uint8_t I2C_BB_read(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t length);
 
-uint8_t I2C_BB_write(uint8_t addr, uint8_t value);
 
 
 void I2C_BB_end();
@@ -36,5 +33,3 @@ void SCL_high(void);
 void I2C_BB_sleep(void);
 
 #endif /* I2C_BB_H_ */
-
-#endif
