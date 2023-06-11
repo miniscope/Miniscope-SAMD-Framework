@@ -31,8 +31,8 @@ void dmaEnable(void){
 	| CONF_PCC_SCALE << PCC_MR_SCALE_Pos | PCC_MR_DSIZE(CONF_PCC_DSIZE);
 	#endif
 
-	#ifdef DMA_TO_SPI_ENABLE
-	_dma_enable_transaction(SPI_DMA_CHANNEL, false);
+	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+	_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 	#endif
 }
 
@@ -66,7 +66,7 @@ void TXLinkedListInit(void)
 		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM7->SPI.DATA.reg;
 		#endif
-		#ifdef DMA_TO_USART_ENABLE
+		#if defined(DMA_TO_USART_ENABLE) && defined(USART_SERCOM5_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->USART.DATA.reg;
 		#endif
 	}
@@ -90,13 +90,13 @@ void DataBufferInit(void)
 
 void setTXLinkedListPosition(uint8_t pos)
 {
-	_dma_set_source_address(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg);
-	_dma_set_destination_address(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].DSTADDR.reg);
-	_dma_set_data_amount(SPI_DMA_CHANNEL, TXLinkedList[pos].BTCNT.reg);
-	_dma_set_BTCTRL(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].BTCTRL.reg);//block transfer control
-	_dma_set_source_address(SPI_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
+	_dma_set_source_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg);
+	_dma_set_destination_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].DSTADDR.reg);
+	_dma_set_data_amount(SDO_DMA_CHANNEL, TXLinkedList[pos].BTCNT.reg);
+	_dma_set_BTCTRL(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].BTCTRL.reg);//block transfer control
+	_dma_set_source_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
 	
-	_dma_set_DESCADDR(SPI_DMA_CHANNEL, TXLinkedList[pos].DESCADDR.reg);
+	_dma_set_DESCADDR(SDO_DMA_CHANNEL, TXLinkedList[pos].DESCADDR.reg);
 }
 
 void PCCLinkedListInit(void)

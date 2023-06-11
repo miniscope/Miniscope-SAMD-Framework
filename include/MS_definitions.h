@@ -12,7 +12,8 @@
 
 // ------ FIRMWARE MODE ------------------------
 //#define V4WF_MODE
-#define WLMS_MODE
+//#define WLMS_MODE
+#define WLMS_UART_SLOW_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
@@ -35,6 +36,20 @@
 #define IR_UART_ENABLE
 #define SPI_SERCOM0_ENABLE
 #define SPI_LUT_ENABLE
+#define DUMMY_HEADER_ENABLE // For dev
+#endif
+
+#ifdef WLMS_UART_SLOW_MODE
+#define PYTHON480_ENABLE
+#define DMA_TO_USART_ENABLE
+#define EXLED_PWM_ENABLE
+#define BATTERY_ENABLE
+#define WPT_ADC_ENABLE
+#define EWL_ENABLE
+#define PUSH_BUT_ENABLE
+#define STATUS_LED_ENABLE
+#define IR_UART_ENABLE
+#define USART_SERCOM5_ENABLE
 #define DUMMY_HEADER_ENABLE // For dev
 #endif
 
@@ -269,7 +284,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
 // --------------------------------------
 
 // DMA
-#define SPI_DMA_CHANNEL 1
+#define SDO_DMA_CHANNEL 1
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 

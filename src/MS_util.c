@@ -93,7 +93,7 @@ void peripheralInit(void)
 	PCCLinkedListInit();
 	#endif
 	
-	#ifdef DMA_TO_SPI_ENABLE
+	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 	TXLinkedListInit();
 	#endif
 	
@@ -121,13 +121,13 @@ void peripheralInit(void)
 	spi_m_sync_enable(&SPI_0);
 	#endif
 	
-	#ifdef DMA_TO_USART
-	usart_async_enable(&USART_0);
-	#endif
-
 	#if defined(NODMA_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 0x01;
 	SERCOM0->SPI.DATA.reg = (uint32_t) dataBuffer[0][1];
+	#endif
+
+	#if defined(DMA_TO_USART_ENABLE) && defined(USART_SERCOM5_ENABLE)
+	usart_async_enable(&USART_0);
 	#endif
 }
 
