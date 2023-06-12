@@ -54,9 +54,6 @@ void TXLinkedListInit(void)
 		
 		//For sending out data
 		TXLinkedList[i].SRCADDR.reg = (uint32_t)(&dataBuffer[i][BUFFER_HEADER_LENGTH]) + TXLinkedList[i].BTCNT.reg * 4;
-		
-		//ignore buffer
-		//TXLinkedList[i].SRCADDR.reg = (uint32_t)(&dataBuffer[i][0]) + TXLinkedList[i].BTCNT.reg * 4;		
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
 
@@ -70,7 +67,7 @@ void TXLinkedListInit(void)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->USART.DATA.reg;
 		#endif
 	}
-	setTXLinkedListPosition(0);
+	setTXLinkedListPosition(NUM_BUFFERS-1);
 }
 
 void DataBufferInit(void)

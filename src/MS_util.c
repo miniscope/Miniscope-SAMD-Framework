@@ -110,6 +110,13 @@ void peripheralInit(void)
 	#endif
 	
 	#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
+	SERCOM0->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
+	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
+	;                                 // Wait for disable
+	SERCOM0->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
+	SERCOM0->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
+	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
+	;                                 // Wait for disable
 	hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);
 	hri_sercomspi_write_BAUD_reg(SERCOM0, SPI_BAUD_MS);
 	spi_m_sync_enable(&SPI_0);
@@ -210,7 +217,11 @@ void setConfigBlockProp(uint8_t position, uint32_t value) {
 #if defined(PYTHON480_ENABLE)
 void setBufferHeader(uint32_t dataWordLength) {
 	uint32_t numBuffer = bufferCount % NUM_BUFFERS;
+	#ifdef DEV_MODE
+	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = 0xFEDCBA98;
+	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = BUFFER_HEADER_LENGTH;
+	#endif
 	dataBuffer[numBuffer][BUFFER_HEADER_LINKED_LIST_POS] = bufferCount % NUM_BUFFERS;
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_NUM_POS] = frameNum;
 	dataBuffer[numBuffer][BUFFER_HEADER_BUFFER_COUNT_POS] = bufferCount;

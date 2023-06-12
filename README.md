@@ -98,7 +98,8 @@ I2C_BB_init();
 #if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
 hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM7, SPI_ICSPACE_MS);
 hri_sercomspi_write_BAUD_reg(SERCOM7, SPI_BAUD_MS);
-spi_m_sync_enable(&SPI_0);
+spi_m_sync_enable(&
+);
 #endif
    ```
 

@@ -10,10 +10,25 @@
 #include <atmel_start.h>
 #include <utils.h>
 
-// ------ FIRMWARE MODE ------------------------
+// ------ DATA MODE ------------------------
+#define DEV_MODE
+//#define DEV_SLOW_MODE
+
+#ifdef DEV_MODE
+#define DUMMY_HEADER_ENABLE // For dev
+#define TEST_PATTERN_ENABLE // For dev
+#endif
+
+#ifdef DEV_SLOW_MODE
+#define SLOW_DATA_TEST_ENABLE
+#define DUMMY_HEADER_ENABLE // For dev
+#define TEST_PATTERN_ENABLE // For dev
+#endif
+
+// ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
-//#define WLMS_MODE
-#define WLMS_UART_SLOW_MODE
+#define WLMS_SPI_MODE
+//#define WLMS_UART_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
@@ -22,9 +37,8 @@
 // DMA_TO_SD_ENABLE: enables DMA to SD card ADMA
 // DMA_TO_SPI_ENABLE: enables DMA to SPI via DMA
 
-
-// ------ PERIPHERAL ENABLE ------------------------
-#ifdef WLMS_MODE
+// ------ HARDWARE PERIPHERAL ENABLE ------------------------
+#ifdef WLMS_SPI_MODE
 #define PYTHON480_ENABLE
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
@@ -36,10 +50,9 @@
 #define IR_UART_ENABLE
 #define SPI_SERCOM0_ENABLE
 #define SPI_LUT_ENABLE
-#define DUMMY_HEADER_ENABLE // For dev
 #endif
 
-#ifdef WLMS_UART_SLOW_MODE
+#ifdef WLMS_UART_MODE
 #define PYTHON480_ENABLE
 #define DMA_TO_USART_ENABLE
 #define EXLED_PWM_ENABLE
@@ -50,7 +63,6 @@
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
 #define USART_SERCOM5_ENABLE
-#define DUMMY_HEADER_ENABLE // For dev
 #endif
 
 #ifdef V4WF_MODE
@@ -80,8 +92,8 @@
 
 
 // SPI
-#define SPI_ICSPACE_MS				1 // Clock cycle between word
-#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_ICSPACE_MS				2 // Clock cycle between word
+#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
 
 
 // Peripheral address
@@ -108,9 +120,15 @@
 // -------------------------------------------
 
 // ----------- Buffer Definitions ------------
+#ifdef SLOW_DATA_TEST_ENABLE
+#define BUFFER_BLOCK_LENGTH		1 // can be edited by user to optimize speed
+#define NUM_BUFFERS				2   // can be edited by user to optimize speed
+#define BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
+#else
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
 #define NUM_BUFFERS				8   // can be edited by user to optimize speed
 #define BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
+#endif
 
 #ifdef PYTHON480_ENABLE
 // Buffer Header position definitions
@@ -179,10 +197,17 @@
 // -------------------------------------------
 
 // ------- Image Sensor Definitions ----------
-#define FRAME_RATE					20
+#ifdef SLOW_DATA_TEST_ENABLE
+#define FRAME_RATE					1
+#define WIDTH						40
+#define HEIGHT						40
+#define BINNING						2
+#else
+#define FRAME_RATE					10
 #define WIDTH						304
 #define HEIGHT						304
 #define BINNING						2
+#endif
 
 #define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
 
