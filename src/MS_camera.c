@@ -20,7 +20,10 @@ void imageSensorInit(void){
 	
 	python480Init();
 	Enable_Subsample();
+	
+	#ifndef PRESET_HEADER_ENABLE
 	python480SetGain(getPropFromHeader(HEADER_GAIN_POS));
 	python480SetFPS(getPropFromHeader(HEADER_FRAME_RATE_POS));
 	python480SetFPS(FRAME_RATE);
+	#endif
 }

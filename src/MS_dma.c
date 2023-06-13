@@ -33,7 +33,7 @@ void dmaEnable(void){
 	#endif
 
 	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-	_dma_enable_transaction(SDO_DMA_CHANNEL, true); //trigger with software
+	_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 	#endif
 }
 
@@ -69,7 +69,7 @@ void TXLinkedListInit(void)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->USART.DATA.reg;
 		#endif
 	}
-	setTXLinkedListPosition(NUM_BUFFERS-1);
+	setTXLinkedListPosition(0);
 }
 void setTXLinkedListPosition(uint8_t pos)
 {
@@ -83,11 +83,14 @@ void setTXLinkedListPosition(uint8_t pos)
 #endif
 
 
-void sdo_dma_transfer(void)
+void sdo_dma_transfer_resume(void)
 {
-	//_dma_set_source_address(SDO_DMA_CHANNEL, (void *)(uint32_t)(&dataBuffer[pos][0]) + TXdescripter.BTCNT.reg * 4); // Overwrite source address since set_data_amount function modifies this
-	//DMAC->SWTRIGCTRL.reg |= (1 << SDO_DMA_CHANNEL); //Software trigger for transferring a block
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
+}
+
+void sdo_dma_transfer_suspend(void)
+{
+	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x1;
 }
 
 #if 0

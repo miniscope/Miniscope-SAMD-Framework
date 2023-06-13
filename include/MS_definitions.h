@@ -22,15 +22,15 @@
 
 #ifdef DEV_SLOW_MODE
 #define SLOW_DATA_TEST_ENABLE
-#define DUMMY_HEADER_ENABLE // For dev
+#define PRESET_HEADER_ENABLE // For dev
 #define TEST_PATTERN_ENABLE // For dev
 #endif
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
-//#define WLMS_SPI_MODE
+#define WLMS_SPI_MODE
 //#define WLMS_UART_MODE
-#define DMA_TO_SPI_TESTMODE
+//#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -94,8 +94,8 @@
 
 
 // SPI
-#define SPI_ICSPACE_MS				20 // Clock cycle between word
-#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_ICSPACE_MS				1 // Clock cycle between word
+#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
 
 
 // Peripheral address
@@ -200,12 +200,12 @@
 
 // ------- Image Sensor Definitions ----------
 #ifdef SLOW_DATA_TEST_ENABLE
-#define FRAME_RATE					1
+#define FRAME_RATE					5
 #define WIDTH						40
 #define HEIGHT						40
 #define BINNING						2
 #else
-#define FRAME_RATE					10
+#define FRAME_RATE					5
 #define WIDTH						304
 #define HEIGHT						304
 #define BINNING						2

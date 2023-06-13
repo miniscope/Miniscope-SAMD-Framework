@@ -21,7 +21,7 @@ int main(void)
 	
 	#ifdef DEV_MODE
 	delay_ms(1000);
-	//deviceState = DEVICE_STATE_START_RECORDING;
+	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif
 		
 	while (1) {
@@ -37,9 +37,9 @@ int main(void)
 		}
 		#endif
 		
-		#ifdef DMA_TO_SPI_ENABLE
-		sdo_dma_transfer(0);
-		delay_ms(1000);
-		#endif
+		//#ifdef DMA_TO_SPI_ENABLE
+		//sdo_dma_transfer_resume();
+		//delay_ms(1000);
+		//#endif
 	}
 }

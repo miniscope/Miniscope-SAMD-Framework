@@ -39,11 +39,11 @@ void startRecording()
 	setStatusLED(1);
 	#endif
 	
-	#ifdef DUMMY_HEADER_ENABLE
+	#ifdef PRESET_HEADER_ENABLE
 	setEWL(0x33);   // test value. 0x01 to 0xFF.
 	setExcitationLED(1,1); // (Value, enable) Value: from 0 to 100.
 	python480SetGain(1); // test value. 1, 2, 4.
-	python480SetFPS(5); // test value 5, 10, 15, 20.
+	python480SetFPS(FRAME_RATE); // test value 5, 10, 15, 20.
 	setStatusLED(1);
 	#endif
 	
@@ -132,10 +132,7 @@ void recording()
 			tempTimestamp[(writeBufferCount + droppedBufferCount) % 100] = getCurrentTimeMS() - startTimeMS;
 			
 			#ifdef DMA_TO_SPI_ENABLE
-			_dma_set_source_address(SDO_DMA_CHANNEL, bufferToWrite)
-			_dma_set_destination_address(SDO_DMA_CHANNEL, (uint32_t) &SERCOM0->SPI.DATA.reg)
-			_dma_enable_transaction(SDO_DMA_CHANNEL, true)
-			DMAC->SWTRIGCTRL.reg |= (1 << SDO_DMA_CHANNEL); //Software trigger for transferring a block
+			sdo_dma_transfer_resume();
 			currentBlock += numBlocks;
 			#endif
 			

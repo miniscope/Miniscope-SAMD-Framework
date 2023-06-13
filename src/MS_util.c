@@ -95,13 +95,11 @@ void peripheralInit(void)
 	
 	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 	TXLinkedListInit();
-	//sdo_dma_setup();
 	#endif
 	
 	#ifdef DMA_TO_SD_ENABLE
 	SDCardInit();
 	#endif
-
 
 	imageSensorInit();
 
@@ -114,13 +112,13 @@ void peripheralInit(void)
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
 	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
+	//hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);
+	hri_sercomspi_write_BAUD_reg(SERCOM0, SPI_BAUD_MS);
 	SERCOM0->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
 	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
-	hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);
-	hri_sercomspi_write_BAUD_reg(SERCOM0, SPI_BAUD_MS);
-	spi_m_sync_enable(&SPI_0);
+//	spi_m_sync_enable(&SPI_0);
 	#endif
 	
 	#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
