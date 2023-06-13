@@ -12,7 +12,7 @@
 #include "dma_custom_driver.h"
 
 COMPILER_ALIGNED(16)
-//volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
+volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
 volatile DmacDescriptor TXdescripter;
 
 COMPILER_ALIGNED(16)
@@ -37,7 +37,7 @@ void dmaEnable(void){
 	#endif
 }
 
-#if 0
+#if 1
 void TXLinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
@@ -51,7 +51,7 @@ void TXLinkedListInit(void)
 		// We aren't actually using the STEPSIZE part of incrementing the source address.
 		TXLinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
 		| (CONF_DMAC_DSTINC_1 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_1 << DMAC_BTCTRL_SRCINC_Pos)\
-		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_1) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_1 | 0x01)\
+		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_1) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_1 | 0x02)\
 		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_1) | DMAC_BTCTRL_VALID;
 		
 		// For sending out data
@@ -82,7 +82,15 @@ void setTXLinkedListPosition(uint8_t pos)
 }
 #endif
 
-#if 1
+
+void sdo_dma_transfer(void)
+{
+	//_dma_set_source_address(SDO_DMA_CHANNEL, (void *)(uint32_t)(&dataBuffer[pos][0]) + TXdescripter.BTCNT.reg * 4); // Overwrite source address since set_data_amount function modifies this
+	//DMAC->SWTRIGCTRL.reg |= (1 << SDO_DMA_CHANNEL); //Software trigger for transferring a block
+	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
+}
+
+#if 0
 void sdo_dma_setup(void)
 {		
 	TXdescripter.BTCNT.reg = BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS;
@@ -102,11 +110,6 @@ void sdo_dma_setup(void)
 	_dma_set_DESCADDR(SDO_DMA_CHANNEL, TXdescripter.DESCADDR.reg);
 }
 
-void sdo_dma_transfer(uint8_t pos)
-{
-	_dma_set_source_address(SDO_DMA_CHANNEL, (void *)(uint32_t)(&dataBuffer[pos][0]) + TXdescripter.BTCNT.reg * 4); // Overwrite source address since set_data_amount function modifies this
-	DMAC->SWTRIGCTRL.reg |= (1 << SDO_DMA_CHANNEL); //Software trigger for transferring a block
-}
 #endif
 
 void DataBufferInit(void)

@@ -320,7 +320,6 @@ void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
 void sdo_dma_transfer(uint8_t pos);
 void sdo_dma_setup(void);
-
 void DataBufferInit(void);
 
 #endif /* MS_DEFINITIONS_H_ */
