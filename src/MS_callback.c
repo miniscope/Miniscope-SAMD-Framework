@@ -77,6 +77,8 @@ void pushButton_cb(void)
 }
 #endif
 
+
+
 #ifdef PYTHON480_ENABLE
 void frameValid_cb(void)
 {
@@ -90,19 +92,15 @@ void frameValid_cb(void)
 	//setStatusLED(1);
 	//}
 	
-	if (pinState == true) {
-		// beginning of new frame acquisition
-		
+	if (pinState == true) {	// beginning of new frame acquisition
 	}
-	else {
-		// Handles end of frame
+	else { // Handles end of frame
 		
 		if (deviceState & (DEVICE_STATE_RECORDING | DEVICE_STATE_STOP_RECORDING)) {
 			// At the end of frame the current buffer is likely only partially filled.
 			// Disable DMA to flush DMA FIFO then start DMA again but with the next linked list
 			
 			PCC->MR.reg &= ~(PCC_MR_PCEN); // Disables PCC
-			
 			DMAC->Channel[CONF_PCC_DMA_CHANNEL].CHCTRLA.reg &= ~(DMAC_CHCTRLA_ENABLE); // Disables PCC DMA
 			
 			// Some debugging stuff here
@@ -122,7 +120,13 @@ void frameValid_cb(void)
 			if (deviceState & DEVICE_STATE_RECORDING) { // Keep recording
 				// Update Linked List
 				setPCCLinkedListPosition(bufferCount % NUM_BUFFERS); // Moves to next buffer/linked list element
-				setTXLinkedListPosition(bufferCount % NUM_BUFFERS); // Moves to next buffer/linked list element
+				if (bufferCount % NUM_BUFFERS == 0)
+				{
+					setTXLinkedListPosition(NUM_BUFFERS - 1); // Moves to next buffer/linked list element
+				}
+				else{
+					setTXLinkedListPosition(bufferCount % NUM_BUFFERS - 1); // Moves to next buffer/linked list element
+				}
 				_dma_enable_transaction(CONF_PCC_DMA_CHANNEL, false); // Should enable DMA transfer
 				
 				PCC->MR.reg |= PCC_MR_PCEN; // Enables PCC

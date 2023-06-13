@@ -94,7 +94,8 @@ void peripheralInit(void)
 	#endif
 	
 	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-	TXLinkedListInit();
+	//TXLinkedListInit();
+	sdo_dma_setup();
 	#endif
 	
 	#ifdef DMA_TO_SD_ENABLE
@@ -218,7 +219,7 @@ void setConfigBlockProp(uint8_t position, uint32_t value) {
 void setBufferHeader(uint32_t dataWordLength) {
 	uint32_t numBuffer = bufferCount % NUM_BUFFERS;
 	#ifdef DEV_MODE
-	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = 0xFEDCBA98;
+	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = 0xFF00FF00;
 	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = BUFFER_HEADER_LENGTH;
 	#endif

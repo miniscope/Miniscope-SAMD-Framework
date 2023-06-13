@@ -36,7 +36,6 @@ void startRecording()
 	setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);
 	python480SetGain(getPropFromHeader(HEADER_GAIN_POS));
 	python480SetFPS(getPropFromHeader(HEADER_FRAME_RATE_POS));
-	python480SetFPS(FRAME_RATE); // Why?
 	setStatusLED(1);
 	#endif
 	
@@ -45,7 +44,6 @@ void startRecording()
 	setExcitationLED(1,1); // (Value, enable) Value: from 0 to 100.
 	python480SetGain(1); // test value. 1, 2, 4.
 	python480SetFPS(5); // test value 5, 10, 15, 20.
-	//python480SetFPS(FRAME_RATE);
 	setStatusLED(1);
 	#endif
 	
@@ -106,7 +104,8 @@ void recording()
 {
 	if (bufferCount > (writeBufferCount + droppedBufferCount)) {
 		// This means there are filled buffer(s) ready to be written to SD card
-		
+
+
 		// We need to check if the writing to sd card of data buffers has fallen too far behind where we are at risk
 		// of writing overwritten data. We need to detect this and decide what to do in this case
 		if (bufferCount > (writeBufferCount + droppedBufferCount + NUM_BUFFERS)) {
@@ -117,14 +116,14 @@ void recording()
 			// TODO: I think NUM_BUFFERS here should actually be number_of_buffers_per_frame
 			droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
 		}
-		else {
-			// Actual writing of good buffers
+		else { // Actual writing of good buffers
+			
 			bufferToWrite = (uint32_t)(&dataBuffer[(writeBufferCount + droppedBufferCount) % NUM_BUFFERS]);
 			numBlocks = (bufferToWrite[BUFFER_HEADER_DATA_LENGTH_POS] + (BUFFER_HEADER_LENGTH * 4) + (SD_BLOCK_SIZE - 1)) / SD_BLOCK_SIZE;
 			
 			// This if statement shouldn't be needed
-			if (numBlocks > BUFFER_BLOCK_LENGTH)
-			numBlocks = BUFFER_BLOCK_LENGTH;
+			//if (numBlocks > BUFFER_BLOCK_LENGTH)
+			//numBlocks = BUFFER_BLOCK_LENGTH;
 			
 			bufferToWrite[BUFFER_HEADER_WRITE_BUFFER_COUNT_POS] = writeBufferCount;
 			bufferToWrite[BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS] = droppedBufferCount;
@@ -132,14 +131,21 @@ void recording()
 			
 			tempTimestamp[(writeBufferCount + droppedBufferCount) % 100] = getCurrentTimeMS() - startTimeMS;
 			
-			#ifdef ADMA_ENABLE
+			#ifdef DMA_TO_SPI_ENABLE
+			_dma_set_source_address(SDO_DMA_CHANNEL, bufferToWrite)
+			_dma_set_destination_address(SDO_DMA_CHANNEL, (uint32_t) &SERCOM0->SPI.DATA.reg)
+			_dma_enable_transaction(SDO_DMA_CHANNEL, true)
+			DMAC->SWTRIGCTRL.reg |= (1 << SDO_DMA_CHANNEL); //Software trigger for transferring a block
+			currentBlock += numBlocks;
+			#endif
+			
 			#ifdef DMA_TO_SD_ENABLE
+			#ifdef ADMA_ENABLE
 			// Sets up ADMA descriptor for writing 1 full buffer
 			setSDDescriptor(bufferToWrite, numBlocks * SD_BLOCK_SIZE,
 			SD_DESCRIPTOR_ATT_TRANSFER|SD_DESCRIPTOR_ATT_VALID|SD_DESCRIPTOR_ATT_END);
 			sd_mmc_write_with_ADMA(0, currentBlock, (uint32_t)&SDTransferDescriptor, numBlocks);			
 			sd_mmc_wait_end_of_ADMA_write(false);
-			#endif
 
 			currentBlock += numBlocks;
 			
@@ -179,17 +185,14 @@ void recording()
 				// TODO: error checking with LED showing status
 				
 				// This finishes up the remaining blocks in the current set of initialized blocks
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_start_write_blocks(bufferToWrite, initBlocksRemaining) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 				sd_mmc_wait_end_of_write_blocks(false);
-				#endif
 
 				currentBlock += initBlocksRemaining;
 				
 				// We now initialize the next set of blocks
 				// TODO: Probably handle errors better here and don't go forward with writing if init fails
-				#ifdef DMA_TO_SD_ENABLE
 				if (sd_mmc_init_write_blocks(0, currentBlock, BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_INIT_WRITE_ERROR;
 				
@@ -197,14 +200,12 @@ void recording()
 				if (sd_mmc_start_write_blocks((uint32_t)(&bufferToWrite[initBlocksRemaining * SD_BLOCK_SIZE / 4]), numBlocks - initBlocksRemaining) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
 				sd_mmc_wait_end_of_write_blocks(false);
-				#endif
 				
 				currentBlock += numBlocks - initBlocksRemaining;
-				initBlocksRemaining = (BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK) - (numBlocks - initBlocksRemaining);
-				
+				initBlocksRemaining = (BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK) - (numBlocks - initBlocksRemaining);	
 			}
 			#endif // not ADMA_ENABLE
-			
+			#endif // DMA_TO_SD_ENABLE
 			writeBufferCount++;
 		}
 		//Code for demonstration

@@ -17,6 +17,7 @@
 #ifdef DEV_MODE
 #define DUMMY_HEADER_ENABLE // For dev
 #define TEST_PATTERN_ENABLE // For dev
+#define STATIC_BUFFER_ENABLE
 #endif
 
 #ifdef DEV_SLOW_MODE
@@ -49,6 +50,7 @@
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
 #define SPI_SERCOM0_ENABLE
+#define ADMA_ENABLE
 #define SPI_LUT_ENABLE
 #endif
 
@@ -92,8 +94,8 @@
 
 
 // SPI
-#define SPI_ICSPACE_MS				10 // Clock cycle between word
-#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_ICSPACE_MS				20 // Clock cycle between word
+#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
 
 
 // Peripheral address
@@ -283,7 +285,6 @@ volatile uint64_t SDTransferDescriptor; // I think we will only use 1 of these f
 
 void imageSensorInit(void);
 void SDCardInit(void);
-void linkedListInit(void);
 void dmaEnable(void);
 void setPCCCurrentLinkedListPosition(uint8_t pos);
 void debugHeaderProp(void);
@@ -317,6 +318,8 @@ void setTXLinkedListPosition(uint8_t pos);
 void setPCCLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
+void sdo_dma_transfer(uint8_t pos);
+void sdo_dma_setup(void);
 
 void DataBufferInit(void);
 

@@ -19,8 +19,8 @@ volatile uint32_t initBlocksRemaining = 0;
 
 volatile uint32_t deviceState = DEVICE_STATE_IDLE;
 
-COMPILER_ALIGNED(16) // Taken from hpl_dmac.c but I think this could be '8' since descriptors need to be 64bit aligned from data sheet
-volatile DmacDescriptor linkedList[NUM_BUFFERS];
+//COMPILER_ALIGNED(16) // Taken from hpl_dmac.c but I think this could be '8' since descriptors need to be 64bit aligned from data sheet
+//volatile DmacDescriptor linkedList[NUM_BUFFERS];
 
 // Probably should turn this into a struct to be more easily understandable
 volatile uint64_t SDTransferDescriptor; // I think we will only use 1 of these for now. Each descriptor is 64bits long 

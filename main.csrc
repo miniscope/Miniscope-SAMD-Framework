@@ -19,8 +19,11 @@ int main(void)
 	
 	dmaEnable();
 	
-	deviceState = DEVICE_STATE_START_RECORDING;
-	
+	#ifdef DEV_MODE
+	delay_ms(1000);
+	//deviceState = DEVICE_STATE_START_RECORDING;
+	#endif
+		
 	while (1) {
 		#if defined(PYTHON480_ENABLE)
 		if (deviceState & DEVICE_STATE_START_RECORDING) {
@@ -32,6 +35,11 @@ int main(void)
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 			stopRecording();
 		}
+		#endif
+		
+		#ifdef DMA_TO_SPI_ENABLE
+		sdo_dma_transfer(0);
+		delay_ms(1000);
 		#endif
 	}
 }
