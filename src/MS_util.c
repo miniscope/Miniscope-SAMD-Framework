@@ -108,17 +108,27 @@ void peripheralInit(void)
 	//setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);
 	#endif
 	
+	#if defined(DMA_TO_USART_ENABLE) && defined(USART_SERCOM5_ENABLE)
+	SERCOM5->USART.CTRLA.bit.ENABLE = 0; // Disable UART
+	while (SERCOM5->USART.SYNCBUSY.bit.ENABLE)
+	;                                 // Wait for disable
+	hri_sercomusart_write_BAUD_reg(SERCOM5, USART_BAUD_MS);
+	//SERCOM5->USART.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
+	SERCOM5->USART.CTRLA.bit.ENABLE = 1;  // Re-enable USART
+	while (SERCOM5->USART.SYNCBUSY.bit.ENABLE)
+	;                                 // Wait for disable
+	#endif
+
 	#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
 	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
-	//hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);
+	hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);
 	hri_sercomspi_write_BAUD_reg(SERCOM0, SPI_BAUD_MS);
 	SERCOM0->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
 	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
-//	spi_m_sync_enable(&SPI_0);
 	#endif
 	
 	#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
@@ -130,10 +140,6 @@ void peripheralInit(void)
 	#if defined(NODMA_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 	SERCOM0->SPI.CTRLA.bit.ENABLE = 0x01;
 	SERCOM0->SPI.DATA.reg = (uint32_t) dataBuffer[0][1];
-	#endif
-
-	#if defined(DMA_TO_USART_ENABLE) && defined(USART_SERCOM5_ENABLE)
-	usart_async_enable(&USART_0);
 	#endif
 }
 

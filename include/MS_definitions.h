@@ -17,6 +17,7 @@
 #ifdef DEV_MODE
 #define DUMMY_HEADER_ENABLE // For dev
 #define TEST_PATTERN_ENABLE // For dev
+#define TEST_BUFFER_ENABLE
 #define STATIC_BUFFER_ENABLE
 #endif
 
@@ -29,7 +30,7 @@
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
 #define WLMS_SPI_MODE
-//#define WLMS_UART_MODE
+//#define WLMS_USART_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
@@ -54,7 +55,7 @@
 #define SPI_LUT_ENABLE
 #endif
 
-#ifdef WLMS_UART_MODE
+#ifdef WLMS_USART_MODE
 #define PYTHON480_ENABLE
 #define DMA_TO_USART_ENABLE
 #define EXLED_PWM_ENABLE
@@ -65,6 +66,8 @@
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
 #define USART_SERCOM5_ENABLE
+#define ADMA_ENABLE
+#define SPI_LUT_ENABLE
 #endif
 
 #ifdef V4WF_MODE
@@ -95,8 +98,11 @@
 
 // SPI
 #define SPI_ICSPACE_MS				1 // Clock cycle between word
-#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
 
+// USART
+#define USART_ICSPACE_MS				1 // Clock cycle between word
+#define USART_BAUD_MS					23 // f_baud = f_ref / (2*(BAUD + 1))
 
 // Peripheral address
 #define EWL_I2C_ADDR					0x23  //7 bit address!
@@ -128,17 +134,13 @@
 #define BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
 #else
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
-#define NUM_BUFFERS				8   // can be edited by user to optimize speed
+#define NUM_BUFFERS				8  // can be edited by user to optimize speed
 #define BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
 #endif
 
 #ifdef PYTHON480_ENABLE
 // Buffer Header position definitions
 #define BUFFER_HEADER_LENGTH					10
-#endif
-
-#ifdef TEST_BUFFER_ENABLE
-#define BUFFER_HEADER_LENGTH					0
 #endif
 
 #define BUFFER_HEADER_HEADER_LENGTH_POS			0
@@ -205,9 +207,9 @@
 #define HEIGHT						40
 #define BINNING						2
 #else
-#define FRAME_RATE					5
-#define WIDTH						304
-#define HEIGHT						304
+#define FRAME_RATE					20
+#define WIDTH						608
+#define HEIGHT						608
 #define BINNING						2
 #endif
 
@@ -313,6 +315,9 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
 #define SDO_DMA_CHANNEL 1
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
+
+extern void sdo_dma_transfer_resume(void);
+extern void sdo_dma_transfer_suspend(void);
 
 void setTXLinkedListPosition(uint8_t pos);
 void setPCCLinkedListPosition(uint8_t pos);

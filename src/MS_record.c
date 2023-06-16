@@ -7,6 +7,7 @@
 
 #include "MS_definitions.h"
 #include "python480.h"
+#include "hpl_dma.h"
 
 #ifdef DMA_TO_SD_ENABLE
 #include "sd_mmc.h"
@@ -102,19 +103,21 @@ void stopRecording()
 
 void recording()
 {
-	if (bufferCount > (writeBufferCount + droppedBufferCount)) {
+	// not sure if the bufferCount > 1 is needed.
+	if (bufferCount > (writeBufferCount + droppedBufferCount) && bufferCount > 1) { // when camera data is ahead
 		// This means there are filled buffer(s) ready to be written to SD card
 
 
 		// We need to check if the writing to sd card of data buffers has fallen too far behind where we are at risk
 		// of writing overwritten data. We need to detect this and decide what to do in this case
-		if (bufferCount > (writeBufferCount + droppedBufferCount + NUM_BUFFERS)) {
+		if (bufferCount > (writeBufferCount + droppedBufferCount + NUM_BUFFERS)) { // when data transfer isn't catching up
 			// We  are at risk of at least the current buffer that we want to write to SD card being overflown with new image data
 			// We are going to just drop writing the rest of this frame
 			
 			// Let's figure out how many buffers need to be dropped
 			// TODO: I think NUM_BUFFERS here should actually be number_of_buffers_per_frame
-			droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
+			//droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
+			droppedBufferCount += bufferCount - writeBufferCount + droppedBufferCount + NUM_BUFFERS;
 		}
 		else { // Actual writing of good buffers
 			
@@ -131,9 +134,19 @@ void recording()
 			
 			tempTimestamp[(writeBufferCount + droppedBufferCount) % 100] = getCurrentTimeMS() - startTimeMS;
 			
-			#ifdef DMA_TO_SPI_ENABLE
+			#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+				if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
+				{
+					_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+				}
 			sdo_dma_transfer_resume();
-			currentBlock += numBlocks;
+			writeBufferCount++; // Changed position to add only when buffer is written			
+			
+			// catches up if it's only one buffer behind. should be a better way to do this
+			if(bufferCount - (writeBufferCount + droppedBufferCount) > 1){
+				sdo_dma_transfer_resume();
+				writeBufferCount++; // Changed position to add only when buffer is written
+			}
 			#endif
 			
 			#ifdef DMA_TO_SD_ENABLE
@@ -203,7 +216,7 @@ void recording()
 			}
 			#endif // not ADMA_ENABLE
 			#endif // DMA_TO_SD_ENABLE
-			writeBufferCount++;
+			//writeBufferCount++; // Probably shouldn't be here?
 		}
 		//Code for demonstration
 		//I jump through three planes using the EWL and different LED values

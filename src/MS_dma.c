@@ -31,10 +31,6 @@ void dmaEnable(void){
 	| CONF_PCC_HALFS << PCC_MR_HALFS_Pos | CONF_PCC_ALWYS << PCC_MR_ALWYS_Pos
 	| CONF_PCC_SCALE << PCC_MR_SCALE_Pos | PCC_MR_DSIZE(CONF_PCC_DSIZE);
 	#endif
-
-	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-	_dma_enable_transaction(SDO_DMA_CHANNEL, false);
-	#endif
 }
 
 #if 1

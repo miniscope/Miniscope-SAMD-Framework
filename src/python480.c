@@ -8,6 +8,8 @@
 #include "python480.h"
 #include "MS_definitions.h"
 
+uint16_t python480_testconfig = 0x00;
+
 void python480Init()
 {
 	// Sets up initial register values in the PYTHON 480
@@ -53,7 +55,8 @@ void python480SetFPS(uint32_t value)
 		spi_BB_Write(0xC9, 6667);
 		break;
 		case (20):
-		spi_BB_Write(0xC9, 5000);
+		//spi_BB_Write(0xC9, 5000);
+		spi_BB_Write(0xC9, 2970); // for 12 MHz input clock
 		break;
 		default:
 		break;
@@ -232,7 +235,9 @@ void RequiredUploads() {// Reserved register settings uploads
 
 	// Test Pattern
 	#ifdef TEST_PATTERN_ENABLE
-	spi_BB_Write(144,0x0003);
+	spi_BB_Write(144,0x03); // no frame
+	//spi_BB_Write(144,0x0B); // have frame
+	python480_testconfig = spi_BB_Read(144);
 	#endif
 
 	spi_BB_Write(130, 0x0015);
