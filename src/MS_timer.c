@@ -7,8 +7,8 @@
 
 #include "MS_definitions.h"
 
-#if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE)
-static struct timer_task TIMER_0_task1, TIMER_0_task2;
+#if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE) || defined(PYTHON480_ENABLE)
+static struct timer_task TIMER_0_task1, TIMER_0_task2, TIMER_0_task3;
 #endif
 
 void timerInit(void)
@@ -26,6 +26,15 @@ void timerInit(void)
 	TIMER_0_task2.cb       = checkBattVoltage_cb;
 	TIMER_0_task2.mode     = TIMER_TASK_REPEAT;
 	timer_add_task(&TIMER_0, &TIMER_0_task2);
+	#endif
+	
+	#if defined(PYTHON480_ENABLE)
+	// Setup a timer for recording functions.
+	//TIMER_0_task3.interval	= round(1000/numBuffersPerFrame/FRAME_RATE/2); // Need to check this value
+	TIMER_0_task3.interval	= 10; // Need to check this value
+	TIMER_0_task3.cb		= recording_cb;
+	TIMER_0_task3.mode		= TIMER_TASK_REPEAT;
+	timer_add_task(&TIMER_0, &TIMER_0_task3);
 	#endif
 	
 	#if defined(PYTHON480_ENABLE) || defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE)

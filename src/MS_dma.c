@@ -11,9 +11,9 @@
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
 
-COMPILER_ALIGNED(16)
+COMPILER_ALIGNED(4)
 volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
-volatile DmacDescriptor TXdescripter;
+//volatile DmacDescriptor TXdescripter;
 
 COMPILER_ALIGNED(16)
 volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
@@ -42,7 +42,7 @@ void TXLinkedListInit(void)
 		else TXLinkedList[i].DESCADDR.reg = (uint32_t)&TXLinkedList[i + 1];
 		
 		
-		TXLinkedList[i].BTCNT.reg = BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS;
+		TXLinkedList[i].BTCNT.reg = BUFFER_BLOCK_LENGTH * SDO_BLOCK_SIZE_IN_WORDS;
 
 		// We aren't actually using the STEPSIZE part of incrementing the source address.
 		TXLinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
@@ -51,7 +51,13 @@ void TXLinkedListInit(void)
 		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_1) | DMAC_BTCTRL_VALID;
 		
 		// For sending out data
+		
+		#ifdef SDO_32BIT_ENABLE
 		TXLinkedList[i].SRCADDR.reg = (uint32_t)(&dataBuffer[i][0]) + TXLinkedList[i].BTCNT.reg * 4;
+		#endif
+		#ifdef SDO_8BIT_ENABLE
+		TXLinkedList[i].SRCADDR.reg = (uint32_t)(&dataBuffer[i][0]) + TXLinkedList[i].BTCNT.reg;
+		#endif
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
 
@@ -89,34 +95,12 @@ void sdo_dma_transfer_suspend(void)
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x1;
 }
 
-#if 0
-void sdo_dma_setup(void)
-{		
-	TXdescripter.BTCNT.reg = BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS;
-
-	// We aren't actually using the STEPSIZE part of incrementing the source address.
-	TXdescripter.BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
-	| (CONF_DMAC_DSTINC_1 << DMAC_BTCTRL_DSTINC_Pos) | (0 << DMAC_BTCTRL_SRCINC_Pos)\
-	| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_1) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_1 | 0x01)\
-	| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_1) | DMAC_BTCTRL_VALID;
-		
-	TXdescripter.DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;		
-	
-	//_dma_set_source_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg);
-	_dma_set_destination_address(SDO_DMA_CHANNEL, (void *)TXdescripter.DSTADDR.reg);
-	_dma_set_data_amount(SDO_DMA_CHANNEL, TXdescripter.BTCNT.reg);
-	_dma_set_BTCTRL(SDO_DMA_CHANNEL, (void *)TXdescripter.BTCTRL.reg); //block transfer control
-	_dma_set_DESCADDR(SDO_DMA_CHANNEL, TXdescripter.DESCADDR.reg);
-}
-
-#endif
-
 void DataBufferInit(void)
 {
 	for (uint32_t i = 0; i<NUM_BUFFERS; i++)
 	{
 		dataBuffer[i][0] = 0xFF00FF00;
-		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS; j++)
+		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
 		{
 			#ifdef TEST_BUFFER_ENABLE
 			dataBuffer[i][j] = j + i * 0x11110000;
@@ -136,7 +120,7 @@ void PCCLinkedListInit(void)
 		else
 		PCCLinkedList[i].DESCADDR.reg = (uint32_t)&PCCLinkedList[i + 1];
 		
-		PCCLinkedList[i].BTCNT.reg = (BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
+		PCCLinkedList[i].BTCNT.reg = (BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
 		// We aren't actually using the STEPSIZE part of incrementing the destination address.
 		PCCLinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_0 << DMAC_BTCTRL_STEPSEL_Pos)\
 		| (CONF_DMAC_DSTINC_0 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_0 << DMAC_BTCTRL_SRCINC_Pos)\

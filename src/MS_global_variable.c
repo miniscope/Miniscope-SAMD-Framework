@@ -9,7 +9,7 @@
 
 // ------------ GLOBAL VARIABLES --------
 COMPILER_ALIGNED(16)
-volatile uint32_t dataBuffer[NUM_BUFFERS][BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS] = {((unsigned char)0)};; //Allocate memory for DMA image buffers
+volatile uint32_t dataBuffer[NUM_BUFFERS][BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS] = {((unsigned char)0)};; //Allocate memory for DMA image buffers
 
 volatile uint8_t headerBlock[SD_BLOCK_SIZE] = {0}; // Will hold the 512 bytes from the header block of sd card
 volatile uint8_t configBlock[SD_BLOCK_SIZE] = {0}; // Will hold the device config information to be written to the starting block

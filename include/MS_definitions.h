@@ -12,7 +12,6 @@
 
 // ------ DATA MODE ------------------------
 #define DEV_MODE
-//#define DEV_SLOW_MODE
 
 #ifdef DEV_MODE
 #define DUMMY_HEADER_ENABLE // For dev
@@ -21,16 +20,11 @@
 #define STATIC_BUFFER_ENABLE
 #endif
 
-#ifdef DEV_SLOW_MODE
-#define SLOW_DATA_TEST_ENABLE
-#define PRESET_HEADER_ENABLE // For dev
-#define TEST_PATTERN_ENABLE // For dev
-#endif
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
-#define WLMS_SPI_MODE
-//#define WLMS_USART_MODE
+//#define WLMS_SPI_MODE
+#define WLMS_USART_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
@@ -53,6 +47,7 @@
 #define SPI_SERCOM0_ENABLE
 #define ADMA_ENABLE
 #define SPI_LUT_ENABLE
+#define SDO_32BIT_ENABLE
 #endif
 
 #ifdef WLMS_USART_MODE
@@ -68,6 +63,7 @@
 #define USART_SERCOM5_ENABLE
 #define ADMA_ENABLE
 #define SPI_LUT_ENABLE
+#define SDO_8BIT_ENABLE
 #endif
 
 #ifdef V4WF_MODE
@@ -128,14 +124,14 @@
 // -------------------------------------------
 
 // ----------- Buffer Definitions ------------
-#ifdef SLOW_DATA_TEST_ENABLE
-#define BUFFER_BLOCK_LENGTH		1 // can be edited by user to optimize speed
-#define NUM_BUFFERS				2   // can be edited by user to optimize speed
-#define BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
-#else
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
 #define NUM_BUFFERS				8  // can be edited by user to optimize speed
-#define BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
+#define PCC_BLOCK_SIZE_IN_WORDS		128
+#ifdef SDO_32BIT_ENABLE
+#define SDO_BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
+#endif
+#ifdef SDO_8BIT_ENABLE
+#define SDO_BLOCK_SIZE_IN_WORDS		512 // (512 bytes) / (1 byte word size)
 #endif
 
 #ifdef PYTHON480_ENABLE
@@ -201,17 +197,11 @@
 // -------------------------------------------
 
 // ------- Image Sensor Definitions ----------
-#ifdef SLOW_DATA_TEST_ENABLE
-#define FRAME_RATE					5
-#define WIDTH						40
-#define HEIGHT						40
-#define BINNING						2
-#else
-#define FRAME_RATE					20
+
+#define FRAME_RATE					0 // 1, 5, 10, 20, 0: 0.5 FPS
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
-#endif
 
 #define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
 
@@ -221,7 +211,7 @@
 // ----------- GLOBAL VARIABLES -----------
 
 
-extern volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS]; //Allocate memory for DMA image buffers
+extern volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS]; //Allocate memory for DMA image buffers
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 
@@ -297,7 +287,7 @@ void setStatusLED(bool value);
 
 void startRecording(void);
 void stopRecording(void);
-void recording(void);
+void recording_cb(const struct timer_task *const timer_task);
 uint32_t getCurrentTimeMS(void);
 void resetGlobalVar(void);
 

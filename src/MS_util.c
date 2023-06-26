@@ -112,8 +112,8 @@ void peripheralInit(void)
 	SERCOM5->USART.CTRLA.bit.ENABLE = 0; // Disable UART
 	while (SERCOM5->USART.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
-	hri_sercomusart_write_BAUD_reg(SERCOM5, USART_BAUD_MS);
-	//SERCOM5->USART.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
+	//hri_sercomusart_write_BAUD_reg(SERCOM5, USART_BAUD_MS);
+	//SERCOM5->USART.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode. Still packet structure is 8-bit
 	SERCOM5->USART.CTRLA.bit.ENABLE = 1;  // Re-enable USART
 	while (SERCOM5->USART.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
@@ -195,7 +195,7 @@ void setSDDescriptor(uint32_t *address, uint16_t length, uint8_t attribute)
 #endif // DMA_TO_SD_ENABLE
 
 void irqInit(void){
-	// Setup callbacks for external interrupts
+	// Setup callbacks for interrupts
 	#ifdef IR_TRIGGER_ENABLE
 	ext_irq_register(PIN_PB22, irReceive_cb);
 	#endif
@@ -211,6 +211,8 @@ void irqInit(void){
 	#ifdef PUSH_BUT_ENABLE
 	ext_irq_register(PIN_PA25, pushButton_cb);
 	#endif
+	
+	
 }
 
 void setConfigBlockProp(uint8_t position, uint32_t value) {

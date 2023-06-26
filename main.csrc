@@ -20,20 +20,17 @@ int main(void)
 	dmaEnable();
 	
 	#ifdef DEV_MODE
-	delay_ms(1000);
+	delay_ms(100);
 	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif
 		
-	if (deviceState & DEVICE_STATE_START_RECORDING) {
-		startRecording();
-	}
-		
-	while (1) {
+	while (1) { // mostly recording_cb and framevalid_cb runs here
 		#if defined(PYTHON480_ENABLE)
 		
-		if (deviceState & DEVICE_STATE_RECORDING) {
-			recording();
+		if (deviceState & DEVICE_STATE_START_RECORDING) {
+			startRecording();
 		}
+		
 		#ifndef DEV_MODE
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 			stopRecording();
