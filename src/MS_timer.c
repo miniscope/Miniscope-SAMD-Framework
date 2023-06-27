@@ -6,8 +6,9 @@
  */ 
 
 #include "MS_definitions.h"
+//#include <math.h>
 
-#if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE) || defined(PYTHON480_ENABLE)
+#if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE) || defined(PYTHON480_ENABLE) || defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 static struct timer_task TIMER_0_task1, TIMER_0_task2, TIMER_0_task3;
 #endif
 
@@ -37,9 +38,7 @@ void timerInit(void)
 	timer_add_task(&TIMER_0, &TIMER_0_task3);
 	#endif
 	
-	#if defined(PYTHON480_ENABLE) || defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE)
 	timer_start(&TIMER_0);
-	#endif
 }
 
 uint32_t getCurrentTimeMS(void)

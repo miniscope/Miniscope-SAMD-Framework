@@ -47,11 +47,10 @@ void TXLinkedListInit(void)
 		// We aren't actually using the STEPSIZE part of incrementing the source address.
 		TXLinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
 		| (CONF_DMAC_DSTINC_1 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_1 << DMAC_BTCTRL_SRCINC_Pos)\
-		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_1) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_1 | 0x02)\
+		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_1) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_1)\
 		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_1) | DMAC_BTCTRL_VALID;
 		
 		// For sending out data
-		
 		#ifdef SDO_32BIT_ENABLE
 		TXLinkedList[i].SRCADDR.reg = (uint32_t)(&dataBuffer[i][0]) + TXLinkedList[i].BTCNT.reg * 4;
 		#endif
@@ -84,10 +83,58 @@ void setTXLinkedListPosition(uint8_t pos)
 }
 #endif
 
+void sdo_dma_transfer_trigger(void)
+{
+	DMAC->SWTRIGCTRL.reg = 0x2;
+}
+
+void sdo_dma_irq_setup(void){
+	NVIC_SetPriority(DMAC_1_IRQn, 0);    // Set the Nested Vector Interrupt Controller (NVIC) priority for DMAC Channel 1
+	NVIC_EnableIRQ(DMAC_1_IRQn);         // Connect DMAC Channel 1 to Nested Vector Interrupt Controller (NVIC)
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_SUSP;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENCLR.reg = 0;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
+	//DMAC->Channel[SDO_DMA_CHANNEL].CHPRILVL.reg = DMAC_CHPRILVL_PRILVL_LVL0;
+}
+
+#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+void sdo_dma_transfer_control(void)
+{
+	#ifdef PYTHON480_ENABLE
+	if(bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+		if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
+		{
+			_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+		}
+		sdo_dma_transfer_resume();
+	}
+	// catches up if it's only one buffer behind. should be a better way to do this
+	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 1){
+		sdo_dma_transfer_resume();
+	}
+	#else
+	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
+	{
+		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+	}
+	sdo_dma_transfer_resume();
+	#endif
+}
+#endif
+
+void DMAC_1_Handler() // Interrupt handler for DMAC channel 1
+{
+	if (DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP) // Check if SDO transfer is complete
+	{
+		DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP = 1;         // Clear the transfer complete (TCMPL) interrupt flag
+		sdo_dma_transfer_control();
+		writeBufferCount++; // Changed position to add only when buffer is written
+	}
+}
 
 void sdo_dma_transfer_resume(void)
 {
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
+	//sdo_dma_transfer_trigger();
 }
 
 void sdo_dma_transfer_suspend(void)
@@ -99,11 +146,20 @@ void DataBufferInit(void)
 {
 	for (uint32_t i = 0; i<NUM_BUFFERS; i++)
 	{
-		dataBuffer[i][0] = 0xFF00FF00;
+		dataBuffer[i][0] = 0x12345678;
 		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
 		{
-			#ifdef TEST_BUFFER_ENABLE
-			dataBuffer[i][j] = j + i * 0x11110000;
+			#ifdef TEST_BUFFER_ENABLE // hard coding test buffers for 304 * 304 px. Should be a defined better.
+			dataBuffer[i][BUFFER_HEADER_LINKED_LIST_POS] = i;
+			dataBuffer[i][BUFFER_HEADER_FRAME_NUM_POS] = 1;
+			if (i < 5){
+				dataBuffer[i][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS] = i;
+			}
+			if (i < 4) dataBuffer[i][BUFFER_HEADER_DATA_LENGTH_POS] = 20480;
+			if (i == 4) dataBuffer[i][BUFFER_HEADER_DATA_LENGTH_POS] = 10496;
+			if (j >= 9){
+			dataBuffer[i][j] = ((i+1) * (j-9)*4) % 0x100 * 0x01000000 + ((i+1) * ((j-9)*4+1)) % 0x100 * 0x00010000 + ((i+1) * ((j-9)*4+2)) % 0x100 * 0x00000100 + ((i+1) * ((j-9)*4+3)) % 0x100 * 0x00000001;
+			}
 			#else
 			dataBuffer[i][j] = 0;
 			#endif

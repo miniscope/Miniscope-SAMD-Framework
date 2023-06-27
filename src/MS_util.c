@@ -95,6 +95,7 @@ void peripheralInit(void)
 	
 	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 	TXLinkedListInit();
+	sdo_dma_irq_setup();
 	#endif
 	
 	#ifdef DMA_TO_SD_ENABLE
@@ -225,7 +226,7 @@ void setConfigBlockProp(uint8_t position, uint32_t value) {
 void setBufferHeader(uint32_t dataWordLength) {
 	uint32_t numBuffer = bufferCount % NUM_BUFFERS;
 	#ifdef DEV_MODE
-	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = 0xFF00FF00;
+	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = 0x12345678;
 	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = BUFFER_HEADER_LENGTH;
 	#endif
@@ -233,8 +234,8 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_NUM_POS] = frameNum;
 	dataBuffer[numBuffer][BUFFER_HEADER_BUFFER_COUNT_POS] = bufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS] = frameBufferCount;
-	//dataBuffer[numBuffer][BUFFER_HEADER_WRITE_BUFFER_COUNT_POS] = writeBufferCount;
-	//dataBuffer[numBuffer][BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS] = droppedBufferCount;
+	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_BUFFER_COUNT_POS] = writeBufferCount;
+	dataBuffer[numBuffer][BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS] = droppedBufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS] = getCurrentTimeMS() - startTimeMS;
 	
 	// TODO: Put the correct value for data length. This will change if it is a partially filled buffer

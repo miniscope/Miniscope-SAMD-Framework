@@ -263,13 +263,6 @@ void DMAC_0_Handler(void)
 /**
  * \brief DMAC interrupt handler
  */
-void DMAC_1_Handler(void)
-{
-	_dmac_handler();
-}
-/**
- * \brief DMAC interrupt handler
- */
 void DMAC_2_Handler(void)
 {
 	_dmac_handler();

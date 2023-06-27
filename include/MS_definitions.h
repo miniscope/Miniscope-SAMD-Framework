@@ -134,10 +134,8 @@
 #define SDO_BLOCK_SIZE_IN_WORDS		512 // (512 bytes) / (1 byte word size)
 #endif
 
-#ifdef PYTHON480_ENABLE
 // Buffer Header position definitions
 #define BUFFER_HEADER_LENGTH					10
-#endif
 
 #define BUFFER_HEADER_HEADER_LENGTH_POS			0
 #define BUFFER_HEADER_LINKED_LIST_POS			1
@@ -198,7 +196,7 @@
 
 // ------- Image Sensor Definitions ----------
 
-#define FRAME_RATE					0 // 1, 5, 10, 20, 0: 0.5 FPS
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
@@ -288,6 +286,7 @@ void setStatusLED(bool value);
 void startRecording(void);
 void stopRecording(void);
 void recording_cb(const struct timer_task *const timer_task);
+void serial_dma_transfer_cb(const struct timer_task *const timer_task);
 uint32_t getCurrentTimeMS(void);
 void resetGlobalVar(void);
 
@@ -306,14 +305,15 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 
+extern void sdo_dma_transfer_trigger(void);
 extern void sdo_dma_transfer_resume(void);
 extern void sdo_dma_transfer_suspend(void);
-
+extern void sdo_dma_irq_setup(void);
 void setTXLinkedListPosition(uint8_t pos);
 void setPCCLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
-void sdo_dma_transfer(uint8_t pos);
+void sdo_dma_transfer_control(void);
 void sdo_dma_setup(void);
 void DataBufferInit(void);
 

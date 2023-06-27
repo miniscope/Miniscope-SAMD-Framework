@@ -120,7 +120,7 @@ void frameValid_cb(void)
 			if (deviceState & DEVICE_STATE_RECORDING) { // Keep recording
 				// Update Linked List
 				setPCCLinkedListPosition(bufferCount % NUM_BUFFERS); // Moves to next buffer/linked list element
-				#if 0
+				#if 0 // this part is probably not needed because the SDO linked list is independent of end of frame
 				if (bufferCount % NUM_BUFFERS == 0)
 				{
 					setTXLinkedListPosition(NUM_BUFFERS - 1); // Moves to next buffer/linked list element
@@ -180,9 +180,15 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
 		bufferCount++;// increment counters
 		frameBufferCount++;
+		#if 0
+		//#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+		sdo_dma_transfer_control();		
+		#endif
 	}
 }
+#endif
 
+#if defined(PYTHON480_ENABLE)
 void recording_cb(const struct timer_task *const timer_task)
 {
 	// not sure if the bufferCount > 1 is needed.
@@ -199,7 +205,7 @@ void recording_cb(const struct timer_task *const timer_task)
 			// Let's figure out how many buffers need to be dropped
 			// TODO: I think NUM_BUFFERS here should actually be number_of_buffers_per_frame
 			//droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
-			droppedBufferCount += bufferCount - writeBufferCount + droppedBufferCount + NUM_BUFFERS;
+			//droppedBufferCount += bufferCount - writeBufferCount + droppedBufferCount + NUM_BUFFERS;
 		}
 		else { // Actual writing of good buffers
 			
@@ -215,21 +221,6 @@ void recording_cb(const struct timer_task *const timer_task)
 			bufferToWrite[BUFFER_HEADER_WRITE_TIMESTAMP_POS] = getCurrentTimeMS() - startTimeMS;
 			
 			tempTimestamp[(writeBufferCount + droppedBufferCount) % 100] = getCurrentTimeMS() - startTimeMS;
-			
-			#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-			if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
-			{
-				_dma_enable_transaction(SDO_DMA_CHANNEL, false);
-			}
-			sdo_dma_transfer_resume();
-			writeBufferCount++; // Changed position to add only when buffer is written
-			
-			// catches up if it's only one buffer behind. should be a better way to do this			
-			if(bufferCount - (writeBufferCount + droppedBufferCount) > 1){
-				sdo_dma_transfer_resume();
-				writeBufferCount++; // Changed position to add only when buffer is written
-			}
-			#endif
 			
 			#ifdef DMA_TO_SD_ENABLE
 			#ifdef ADMA_ENABLE

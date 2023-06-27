@@ -9,6 +9,8 @@ int main(void)
 	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
+	
+	__disable_irq();
 	DataBufferInit(); // For testing buffer to SERCOM DMA
 
 	peripheralInit();
@@ -19,6 +21,8 @@ int main(void)
 	
 	dmaEnable();
 	
+	__enable_irq();
+
 	#ifdef DEV_MODE
 	delay_ms(100);
 	deviceState = DEVICE_STATE_START_RECORDING;
@@ -30,12 +34,13 @@ int main(void)
 		if (deviceState & DEVICE_STATE_START_RECORDING) {
 			startRecording();
 		}
+		#endif
 		
 		#ifndef DEV_MODE
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 			stopRecording();
 		}
 		#endif
-		#endif
+		sdo_dma_transfer_control();
 	}
 }
