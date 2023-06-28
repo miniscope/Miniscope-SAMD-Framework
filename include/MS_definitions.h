@@ -303,7 +303,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
 // --------------------------------------
 
 // DMA
-#define SDO_DMA_CHANNEL 1
+#define SDO_DMA_CHANNEL 0x1
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 

@@ -52,14 +52,6 @@ static struct _dma_resource _resources[DMAC_CH_NUM];
 /* DMAC interrupt handler */
 static void _dmac_handler(void);
 
-#if 0
-static void _sercom_dma_transfer_done(struct _dma_resource *resource)
-{
-	struct _camera_async_device *dev = (struct _camera_async_device *)resource->back;
-	dev->capture_done(dev, 0);
-}
-#endif
-
 /* This macro DMAC configuration */
 #define DMAC_CHANNEL_CFG(i, n)                                                                                         \
 	{(CONF_DMAC_RUNSTDBY_##n << DMAC_CHCTRLA_RUNSTDBY_Pos) | DMAC_CHCTRLA_TRIGACT(CONF_DMAC_TRIGACT_##n)               \
@@ -259,6 +251,9 @@ static void _dmac_handler(void)
 		tmp_resource->dma_cb.error(tmp_resource);
 	} else if (hri_dmac_get_INTPEND_TCMPL_bit(DMAC)) {
 		hri_dmac_clear_CHINTFLAG_TCMPL_bit(DMAC, channel);
+		tmp_resource->dma_cb.transfer_done(tmp_resource);
+	} else if (hri_dmac_get_INTPEND_SUSP_bit(DMAC)) {
+		hri_dmac_clear_CHINTFLAG_SUSP_bit(DMAC, channel);
 		tmp_resource->dma_cb.transfer_done(tmp_resource);
 	}
 }

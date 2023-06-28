@@ -96,7 +96,6 @@ void peripheralInit(void)
 	
 	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 	TXLinkedListInit();
-	sdo_dma_irq_setup();
 	#endif
 	
 	#ifdef DMA_TO_SD_ENABLE

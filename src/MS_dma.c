@@ -22,6 +22,14 @@ void dmaEnable(void){
 	// Enables DMA Transfer complete interrupt. Should be put in better place
 	DMAC->Channel[CONF_PCC_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL;
 	
+	//NVIC_SetPriority(DMAC_1_IRQn, 0);    // Set the Nested Vector Interrupt Controller (NVIC) priority for DMAC Channel 1
+	//NVIC_EnableIRQ(DMAC_1_IRQn);         // Connect DMAC Channel 1 to Nested Vector Interrupt Controller (NVIC)
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL;
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_SUSP;
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TERR;
+	//DMAC->Channel[SDO_DMA_CHANNEL].CHINTENCLR.reg = 0;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
+	//DMAC->Channel[SDO_DMA_CHANNEL].CHPRILVL.reg = DMAC_CHPRILVL_PRILVL_LVL0;
+
 	// Sets the callback for when each DMA buffer is full
 	camera_async_register_callback(&CAMERA_0, pcc_dma_cb);
 
@@ -87,14 +95,6 @@ void sdo_dma_transfer_trigger(void)
 	DMAC->SWTRIGCTRL.reg = 0x2;
 }
 
-void sdo_dma_irq_setup(void){
-	NVIC_SetPriority(DMAC_1_IRQn, 0);    // Set the Nested Vector Interrupt Controller (NVIC) priority for DMAC Channel 1
-	NVIC_EnableIRQ(DMAC_1_IRQn);         // Connect DMAC Channel 1 to Nested Vector Interrupt Controller (NVIC)
-	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL; // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
-	//DMAC->Channel[SDO_DMA_CHANNEL].CHINTENCLR.reg = 0;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
-	//DMAC->Channel[SDO_DMA_CHANNEL].CHPRILVL.reg = DMAC_CHPRILVL_PRILVL_LVL0;
-}
-
 #if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 void sdo_dma_transfer_control_cb()
 {
@@ -103,16 +103,13 @@ void sdo_dma_transfer_control_cb()
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 	}
+	sdo_dma_transfer_suspend();
 	#ifdef PYTHON480_ENABLE
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
 
 		sdo_dma_transfer_resume();
 		writeBufferCount++;
 	}
-	// catches up if it's only one buffer behind. should be a better way to do this
-	//if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 1){
-	//	sdo_dma_transfer_resume();
-	//}
 	#else
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
