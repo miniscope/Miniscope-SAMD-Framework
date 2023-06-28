@@ -73,6 +73,12 @@ struct _dma_resource {
 	void *                back;
 };
 
+typedef void (*dmac_cb_t)(void);
+//Added by Takuya Sasatani
+
+void dmac_register_callback(uint32_t ch, dmac_cb_t cb);
+//Added by Takuya Sasatani
+
 /**
  * \brief Initialize DMA
  *

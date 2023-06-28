@@ -245,7 +245,8 @@ extern volatile uint32_t ledvalue;
 extern volatile uint32_t frameratevalue;
 extern volatile uint32_t delayvalue;
 extern volatile uint32_t reclengthvalue;
-
+extern volatile uint32_t sdo_dma_cb_calls;
+extern volatile uint32_t pcc_dma_cb_calls;
 
 extern volatile uint16_t regValue[];
 extern volatile uint32_t tempPCC[];
@@ -293,6 +294,7 @@ void resetGlobalVar(void);
 // callbacks
 void millisecondTimer_cb(const struct timer_task *const timer_task);
 void checkBattVoltage_cb(const struct timer_task *const timer_task);
+void sdo_dma_transfer_control_cb(void);
 void battCharging_cb(void);
 void irReceive_cb(void);
 void pushButton_cb(void);

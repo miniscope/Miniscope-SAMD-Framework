@@ -41,6 +41,5 @@ int main(void)
 			stopRecording();
 		}
 		#endif
-		sdo_dma_transfer_control();
 	}
 }

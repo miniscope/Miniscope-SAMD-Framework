@@ -11,9 +11,8 @@
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
 
-COMPILER_ALIGNED(4)
+COMPILER_ALIGNED(16)
 volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
-//volatile DmacDescriptor TXdescripter;
 
 COMPILER_ALIGNED(16)
 volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
@@ -59,7 +58,7 @@ void TXLinkedListInit(void)
 		#endif
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
-
+		
 		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
 		#endif
@@ -72,9 +71,9 @@ void TXLinkedListInit(void)
 	}
 	setTXLinkedListPosition(0);
 }
+
 void setTXLinkedListPosition(uint8_t pos)
 {
-	//_dma_set_source_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg);
 	_dma_set_destination_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].DSTADDR.reg);
 	_dma_set_data_amount(SDO_DMA_CHANNEL, TXLinkedList[pos].BTCNT.reg);
 	_dma_set_BTCTRL(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].BTCTRL.reg); //block transfer control
@@ -91,50 +90,44 @@ void sdo_dma_transfer_trigger(void)
 void sdo_dma_irq_setup(void){
 	NVIC_SetPriority(DMAC_1_IRQn, 0);    // Set the Nested Vector Interrupt Controller (NVIC) priority for DMAC Channel 1
 	NVIC_EnableIRQ(DMAC_1_IRQn);         // Connect DMAC Channel 1 to Nested Vector Interrupt Controller (NVIC)
-	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_SUSP;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
-	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENCLR.reg = 0;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL; // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
+	//DMAC->Channel[SDO_DMA_CHANNEL].CHINTENCLR.reg = 0;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
 	//DMAC->Channel[SDO_DMA_CHANNEL].CHPRILVL.reg = DMAC_CHPRILVL_PRILVL_LVL0;
 }
 
 #if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-void sdo_dma_transfer_control(void)
+void sdo_dma_transfer_control_cb()
 {
-	#ifdef PYTHON480_ENABLE
-	if(bufferCount - (writeBufferCount + droppedBufferCount) > 0){
-		if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
-		{
-			_dma_enable_transaction(SDO_DMA_CHANNEL, false);
-		}
-		sdo_dma_transfer_resume();
-	}
-	// catches up if it's only one buffer behind. should be a better way to do this
-	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 1){
-		sdo_dma_transfer_resume();
-	}
-	#else
+	sdo_dma_cb_calls++;
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 	}
+	#ifdef PYTHON480_ENABLE
+	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+
+		sdo_dma_transfer_resume();
+		writeBufferCount++;
+	}
+	// catches up if it's only one buffer behind. should be a better way to do this
+	//if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 1){
+	//	sdo_dma_transfer_resume();
+	//}
+	#else
+	if(DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
+	{
+		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+	}
 	sdo_dma_transfer_resume();
+	writeBufferCount++;
 	#endif
 }
 #endif
 
-void DMAC_1_Handler() // Interrupt handler for DMAC channel 1
-{
-	if (DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP) // Check if SDO transfer is complete
-	{
-		DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP = 1;         // Clear the transfer complete (TCMPL) interrupt flag
-		sdo_dma_transfer_control();
-		writeBufferCount++; // Changed position to add only when buffer is written
-	}
-}
-
 void sdo_dma_transfer_resume(void)
 {
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
-	//sdo_dma_transfer_trigger();
+	sdo_dma_transfer_trigger();
 }
 
 void sdo_dma_transfer_suspend(void)

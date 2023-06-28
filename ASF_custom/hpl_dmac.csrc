@@ -36,6 +36,7 @@
 #include <utils.h>
 #include <hpl_dmac_config.h>
 #include <utils_repeat_macro.h>
+#include "MS_definitions.h"
 
 /* Section containing first descriptors for all DMAC channels */
 COMPILER_ALIGNED(16)
@@ -50,6 +51,14 @@ static struct _dma_resource _resources[DMAC_CH_NUM];
 
 /* DMAC interrupt handler */
 static void _dmac_handler(void);
+
+#if 0
+static void _sercom_dma_transfer_done(struct _dma_resource *resource)
+{
+	struct _camera_async_device *dev = (struct _camera_async_device *)resource->back;
+	dev->capture_done(dev, 0);
+}
+#endif
 
 /* This macro DMAC configuration */
 #define DMAC_CHANNEL_CFG(i, n)                                                                                         \
@@ -253,10 +262,32 @@ static void _dmac_handler(void)
 		tmp_resource->dma_cb.transfer_done(tmp_resource);
 	}
 }
+
+void dmac_register_callback(uint32_t ch, dmac_cb_t cb)
+{
+	_resources[ch].dma_cb.transfer_done = cb;
+
+	// Hard coded so should be fixed. Also not sure why this is really needed.
+	#if 0
+	_resources[ch].back = SPI_0;
+	#endif
+	#if 0
+	_resources[ch].back = USART_0;
+	#endif
+}
+
+
 /**
  * \brief DMAC interrupt handler
  */
 void DMAC_0_Handler(void)
+{
+	_dmac_handler();
+}
+/**
+ * \brief DMAC interrupt handler
+ */
+void DMAC_1_Handler(void)
 {
 	_dmac_handler();
 }

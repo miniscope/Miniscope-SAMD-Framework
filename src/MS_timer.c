@@ -9,7 +9,7 @@
 //#include <math.h>
 
 #if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE) || defined(PYTHON480_ENABLE) || defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-static struct timer_task TIMER_0_task1, TIMER_0_task2, TIMER_0_task3;
+static struct timer_task TIMER_0_task1, TIMER_0_task2, TIMER_0_task3, TIMER_0_task4;
 #endif
 
 void timerInit(void)
@@ -32,10 +32,21 @@ void timerInit(void)
 	#if defined(PYTHON480_ENABLE)
 	// Setup a timer for recording functions.
 	//TIMER_0_task3.interval	= round(1000/numBuffersPerFrame/FRAME_RATE/2); // Need to check this value
-	TIMER_0_task3.interval	= 10; // Need to check this value
+	TIMER_0_task3.interval	= 25; // Need to check this value
 	TIMER_0_task3.cb		= recording_cb;
 	TIMER_0_task3.mode		= TIMER_TASK_REPEAT;
 	timer_add_task(&TIMER_0, &TIMER_0_task3);
+	#endif
+	
+	//just for starting up
+	#if 0
+	//#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+	// Setup a timer for recording functions.
+	//TIMER_0_task3.interval	= round(1000/numBuffersPerFrame/FRAME_RATE/2); // Need to check this value
+	TIMER_0_task4.interval	= 1000; // Need to check this value
+	TIMER_0_task4.cb		= sdo_dma_transfer_control_cb;
+	TIMER_0_task4.mode		= TIMER_TASK_REPEAT;
+	timer_add_task(&TIMER_0, &TIMER_0_task4);
 	#endif
 	
 	timer_start(&TIMER_0);

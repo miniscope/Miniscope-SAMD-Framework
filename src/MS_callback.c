@@ -166,7 +166,8 @@ void frameValid_cb(void)
 void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 {
 	if (ch == CONF_PCC_DMA_CHANNEL) {
-		
+		pcc_dma_cb_calls++;
+			
 		// add header to current buffer
 		
 		// Some debugging stuff here
@@ -180,9 +181,9 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
 		bufferCount++;// increment counters
 		frameBufferCount++;
-		#if 0
+		#if 1
 		//#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-		sdo_dma_transfer_control();		
+		sdo_dma_transfer_control_cb();		
 		#endif
 	}
 }
