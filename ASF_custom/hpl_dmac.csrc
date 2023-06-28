@@ -268,11 +268,11 @@ void dmac_register_callback(uint32_t ch, dmac_cb_t cb)
 	_resources[ch].dma_cb.transfer_done = cb;
 
 	// Hard coded so should be fixed. Also not sure why this is really needed.
-	#if 0
-	_resources[ch].back = SPI_0;
+	#ifdef DMA_TO_SPI_ENABLE
+	_resources[ch].back = &SPI_0;
 	#endif
-	#if 0
-	_resources[ch].back = USART_0;
+	#ifdef DMA_TO_USART_ENABLE
+	_resources[ch].back = &USART_0;
 	#endif
 }
 
