@@ -212,8 +212,6 @@ void irqInit(void){
 	#ifdef PUSH_BUT_ENABLE
 	ext_irq_register(PIN_PA25, pushButton_cb);
 	#endif
-	
-	dmac_register_callback(SDO_DMA_CHANNEL, sdo_dma_transfer_control_cb);
 }
 
 void setConfigBlockProp(uint8_t position, uint32_t value) {
