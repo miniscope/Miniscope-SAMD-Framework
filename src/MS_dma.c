@@ -105,17 +105,19 @@ void sdo_dma_transfer_control_cb()
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 	}
+	while(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.BUSY == 1){
+		//wait if busy
+	}
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND == 1){
 		sdo_dma_transfer_resume();
 	} // wait until pending bits get transferred
-	sdo_dma_transfer_suspend(); // suspend serial data transfer
+	//sdo_dma_transfer_suspend(); // suspend serial data transfer
 	#ifdef PYTHON480_ENABLE
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
-
 		sdo_dma_transfer_resume();
 		writeBufferCount++;
 	}
-	#else
+	#else //ifdef PYTHON480_ENABLE
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);

@@ -196,7 +196,7 @@
 
 // ------- Image Sensor Definitions ----------
 
-#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#define FRAME_RATE					0 // 1, 5, 10, 20, 0: 0.5 FPS
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
