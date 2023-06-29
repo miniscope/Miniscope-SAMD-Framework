@@ -196,7 +196,7 @@
 
 // ------- Image Sensor Definitions ----------
 
-#define FRAME_RATE					0 // 1, 5, 10, 20, 0: 0.5 FPS
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
@@ -287,14 +287,13 @@ void setStatusLED(bool value);
 void startRecording(void);
 void stopRecording(void);
 void recording_cb(const struct timer_task *const timer_task);
-void serial_dma_transfer_cb(const struct timer_task *const timer_task);
 uint32_t getCurrentTimeMS(void);
 void resetGlobalVar(void);
 
 // callbacks
 void millisecondTimer_cb(const struct timer_task *const timer_task);
 void checkBattVoltage_cb(const struct timer_task *const timer_task);
-void sdo_dma_transfer_control_cb(void);
+void sdo_dma_transfer_complete_cb(void);
 void battCharging_cb(void);
 void irReceive_cb(void);
 void pushButton_cb(void);
@@ -315,7 +314,7 @@ void setTXLinkedListPosition(uint8_t pos);
 void setPCCLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
-void sdo_dma_transfer_control(void);
+void sdo_dma_transfer_control(bool callback_flag);
 void sdo_dma_setup(void);
 void DataBufferInit(void);
 

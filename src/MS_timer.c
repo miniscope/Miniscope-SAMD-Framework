@@ -40,10 +40,10 @@ void timerInit(void)
 	
 	//just for starting up -> inserted in pcc_cb which should be a little more appropriate
 	#if 0
-	//#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+//	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 	// Setup a timer for recording functions.
 	//TIMER_0_task3.interval	= round(1000/numBuffersPerFrame/FRAME_RATE/2); // Need to check this value
-	TIMER_0_task4.interval	= 1000; // Need to check this value
+	TIMER_0_task4.interval	= 100; // Need to check this value
 	TIMER_0_task4.cb		= sdo_dma_transfer_control_cb;
 	TIMER_0_task4.mode		= TIMER_TASK_REPEAT;
 	timer_add_task(&TIMER_0, &TIMER_0_task4);

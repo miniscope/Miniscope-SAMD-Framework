@@ -32,7 +32,7 @@ void dmaEnable(void){
 
 	// Sets the callback for when each DMA buffer is full
 	camera_async_register_callback(&CAMERA_0, pcc_dma_cb);
-	dmac_register_callback(SDO_DMA_CHANNEL, sdo_dma_transfer_control_cb);
+	dmac_register_callback(SDO_DMA_CHANNEL, sdo_dma_transfer_complete_cb);
 
 
 	// This should already be done in init but trying here as well
@@ -97,39 +97,55 @@ void sdo_dma_transfer_trigger(void)
 	DMAC->SWTRIGCTRL.reg = 0x2;
 }
 
-#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-void sdo_dma_transfer_control_cb()
+void sdo_dma_transfer_complete_cb(void)
 {
+	// call count for debug
 	sdo_dma_cb_calls++;
+	
+	//increment if appropriate
+	sdo_dma_transfer_control(true);
+}
+
+void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
+{
+	// for first call; if not enabled
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+		writeBufferCount++; // not sure if this should be counted
+		return;
 	}
-	while(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.BUSY == 1){
-		//wait if busy
-	}
+
+	#ifdef PYTHON480_ENABLE
+	// send out pending bits and return
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND == 1){
 		sdo_dma_transfer_resume();
-	} // wait until pending bits get transferred
-	//sdo_dma_transfer_suspend(); // suspend serial data transfer
-	#ifdef PYTHON480_ENABLE
-	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND != 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
-		sdo_dma_transfer_resume();
-		writeBufferCount++;
+		return;
 	}
-	#else //ifdef PYTHON480_ENABLE
+
+	// if coming from TRCMP callback and buffer is left just resume
+	if(callback_flag == 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+		sdo_dma_transfer_resume();
+		return;
+	}
+
+	//end if middle of transfer
+	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.BUSY == 1){
+		return;
+	}
+
+	#else //ifdef PYTHON480_ENABLE just send out bit
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 	}
-		sdo_dma_transfer_resume();
+	sdo_dma_transfer_resume();
 	writeBufferCount++;
 	#endif
 }
-#endif
-
 void sdo_dma_transfer_resume(void)
 {
+	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary
 }

@@ -183,7 +183,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		frameBufferCount++;
 		#if 1
 		//#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-		sdo_dma_transfer_control_cb();		
+		sdo_dma_transfer_control(false);		
 		#endif
 	}
 }
