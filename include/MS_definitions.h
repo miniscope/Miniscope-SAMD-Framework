@@ -11,7 +11,7 @@
 #include <utils.h>
 
 // ------ DATA MODE ------------------------
-#define DEV_MODE
+//#define DEV_MODE
 
 #ifdef DEV_MODE
 #define DUMMY_HEADER_ENABLE // For dev
@@ -24,9 +24,10 @@
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
-#define WLMS_USART_MODE
+//#define WLMS_USART_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
+#define DMA_TO_SPI_GS_TESTMODE
 
 // Peripheral enable based on mode
 // PYTHON480_ENABLE: enables python480 to dataBuffer storage via PCC/DMA
@@ -91,6 +92,14 @@
 #define SPI_SERCOM7_ENABLE
 #endif
 
+#ifdef DMA_TO_SPI_GS_TESTMODE
+#define DMA_TO_SPI_ENABLE
+#define HEADER_DISABLE
+#define	TEST_BUFFER_ENABLE
+#define SPI_SERCOM4_ENABLE
+#define SDO_8BIT_ENABLE
+#endif
+
 
 // SPI
 #define SPI_ICSPACE_MS				1 // Clock cycle between word
@@ -125,7 +134,7 @@
 
 // ----------- Buffer Definitions ------------
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
-#define NUM_BUFFERS				8  // can be edited by user to optimize speed
+#define NUM_BUFFERS				2  // can be edited by user to optimize speed
 #define PCC_BLOCK_SIZE_IN_WORDS		128
 #ifdef SDO_32BIT_ENABLE
 #define SDO_BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
@@ -298,7 +307,10 @@ void battCharging_cb(void);
 void irReceive_cb(void);
 void pushButton_cb(void);
 void frameValid_cb(void);
+
+#ifdef PYTHON480_ENABLE
 void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
+#endif
 // --------------------------------------
 
 // DMA

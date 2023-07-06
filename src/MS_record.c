@@ -6,7 +6,6 @@
  */
 
 #include "MS_definitions.h"
-#include "python480.h"
 #include "hpl_dma.h"
 
 #ifdef DMA_TO_SD_ENABLE
@@ -14,6 +13,7 @@
 #endif
 
 #ifdef PYTHON480_ENABLE
+#include "python480.h"
 void startRecording()
 {
 	writeFrameNum = 0;

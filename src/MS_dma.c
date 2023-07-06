@@ -6,10 +6,13 @@
  */ 
 
 #include <hpl_dmac_config.h>
-#include <hpl_pcc_config.h>
 #include <hpl_dma.h>
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
+
+#ifdef PYTHON480_ENABLE
+#include <hpl_pcc_config.h>
+#endif
 
 COMPILER_ALIGNED(16)
 volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
@@ -74,6 +77,9 @@ void TXLinkedListInit(void)
 		#endif
 		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM7->SPI.DATA.reg;
+		#endif
+		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM4_ENABLE)
+		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM4->SPI.DATA.reg;
 		#endif
 		#if defined(DMA_TO_USART_ENABLE) && defined(USART_SERCOM5_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->USART.DATA.reg;

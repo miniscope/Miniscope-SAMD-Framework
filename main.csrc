@@ -29,6 +29,17 @@ int main(void)
 	#endif
 		
 	while (1) { // mostly recording_cb and framevalid_cb runs here
+		
+		#ifdef DMA_TO_SPI_GS_TESTMODE
+		if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
+		{
+			_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+			writeBufferCount++; // not sure if this should be counted
+			return;
+		}
+		sdo_dma_transfer_resume();
+		#endif
+		
 		#if defined(PYTHON480_ENABLE)
 		
 		if (deviceState & DEVICE_STATE_START_RECORDING) {
@@ -37,9 +48,11 @@ int main(void)
 		#endif
 		
 		#ifndef DEV_MODE
+		#ifdef PYTHON480_ENABLE
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 			stopRecording();
 		}
+		#endif
 		#endif
 	}
 }

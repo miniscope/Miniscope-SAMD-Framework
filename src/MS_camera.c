@@ -6,6 +6,8 @@
  */ 
 
 #include "MS_definitions.h"
+
+#ifdef PYTHON480_ENABLE
 #include "python480.h"
 
 void imageSensorInit(void){
@@ -27,3 +29,4 @@ void imageSensorInit(void){
 	python480SetFPS(FRAME_RATE);
 	#endif
 }
+#endif

@@ -10,7 +10,7 @@
 
 #if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE) || defined(PYTHON480_ENABLE) || defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 static struct timer_task TIMER_0_task1, TIMER_0_task2, TIMER_0_task3, TIMER_0_task4;
-#endif
+
 
 void timerInit(void)
 {
@@ -51,6 +51,7 @@ void timerInit(void)
 	
 	timer_start(&TIMER_0);
 }
+#endif
 
 uint32_t getCurrentTimeMS(void)
 {
