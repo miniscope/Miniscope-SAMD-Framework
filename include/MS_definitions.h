@@ -22,6 +22,7 @@
 
 
 // ------ HARDWARE MODE ------------------------
+// Define which mode is going to be used (will affect which codes get compiled too!)
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
 //#define WLMS_USART_MODE
@@ -98,12 +99,13 @@
 #define	TEST_BUFFER_ENABLE
 #define SPI_SERCOM4_ENABLE
 #define SDO_8BIT_ENABLE
+#define NANEYE_ENABLE
 #endif
 
 
 // SPI
 #define SPI_ICSPACE_MS				1 // Clock cycle between word
-#define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_BAUD_MS					10 // f_baud = f_ref / (2*(BAUD + 1))
 
 // USART
 #define USART_ICSPACE_MS				1 // Clock cycle between word
@@ -203,12 +205,20 @@
 #define HEADER_BATT_CUTOFF_POS		10
 // -------------------------------------------
 
-// ------- Image Sensor Definitions ----------
-
+// ------- MS Image Sensor Definitions ----------
+#ifdef PYTHON480_ENABLE
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
+#endif
+// ------- GS Image Sensor Definitions ----------
+#ifdef NANEYE_ENABLE
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#define WIDTH						320
+#define HEIGHT						320
+#define BINNING						2
+#endif
 
 #define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
 

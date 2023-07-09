@@ -48,7 +48,7 @@ void python480SetFPS(uint32_t value)
 	switch (value)
 	{
 		// For 12 MHz camera input clock: Takuya
-		case (0): // 0.5 FPS
+		case (0): // 0.5 FPS // here possibly add the NE bit register changes for FPS
 		spi_BB_Write(0xC9, 20000);
 		spi_BB_Write(199, 280); // Exposure/Frame rate config, spi_BB_Write(199, 0x0299);
 		break;

@@ -165,7 +165,7 @@ void DataBufferInit(void)
 {
 	for (uint32_t i = 0; i<NUM_BUFFERS; i++)
 	{
-		dataBuffer[i][0] = 0x12345678;
+		dataBuffer[i][0] = 0x12345678;// sends a tag with frame
 		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
 		{
 			#ifdef TEST_BUFFER_ENABLE // hard coding test buffers for 304 * 304 px. Should be a defined better.
