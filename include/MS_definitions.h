@@ -97,7 +97,7 @@
 #define DMA_TO_SPI_ENABLE
 #define HEADER_DISABLE
 #define	TEST_BUFFER_ENABLE
-#define SPI_SERCOM4_ENABLE
+#define SPI_SERCOM4_ENABLE // data buffer spit out with SERCOM4
 #define SDO_8BIT_ENABLE
 #define NANEYE_ENABLE
 #endif

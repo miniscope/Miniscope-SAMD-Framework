@@ -59,7 +59,7 @@
 #define SPI_NPCS_PIN					NOTSURE
 #define SPI_NPCS_MODE					IOPORT_MODE_MUX_D
 
-
+void NanEyeInit(uint32_t data);
 
 #endif
 

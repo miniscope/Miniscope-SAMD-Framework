@@ -44,7 +44,7 @@ void dmaEnable(void){
 	| CONF_PCC_SCALE << PCC_MR_SCALE_Pos | PCC_MR_DSIZE(CONF_PCC_DSIZE);
 	#endif
 }
-
+// transfer data from memory[DATA BUFFER] to SERCOM
 #if 1
 void TXLinkedListInit(void)
 {
@@ -160,7 +160,7 @@ void sdo_dma_transfer_suspend(void)
 {
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x1;
 }
-
+/// This is where we create the data buffer file
 void DataBufferInit(void)
 {
 	for (uint32_t i = 0; i<NUM_BUFFERS; i++)
@@ -185,7 +185,7 @@ void DataBufferInit(void)
 		}
 	}
 }
-
+// recieve data from the camera
 void PCCLinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {

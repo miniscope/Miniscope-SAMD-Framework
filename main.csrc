@@ -1,5 +1,6 @@
 #include <atmel_start.h>
 #include "MS_definitions.h"
+#include "GS_definitions.h"
 
 int main(void)
 {
@@ -11,8 +12,9 @@ int main(void)
 	atmel_start_init();
 	
 	__disable_irq();
-	DataBufferInit(); // For testing buffer to SERCOM DMA
-
+	//DataBufferInit(); // For testing buffer to SERCOM DMA
+	
+	NanEyeInit([NANEYE_REG0_DEFAULT_VALUE,NANEYE_REG1_DEFAULT_VALUE]);
 	peripheralInit();
 
 	#ifdef DMA_TO_SD_ENABLE
