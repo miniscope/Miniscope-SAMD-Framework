@@ -104,7 +104,7 @@
 
 
 // SPI
-#define SPI_ICSPACE_MS				1 // Clock cycle between word
+#define SPI_ICSPACE_MS				2 // Clock cycle between word
 #define SPI_BAUD_MS					10 // f_baud = f_ref / (2*(BAUD + 1))
 
 // USART

@@ -2,6 +2,9 @@
 #include "MS_definitions.h"
 #include "GS_definitions.h"
 
+
+
+
 int main(void)
 {
 	#ifdef PYTHON480_ENABLE
@@ -13,48 +16,12 @@ int main(void)
 	
 	__disable_irq();
 	//DataBufferInit(); // For testing buffer to SERCOM DMA
-	
-	NanEyeInit([NANEYE_REG0_DEFAULT_VALUE,NANEYE_REG1_DEFAULT_VALUE]);
+// 	NE[0] = NANEYE_REG0_DEFAULT_VALUE;
+// 	NE[1] = NANEYE_REG1_DEFAULT_VALUE;
+//	configure_spi_master();
 	peripheralInit();
 
-	#ifdef DMA_TO_SD_ENABLE
-	debugHeaderProp();
-	#endif
-	
-	dmaEnable();
-	
-	__enable_irq();
-
-	#ifdef DEV_MODE
 	delay_ms(100);
-	deviceState = DEVICE_STATE_START_RECORDING;
-	#endif
-		
-	while (1) { // mostly recording_cb and framevalid_cb runs here
-		
-		#ifdef DMA_TO_SPI_GS_TESTMODE
-		if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
-		{
-			_dma_enable_transaction(SDO_DMA_CHANNEL, false);
-			writeBufferCount++; // not sure if this should be counted
-			return;
-		}
-		sdo_dma_transfer_resume();
-		#endif
-		
-		#if defined(PYTHON480_ENABLE)
-		
-		if (deviceState & DEVICE_STATE_START_RECORDING) {
-			startRecording();
-		}
-		#endif
-		
-		#ifndef DEV_MODE
-		#ifdef PYTHON480_ENABLE
-		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
-			stopRecording();
-		}
-		#endif
-		#endif
-	}
+	NanEyeInit();
+	//NanEyeInit(0b10000000100101010000001101011010);
 }

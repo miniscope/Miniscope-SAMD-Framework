@@ -50,16 +50,18 @@
 #define SPI_DLYBCS						0x00
 #define SPI_CLK_RATE					16000000
 
-#define SPI_MISO_PIN					PB14
-#define SPI_MISO_MODE					IOPORT_MODE_MUX_B // this i dont understand
-#define SPI_MOSI_PIN					PB15
-#define SPI_MOSI_MODE					IOPORT_MODE_MUX_B
-#define SPI_SPCK_PIN					PB13
-#define SPI_SPCK_MODE					IOPORT_MODE_MUX_B
-#define SPI_NPCS_PIN					NOTSURE
-#define SPI_NPCS_MODE					IOPORT_MODE_MUX_D
+// #define SPI_MISO_PIN					PB14
+// #define SPI_MISO_MODE					IOPORT_MODE_MUX_B // this i dont understand
+// #define SPI_MOSI_PIN					PB15
+// #define SPI_MOSI_MODE					IOPORT_MODE_MUX_B
+// #define SPI_SPCK_PIN					PB13
+// #define SPI_SPCK_MODE					IOPORT_MODE_MUX_B
+// #define SPI_NPCS_PIN					NOTSURE
+// #define SPI_NPCS_MODE					IOPORT_MODE_MUX_D
 
-void NanEyeInit(uint32_t data);
+void NanEyeInit(void);
+// void startRecordingNE();
+// void stopRecordingNE();
 
 #endif
 
