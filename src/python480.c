@@ -75,6 +75,7 @@ void python480SetFPS(uint32_t value)
 	}
 }
 
+/*
 void spi_BB_Write(uint16_t address, uint16_t value)
 {
 	int8_t i = 0;
@@ -173,7 +174,7 @@ uint16_t spi_BB_Read(uint16_t address)
 	gpio_set_pin_level(SPI_BB_NSS, 1); // Pull SPI chip select pin high
 	return value;
 }
-
+*/
 void EnableClockMngmnt1() {
 	// configure clock management blocks, activate clock generation and distribution circuits
 

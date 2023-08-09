@@ -4,7 +4,7 @@
  * Created: 5/24/2023 10:56:53 AM
  *  Author: Takuya
  */ 
-
+/*
 #include "MS_definitions.h"
 #include "python480.h"
 
@@ -27,3 +27,4 @@ void imageSensorInit(void){
 	python480SetFPS(FRAME_RATE);
 	#endif
 }
+*/ 

@@ -5,6 +5,8 @@
  *  Author: dbaha
  */ 
 
+/*
+
 //#ifdef EWL_ENABLE
 
 #include "i2c_bb.h"
@@ -127,3 +129,4 @@ uint8_t I2C_BB_write(uint8_t addr, uint8_t value)
 }
 
 //#endif
+ */

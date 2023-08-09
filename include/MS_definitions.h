@@ -11,7 +11,7 @@
 #include <utils.h>
 
 // ------ DATA MODE ------------------------
-#define DEV_MODE
+//#define DEV_MODE
 
 #ifdef DEV_MODE
 #define DUMMY_HEADER_ENABLE // For dev
@@ -24,8 +24,8 @@
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
-#define WLMS_USART_MODE
-//#define DMA_TO_SPI_TESTMODE
+//#define WLMS_USART_MODE
+#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -94,7 +94,7 @@
 
 // SPI
 #define SPI_ICSPACE_MS				1 // Clock cycle between word
-#define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
 
 // USART
 #define USART_ICSPACE_MS				1 // Clock cycle between word

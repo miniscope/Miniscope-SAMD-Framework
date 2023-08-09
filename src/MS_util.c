@@ -8,7 +8,7 @@
 #include <atmel_start.h>
 #include "MS_definitions.h"
 
-#include "python480.h"
+//#include "python480.h"
 #include "i2c_bb.h"
 #include <hpl_dma.h>
 
@@ -102,7 +102,7 @@ void peripheralInit(void)
 	SDCardInit();
 	#endif
 
-	imageSensorInit();
+	//imageSensorInit();
 
 	#ifdef EWL_ENABLE
 	setEWL(getPropFromHeader(HEADER_EWL_POS));

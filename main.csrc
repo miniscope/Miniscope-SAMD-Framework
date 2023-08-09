@@ -19,7 +19,7 @@ int main(void)
 	debugHeaderProp();
 	#endif
 	
-	dmaEnable();
+	dmaEnable(); //only for python480_enable
 	
 	__enable_irq();
 

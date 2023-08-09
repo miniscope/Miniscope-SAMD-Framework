@@ -6,7 +6,7 @@
  */ 
 
 #include <hpl_dmac_config.h>
-#include <hpl_pcc_config.h>
+//#include <hpl_pcc_config.h>
 #include <hpl_dma.h>
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
@@ -45,6 +45,8 @@ void dmaEnable(void){
 #if 1
 void TXLinkedListInit(void)
 {
+	#define SDO_BLOCK_SIZE_IN_WORDS		128
+	
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
 		if (i == (NUM_BUFFERS - 1)) TXLinkedList[i].DESCADDR.reg = (uint32_t)&TXLinkedList[0];
 		// Last buffer in list. Need to loop back
