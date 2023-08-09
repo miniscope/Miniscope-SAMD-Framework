@@ -23,7 +23,7 @@ int main(void)
 	
 	__enable_irq();
 
-	#ifdef DEV_MODE
+	#if 1
 	delay_ms(100);
 	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif
@@ -34,12 +34,16 @@ int main(void)
 		if (deviceState & DEVICE_STATE_START_RECORDING) {
 			startRecording();
 		}
-		#endif
-		
+	
 		#ifndef DEV_MODE
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 			stopRecording();
 		}
+		#endif
+		#endif
+		
+		#ifndef PYTHON480_ENABLE
+		sdo_dma_transfer_control(false);
 		#endif
 	}
 }

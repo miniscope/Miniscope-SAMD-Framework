@@ -41,7 +41,7 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 }
 #endif
 
-#if defined(IR_TRIGGER_ENABLE) || defined(IR_UART_ENABLE)
+#ifdef IR_TRIGGER_ENABLE
 void irReceive_cb(void)
 {
 	bool pinState = gpio_get_pin_level(IR_REC);

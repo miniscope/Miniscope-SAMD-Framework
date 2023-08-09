@@ -14,18 +14,16 @@
 #define DEV_MODE
 
 #ifdef DEV_MODE
-#define DUMMY_HEADER_ENABLE // For dev
 #define TEST_PATTERN_ENABLE // For dev
 #define TEST_BUFFER_ENABLE
-#define STATIC_BUFFER_ENABLE
 #endif
 
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
-#define WLMS_USART_MODE
-//#define DMA_TO_SPI_TESTMODE
+//#define WLMS_USART_MODE
+#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -44,10 +42,13 @@
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
+#define IR_TRIGGER_ENABLE
 #define SPI_SERCOM0_ENABLE
 #define ADMA_ENABLE
 #define SPI_LUT_ENABLE
 #define SDO_32BIT_ENABLE
+#define PREAMBLE_ENABLE
+#define PRESET_HEADER_ENABLE
 #endif
 
 #ifdef WLMS_USART_MODE
@@ -60,10 +61,13 @@
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
+#define IR_TRIGGER_ENABLE
 #define USART_SERCOM5_ENABLE
 #define ADMA_ENABLE
 #define SPI_LUT_ENABLE
 #define SDO_8BIT_ENABLE
+#define PREAMBLE_ENABLE
+#define PRESET_HEADER_ENABLE
 #endif
 
 #ifdef V4WF_MODE
@@ -79,16 +83,27 @@
 
 #ifdef DMA_TO_SPI_TESTMODE
 #define DMA_TO_SPI_ENABLE
-#define HEADER_DISABLE
-#define	TEST_BUFFER_ENABLE
+#define EXLED_PWM_ENABLE
+#define BATTERY_ENABLE
+#define WPT_ADC_ENABLE
+#define EWL_ENABLE
+#define PUSH_BUT_ENABLE
+#define STATUS_LED_ENABLE
+#define IR_UART_ENABLE
+#define IR_TRIGGER_ENABLE
 #define SPI_SERCOM0_ENABLE
+#define ADMA_ENABLE
+#define SPI_LUT_ENABLE
+#define SDO_32BIT_ENABLE
+#define PREAMBLE_ENABLE
+#define PRESET_HEADER_ENABLE
 #endif
 
 #ifdef DMA_TO_SPI_METRO_TESTMODE
 #define DMA_TO_SPI_ENABLE
 #define HEADER_DISABLE
 #define	TEST_BUFFER_ENABLE
-#define SPI_SERCOM7_ENABLE
+#define SPI_SERCOM0_ENABLE
 #endif
 
 

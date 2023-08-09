@@ -16,9 +16,10 @@ void imageSensorInit(void){
 	delay_ms(100);
 	gpio_set_pin_level(RESET_CMOS, 1);
 	delay_us(100); // minimum delay is 10us
-	chip_id = spi_BB_Read(0x00); // can use this to make sure MCU can talk to Python480
 	
 	python480Init();
+	chip_id = spi_BB_Read(0x00); // can use this to make sure MCU can talk to Python480
+
 	Enable_Subsample();
 	
 	#ifndef PRESET_HEADER_ENABLE

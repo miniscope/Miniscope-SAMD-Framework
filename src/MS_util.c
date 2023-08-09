@@ -223,7 +223,7 @@ void setConfigBlockProp(uint8_t position, uint32_t value) {
 #if defined(PYTHON480_ENABLE)
 void setBufferHeader(uint32_t dataWordLength) {
 	uint32_t numBuffer = bufferCount % NUM_BUFFERS;
-	#ifdef DEV_MODE
+	#ifdef PREAMBLE_ENABLE
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = 0x12345678;
 	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = BUFFER_HEADER_LENGTH;
