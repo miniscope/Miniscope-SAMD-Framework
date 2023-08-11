@@ -11,7 +11,7 @@
 #include <utils.h>
 
 // ------ DATA MODE ------------------------
-#define DEV_MODE
+//#define DEV_MODE
 
 #ifdef DEV_MODE
 #define TEST_PATTERN_ENABLE // For dev
@@ -78,6 +78,7 @@
 #define WPT_ADC_ENABLE
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
+#define IR_TRIGGER_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
