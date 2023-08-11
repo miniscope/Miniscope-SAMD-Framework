@@ -31,7 +31,7 @@ The goal of this framework is to:
 2. Go to the directory including main.c using git bash (or equivalent shell) 
 3. Execute the following command
 ```bash
-git submodule add https://[github-username]@github.com/Aharoni-Lab/Miniscope-SAMD-Framework ./MS_module
+git submodule add https://github.com/Aharoni-Lab/Miniscope-SAMD-Framework ./MS_module
 ```
 Might need to do the following here. (not sure if this is safe though)
 ```bash
