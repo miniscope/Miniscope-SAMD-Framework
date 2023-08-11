@@ -148,7 +148,9 @@ void frameValid_cb(void)
 			bufferCount = 0;
 			frameBufferCount = 0;
 			
+			#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 			TXLinkedListInit();
+			#endif
 			PCCLinkedListInit();
 			setPCCLinkedListPosition(0); // Moves to next buffer/linked list element
 			_dma_enable_transaction(CONF_PCC_DMA_CHANNEL, false); // Should enable DMA transfer

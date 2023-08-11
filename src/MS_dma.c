@@ -42,7 +42,7 @@ void dmaEnable(void){
 
 }
 
-#if 1
+#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 void TXLinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {

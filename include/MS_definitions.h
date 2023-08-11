@@ -23,7 +23,8 @@
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
 //#define WLMS_USART_MODE
-#define DMA_TO_SPI_TESTMODE
+#define WLMS_SD_MODE
+//#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -70,15 +71,18 @@
 #define PRESET_HEADER_ENABLE
 #endif
 
-#ifdef V4WF_MODE
+#ifdef WLMS_SD_MODE
 #define PYTHON480_ENABLE
-#define DMA_TO_SD_ENABLE
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
+#define WPT_ADC_ENABLE
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
+#define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
+#define ADMA_ENABLE
+#define PRESET_HEADER_ENABLE
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE
