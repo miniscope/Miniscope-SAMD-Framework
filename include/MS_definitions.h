@@ -11,7 +11,7 @@
 #include <utils.h>
 
 // ------ DATA MODE ------------------------
-#define DEV_MODE
+//#define DEV_MODE
 
 #ifdef DEV_MODE
 #define TEST_PATTERN_ENABLE // For dev
@@ -23,7 +23,8 @@
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
 //#define WLMS_USART_MODE
-#define DMA_TO_SPI_TESTMODE
+#define WLMS_SD_MODE
+//#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -70,6 +71,19 @@
 #define PRESET_HEADER_ENABLE
 #endif
 
+#ifdef WLMS_SD_MODE
+#define PYTHON480_ENABLE
+#define DMA_TO_SD_ENABLE
+#define EXLED_PWM_ENABLE
+#define BATTERY_ENABLE
+#define WPT_ADC_ENABLE
+#define EWL_ENABLE
+#define PUSH_BUT_ENABLE
+#define STATUS_LED_ENABLE
+#define IR_UART_ENABLE
+#define ADMA_ENABLE
+#endif
+
 #ifdef V4WF_MODE
 #define PYTHON480_ENABLE
 #define DMA_TO_SD_ENABLE
@@ -77,6 +91,7 @@
 #define BATTERY_ENABLE
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
+#define IR_TRIGGER_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_TRIGGER_ENABLE
 #endif
