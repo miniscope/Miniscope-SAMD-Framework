@@ -24,7 +24,7 @@ int main(void)
 	__enable_irq();
 
 	#ifdef AUTOSTART_ENABLE
-	delay_ms(100);
+	delay_ms(5000);
 	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif
 		
@@ -34,6 +34,10 @@ int main(void)
 		if (deviceState & DEVICE_STATE_START_RECORDING) {
 			startRecording();
 		}
+		
+		#ifdef DMA_TO_SD_ENABLE
+		sdmmc_dma_transfer_control();
+		#endif
 	
 		#ifndef DEV_MODE
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
