@@ -23,7 +23,7 @@ int main(void)
 	
 	__enable_irq();
 
-	#if 1
+	#ifdef AUTOSTART_ENABLE
 	delay_ms(100);
 	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif

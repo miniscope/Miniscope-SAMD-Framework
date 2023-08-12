@@ -11,7 +11,7 @@
 #include <utils.h>
 
 // ------ DATA MODE ------------------------
-//#define DEV_MODE
+#define DEV_MODE
 
 #ifdef DEV_MODE
 #define TEST_PATTERN_ENABLE // For dev
@@ -50,6 +50,7 @@
 #define SDO_32BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
+#define AUTOSTART_ENABLE
 #endif
 
 #ifdef WLMS_USART_MODE
@@ -69,10 +70,12 @@
 #define SDO_8BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
+//#define AUTOSTART_ENABLE
 #endif
 
 #ifdef WLMS_SD_MODE
 #define PYTHON480_ENABLE
+#define DMA_TO_SD_ENABLE
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
 #define WPT_ADC_ENABLE
@@ -84,6 +87,7 @@
 #define IR_TRIGGER_ENABLE
 #define ADMA_ENABLE
 #define PRESET_HEADER_ENABLE
+#define AUTOSTART_ENABLE
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE
