@@ -191,7 +191,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 }
 #endif
 
-#if defined(PYTHON480_ENABLE)
+#ifdef PYTHON480_ENABLE
 void recording_cb(const struct timer_task *const timer_task)
 {
 	// not sure if the bufferCount > 1 is needed.
@@ -207,7 +207,7 @@ void recording_cb(const struct timer_task *const timer_task)
 			
 			// Let's figure out how many buffers need to be dropped
 			// TODO: I think NUM_BUFFERS here should actually be number_of_buffers_per_frame
-			//droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
+			droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
 			//droppedBufferCount += bufferCount - writeBufferCount + droppedBufferCount + NUM_BUFFERS;
 		}
 		else { // Actual writing of good buffers
@@ -232,8 +232,8 @@ void recording_cb(const struct timer_task *const timer_task)
 			SD_DESCRIPTOR_ATT_TRANSFER|SD_DESCRIPTOR_ATT_VALID|SD_DESCRIPTOR_ATT_END);
 			sd_mmc_write_with_ADMA(0, currentBlock, (uint32_t)&SDTransferDescriptor, numBlocks);
 			sd_mmc_wait_end_of_ADMA_write(false);
-
 			currentBlock += numBlocks;
+			writeBufferCount++; // Not sure if this should be here.
 			
 			
 			
@@ -292,7 +292,6 @@ void recording_cb(const struct timer_task *const timer_task)
 			}
 			#endif // not ADMA_ENABLE
 			#endif // DMA_TO_SD_ENABLE
-			//writeBufferCount++; // Probably shouldn't be here?
 		}
 		//Code for demonstration
 		//I jump through three planes using the EWL and different LED values

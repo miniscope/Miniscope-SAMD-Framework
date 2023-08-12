@@ -33,17 +33,19 @@ void startRecording()
 	startTimeMS = getCurrentTimeMS();
 	
 	#ifdef DMA_TO_SD_ENABLE
+	#ifndef PRESET_HEADER_ENABLE
 	setEWL(getPropFromHeader(HEADER_EWL_POS));
 	setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);
 	python480SetGain(getPropFromHeader(HEADER_GAIN_POS));
 	python480SetFPS(getPropFromHeader(HEADER_FRAME_RATE_POS));
 	setStatusLED(1);
 	#endif
+	#endif
 	
 	#ifdef PRESET_HEADER_ENABLE
 	setEWL(0x33);   // test value. 0x01 to 0xFF.
-	setExcitationLED(1,1); // (Value, enable) Value: from 0 to 100.
 	python480SetGain(1); // test value. 1, 2, 4.
+	setExcitationLED(1,1); // (Value, enable) Value: from 0 to 100.
 	python480SetFPS(FRAME_RATE); // test value 1, 5, 10, 15, 20.
 	setStatusLED(1);
 	#endif
