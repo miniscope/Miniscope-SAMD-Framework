@@ -81,7 +81,7 @@
 #define WPT_ADC_ENABLE
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
-#define IR_TRIGGER_ENABLE
+//#define IR_TRIGGER_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
@@ -220,7 +220,7 @@
 
 // ------- Image Sensor Definitions ----------
 
-#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
@@ -339,6 +339,7 @@ void setPCCLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
 void sdo_dma_transfer_control(bool callback_flag);
+void sdmmc_dma_transfer_control(void);
 void sdo_dma_setup(void);
 void DataBufferInit(void);
 

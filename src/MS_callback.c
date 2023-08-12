@@ -183,16 +183,22 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
 		bufferCount++;// increment counters
 		frameBufferCount++;
-		#if 1
-		//#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+		
+		#if 0
+		sdmmc_dma_transfer_control();
+		#endif
+		#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 		sdo_dma_transfer_control(false);		
 		#endif
 	}
 }
-#endif
 
-#ifdef PYTHON480_ENABLE
 void recording_cb(const struct timer_task *const timer_task)
+{
+	sdmmc_dma_transfer_control();
+}
+
+void sdmmc_dma_transfer_control(void)
 {
 	// not sure if the bufferCount > 1 is needed.
 	if (bufferCount > (writeBufferCount + droppedBufferCount) && bufferCount > 1) { // when camera data is ahead

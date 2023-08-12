@@ -79,7 +79,8 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "..\MS_m
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
-#define IR_UART_ENABLE
+#define 
+
 #endif
 ```
 
