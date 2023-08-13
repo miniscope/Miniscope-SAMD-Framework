@@ -111,6 +111,7 @@ void frameValid_cb(void)
 			//if (tempCount < 99)
 			//tempCount++;
 			
+			//I think this line sometimes doesn't catch up with the SD card transfer trigger (Takuya)
 			setBufferHeader((BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH) - _dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
 			
 			frameBufferCount = 0;

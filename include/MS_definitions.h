@@ -11,7 +11,7 @@
 #include <utils.h>
 
 // ------ DATA MODE ------------------------
-#define DEV_MODE
+//#define DEV_MODE
 
 #ifdef DEV_MODE
 #define TEST_PATTERN_ENABLE // For dev
@@ -86,8 +86,9 @@
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
 #define ADMA_ENABLE
-#define PRESET_HEADER_ENABLE
-#define AUTOSTART_ENABLE
+#define STOP_ENABLE
+//#define PRESET_HEADER_ENABLE
+//#define AUTOSTART_ENABLE
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE
