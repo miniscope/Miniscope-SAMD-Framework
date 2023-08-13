@@ -202,7 +202,10 @@ void recording_cb(const struct timer_task *const timer_task)
 void sdmmc_dma_transfer_control(void)
 {
 	// not sure if the bufferCount > 1 is needed.
-	if (bufferCount > (writeBufferCount + droppedBufferCount) && bufferCount > 1) { // when camera data is ahead
+
+	// The +1 is a hot fix. It prevents getting the buffer being sent before the number of stored pixels is written to the header.
+	if (bufferCount > (writeBufferCount + droppedBufferCount) + 1) { // when camera data is ahead
+	//if (bufferCount > (writeBufferCount + droppedBufferCount) && bufferCount > 1) { // when camera data is ahead
 		// This means there are filled buffer(s) ready to be written to SD card
 
 
