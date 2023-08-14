@@ -11,7 +11,7 @@
 #include <utils.h>
 
 // ------ DATA MODE ------------------------
-#define DEV_MODE
+//#define DEV_MODE
 
 #ifdef DEV_MODE
 #define TEST_PATTERN_ENABLE // For dev
@@ -22,8 +22,9 @@
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
-//#define WLMS_USART_MODE
-#define DMA_TO_SPI_TESTMODE
+#define WLMS_USART_MODE
+//#define WLMS_SD_MODE
+//#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
 // Peripheral enable based on mode
@@ -49,6 +50,7 @@
 #define SDO_32BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
+#define AUTOSTART_ENABLE
 #endif
 
 #ifdef WLMS_USART_MODE
@@ -63,22 +65,28 @@
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
 #define USART_SERCOM5_ENABLE
-#define ADMA_ENABLE
-#define SPI_LUT_ENABLE
 #define SDO_8BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
+#define AUTOSTART_ENABLE
 #endif
 
-#ifdef V4WF_MODE
+#ifdef WLMS_SD_MODE
 #define PYTHON480_ENABLE
 #define DMA_TO_SD_ENABLE
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
+#define WPT_ADC_ENABLE
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
+//#define IR_TRIGGER_ENABLE
 #define STATUS_LED_ENABLE
+#define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
+#define ADMA_ENABLE
+#define STOP_ENABLE
+//#define PRESET_HEADER_ENABLE
+//#define AUTOSTART_ENABLE
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE
@@ -210,8 +218,13 @@
 // -------------------------------------------
 
 // ------- Image Sensor Definitions ----------
-
+#ifdef PRESET_HEADER_ENABLE
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#else
+//Temporary. Should get this from SD card
+#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
+#endif
+
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
@@ -330,6 +343,7 @@ void setPCCLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
 void sdo_dma_transfer_control(bool callback_flag);
+void sdmmc_dma_transfer_control(void);
 void sdo_dma_setup(void);
 void DataBufferInit(void);
 

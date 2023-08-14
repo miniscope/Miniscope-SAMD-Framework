@@ -23,25 +23,30 @@ int main(void)
 	
 	__enable_irq();
 
-	#if 1
-	delay_ms(100);
+	#ifdef AUTOSTART_ENABLE
+	delay_ms(5000);
 	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif
 		
 	while (1) { // mostly recording_cb and framevalid_cb runs here
 		#if defined(PYTHON480_ENABLE)
-		
-		if (deviceState & DEVICE_STATE_START_RECORDING) {
+		if (deviceState & DEVICE_STATE_START_RECORDING){
 			startRecording();
 		}
-	
-		#ifndef DEV_MODE
+		
+		if (deviceState & DEVICE_STATE_RECORDING) {
+		#ifdef DMA_TO_SD_ENABLE
+		sdmmc_dma_transfer_control();
+		
+		// Module for stopping recording. Only needed for SD card
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 			stopRecording();
 		}
 		#endif
-		#endif
+		}
+		#endif //#if defined(PYTHON480_ENABLE)
 		
+		//Only for testing DMA to serial data out
 		#ifndef PYTHON480_ENABLE
 		sdo_dma_transfer_control(false);
 		#endif

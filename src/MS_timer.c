@@ -29,6 +29,8 @@ void timerInit(void)
 	timer_add_task(&TIMER_0, &TIMER_0_task2);
 	#endif
 	
+	//just for starting up -> inserted in pcc_cb which should be a little more appropriate
+	#if 0
 	#if defined(PYTHON480_ENABLE)
 	// Setup a timer for recording functions.
 	//TIMER_0_task3.interval	= round(1000/numBuffersPerFrame/FRAME_RATE/2); // Need to check this value
@@ -38,8 +40,6 @@ void timerInit(void)
 	timer_add_task(&TIMER_0, &TIMER_0_task3);
 	#endif
 	
-	//just for starting up -> inserted in pcc_cb which should be a little more appropriate
-	#if 0
 //	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 	// Setup a timer for recording functions.
 	//TIMER_0_task3.interval	= round(1000/numBuffersPerFrame/FRAME_RATE/2); // Need to check this value

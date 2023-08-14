@@ -31,6 +31,7 @@ void dmaEnable(void){
 	| CONF_PCC_SCALE << PCC_MR_SCALE_Pos | PCC_MR_DSIZE(CONF_PCC_DSIZE);
 	#endif
 
+	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 	//NVIC_SetPriority(DMAC_1_IRQn, 0);    // Set the Nested Vector Interrupt Controller (NVIC) priority for DMAC Channel 1
 	//NVIC_EnableIRQ(DMAC_1_IRQn);         // Connect DMAC Channel 1 to Nested Vector Interrupt Controller (NVIC)
 	DMAC->Channel[SDO_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL;
@@ -39,10 +40,10 @@ void dmaEnable(void){
 	//DMAC->Channel[SDO_DMA_CHANNEL].CHINTENCLR.reg = 0;                    // Activate the transfer complete (TCMPL) interrupt on DMAC channel 0
 	//DMAC->Channel[SDO_DMA_CHANNEL].CHPRILVL.reg = DMAC_CHPRILVL_PRILVL_LVL0;
 	dmac_register_callback(SDO_DMA_CHANNEL, sdo_dma_transfer_complete_cb);
-
+	#endif
 }
 
-#if 1
+#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 void TXLinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
@@ -90,7 +91,6 @@ void setTXLinkedListPosition(uint8_t pos)
 	_dma_set_DESCADDR(SDO_DMA_CHANNEL, TXLinkedList[pos].DESCADDR.reg);
 	_dma_set_source_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
 }
-#endif
 
 void sdo_dma_transfer_trigger(void)
 {
@@ -154,6 +154,7 @@ void sdo_dma_transfer_suspend(void)
 {
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x1;
 }
+#endif
 
 void DataBufferInit(void)
 {

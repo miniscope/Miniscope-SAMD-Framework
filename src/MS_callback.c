@@ -111,6 +111,7 @@ void frameValid_cb(void)
 			//if (tempCount < 99)
 			//tempCount++;
 			
+			//I think this line sometimes doesn't catch up with the SD card transfer trigger (Takuya)
 			setBufferHeader((BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH) - _dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
 			
 			frameBufferCount = 0;
@@ -148,7 +149,9 @@ void frameValid_cb(void)
 			bufferCount = 0;
 			frameBufferCount = 0;
 			
+			#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 			TXLinkedListInit();
+			#endif
 			PCCLinkedListInit();
 			setPCCLinkedListPosition(0); // Moves to next buffer/linked list element
 			_dma_enable_transaction(CONF_PCC_DMA_CHANNEL, false); // Should enable DMA transfer
@@ -181,19 +184,28 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
 		bufferCount++;// increment counters
 		frameBufferCount++;
-		#if 1
-		//#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+		
+		#if 0
+		sdmmc_dma_transfer_control();
+		#endif
+		#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 		sdo_dma_transfer_control(false);		
 		#endif
 	}
 }
-#endif
 
-#if defined(PYTHON480_ENABLE)
 void recording_cb(const struct timer_task *const timer_task)
 {
+	sdmmc_dma_transfer_control();
+}
+
+void sdmmc_dma_transfer_control(void)
+{
 	// not sure if the bufferCount > 1 is needed.
-	if (bufferCount > (writeBufferCount + droppedBufferCount) && bufferCount > 1) { // when camera data is ahead
+
+	// The +1 is a hot fix. It prevents getting the buffer being sent before the number of stored pixels is written to the header.
+	if (bufferCount > (writeBufferCount + droppedBufferCount) + 1) { // when camera data is ahead
+	//if (bufferCount > (writeBufferCount + droppedBufferCount) && bufferCount > 1) { // when camera data is ahead
 		// This means there are filled buffer(s) ready to be written to SD card
 
 
@@ -205,7 +217,7 @@ void recording_cb(const struct timer_task *const timer_task)
 			
 			// Let's figure out how many buffers need to be dropped
 			// TODO: I think NUM_BUFFERS here should actually be number_of_buffers_per_frame
-			//droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
+			droppedBufferCount += (numBuffersPerFrame - (writeBufferCount + droppedBufferCount) % numBuffersPerFrame);
 			//droppedBufferCount += bufferCount - writeBufferCount + droppedBufferCount + NUM_BUFFERS;
 		}
 		else { // Actual writing of good buffers
@@ -230,8 +242,8 @@ void recording_cb(const struct timer_task *const timer_task)
 			SD_DESCRIPTOR_ATT_TRANSFER|SD_DESCRIPTOR_ATT_VALID|SD_DESCRIPTOR_ATT_END);
 			sd_mmc_write_with_ADMA(0, currentBlock, (uint32_t)&SDTransferDescriptor, numBlocks);
 			sd_mmc_wait_end_of_ADMA_write(false);
-
 			currentBlock += numBlocks;
+			writeBufferCount++; // Not sure if this should be here.
 			
 			
 			
@@ -290,7 +302,6 @@ void recording_cb(const struct timer_task *const timer_task)
 			}
 			#endif // not ADMA_ENABLE
 			#endif // DMA_TO_SD_ENABLE
-			//writeBufferCount++; // Probably shouldn't be here?
 		}
 		//Code for demonstration
 		//I jump through three planes using the EWL and different LED values
