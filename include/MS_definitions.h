@@ -220,6 +220,9 @@
 // ------- Image Sensor Definitions ----------
 #ifdef PRESET_HEADER_ENABLE
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#else
+//Temporary. Should get this from SD card
+#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #endif
 
 #define WIDTH						608
