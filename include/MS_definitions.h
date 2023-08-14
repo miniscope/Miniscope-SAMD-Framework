@@ -22,8 +22,8 @@
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
 //#define WLMS_SPI_MODE
-//#define WLMS_USART_MODE
-#define WLMS_SD_MODE
+#define WLMS_USART_MODE
+//#define WLMS_SD_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
@@ -65,12 +65,10 @@
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
 #define USART_SERCOM5_ENABLE
-#define ADMA_ENABLE
-#define SPI_LUT_ENABLE
 #define SDO_8BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
-//#define AUTOSTART_ENABLE
+#define AUTOSTART_ENABLE
 #endif
 
 #ifdef WLMS_SD_MODE
@@ -220,8 +218,10 @@
 // -------------------------------------------
 
 // ------- Image Sensor Definitions ----------
+#ifdef PRESET_HEADER_ENABLE
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#endif
 
-#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
