@@ -286,6 +286,8 @@ extern volatile uint32_t tempCount;
 extern volatile uint32_t tempTimestamp[];
 extern volatile uint8_t timerIndex;
 
+extern volatile uint16_t serialCommand;
+extern volatile uint8_t uartBuffer;
 
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
@@ -330,6 +332,7 @@ void irReceive_cb(void);
 void pushButton_cb(void);
 void frameValid_cb(void);
 void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
+void usart_rx_cb(void);
 // --------------------------------------
 
 // DMA

@@ -53,13 +53,53 @@ void irReceive_cb(void)
 				delay_ms(1000);
 			}
 			deviceState = DEVICE_STATE_START_RECORDING;
-		}
-		
-		else{}
-		
+		}		
 	}
-	else {
-		
+}
+#endif
+
+void update_recording()
+{
+	uint8_t targetPeripheral = (uint8_t)((serialCommand & 0x0F00) >> 8);
+	uint8_t targetValue = (uint8_t)((serialCommand & 0x0F));
+	
+	switch (targetPeripheral) {
+		case 0: // LED
+		setExcitationLED((uint32_t) targetValue, 1);
+		break;
+		case 1: // EWL
+		setEWL((uint32_t) serialCommand);
+		break;
+		default:
+		return;
+	}
+}
+
+#ifdef IR_UART_ENABLE
+void usart_rx_cb(void)
+{
+	uint8_t tempUartBuffer = SERCOM5->USART.DATA.reg;
+	
+	//Very hard coded so must change.
+	//Ignore if the previous packet is same. This is because the packet needs to be sent several times to prevent dropping.
+	if (tempUartBuffer != uartBuffer){
+		uartBuffer = tempUartBuffer;
+		if ((uartBuffer & 0b11000000) >> 6 == 0b00000010) { // first half of command
+			// Initiate command
+			serialCommand = 0x0000;
+			serialCommand |= (uint16_t)(uartBuffer & 0b00110000) << 4; // Store peripheral ID
+			serialCommand |= (uint16_t)(uartBuffer & 0b00001111) << 4; // Store MSB for value
+		}
+		else if ((uartBuffer & 0b11000000) >> 6 == 0b00000001){ //Second half of command
+			if ((uint8_t)((serialCommand & 0b0000001100000000) >> 8) == (uartBuffer & 0b00110000) >> 4) { // Validate peripheral ID
+				serialCommand |= (uint16_t)(uartBuffer & 0b00001111); // Store MSB for value
+				update_recording();
+			}
+			else{
+				// For safety, reset the command if validation fails.
+				serialCommand = 0x0000;
+			}
+		}
 	}
 }
 #endif

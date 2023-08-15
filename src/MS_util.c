@@ -77,6 +77,10 @@ void peripheralInit(void)
 	adc_sync_enable_channel(&ADC_0, 0);
 	#endif
 	
+	#ifdef IR_UART_ENABLE
+	usart_async_register_callback(&USART_0, USART_ASYNC_RXC_CB, usart_rx_cb);
+	#endif
+	
 	#ifdef WPT_ADC_ENABLE
 	// Enable ADC for checking battery voltage
 	adc_sync_enable_channel(&ADC_0, 1);

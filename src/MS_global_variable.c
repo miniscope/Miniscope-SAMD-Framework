@@ -55,6 +55,9 @@ volatile uint32_t frameratevalue;
 volatile uint32_t delayvalue;
 volatile uint32_t reclengthvalue;
 
+volatile uint16_t serialCommand;
+volatile uint8_t uartBuffer;
+
 volatile uint16_t regValue[2]; 
 volatile uint32_t tempPCC[4];
 volatile uint32_t tempHeader[100][4];
