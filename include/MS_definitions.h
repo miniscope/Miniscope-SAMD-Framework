@@ -51,6 +51,7 @@
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
 #define AUTOSTART_ENABLE
+#define FRAMERATE_20FPS
 #endif
 
 #ifdef WLMS_USART_MODE
@@ -63,12 +64,12 @@
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
-#define IR_TRIGGER_ENABLE
 #define USART_SERCOM5_ENABLE
 #define SDO_8BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
 #define AUTOSTART_ENABLE
+#define FRAMERATE_1FPS
 #endif
 
 #ifdef WLMS_SD_MODE
@@ -85,6 +86,8 @@
 #define IR_TRIGGER_ENABLE
 #define ADMA_ENABLE
 #define STOP_ENABLE
+#define FRAMERATE_20FPS
+
 //#define PRESET_HEADER_ENABLE
 //#define AUTOSTART_ENABLE
 #endif
@@ -218,11 +221,11 @@
 // -------------------------------------------
 
 // ------- Image Sensor Definitions ----------
-#ifdef PRESET_HEADER_ENABLE
-#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
-#else
-//Temporary. Should get this from SD card
+// This should be defined from SD card header. Temporary
+#ifdef FRAMERATE_20FPS
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
+#elif defined(FRAMERATE_1FPS)
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #endif
 
 #define WIDTH						608
