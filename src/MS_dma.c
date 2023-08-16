@@ -108,39 +108,41 @@ void sdo_dma_transfer_complete_cb(void)
 
 void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 {
-	// for first call; if not enabled
+		// for first call; if not enabled
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 		writeBufferCount++; // not sure if this should be counted
 		return;
 	}
+	if (bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+		#ifdef PYTHON480_ENABLE
+		// send out pending bits and return
+		if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND == 1){
+			sdo_dma_transfer_resume();
+			return;
+		}
 
-	#ifdef PYTHON480_ENABLE
-	// send out pending bits and return
-	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND == 1){
-		sdo_dma_transfer_resume();
-		return;
+		//end if middle of transfer
+		if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.BUSY == 1){
+			return;
+		}	
+
+		// if coming from TRCMP callback and buffer is left just resume
+		if(callback_flag == 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+			sdo_dma_transfer_resume();
+			return;
+		}
+		#endif
 	}
 
-	// if coming from TRCMP callback and buffer is left just resume
-	if(callback_flag == 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
-		sdo_dma_transfer_resume();
-		return;
-	}
 
-	//end if middle of transfer
-	if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.BUSY == 1){
-		return;
-	}
-
-	#else //ifdef PYTHON480_ENABLE just send out bit
+	#ifndef PYTHON480_ENABLE //just send out
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
 	}
 	sdo_dma_transfer_resume();
-	writeBufferCount++;
 	#endif
 }
 void sdo_dma_transfer_resume(void)

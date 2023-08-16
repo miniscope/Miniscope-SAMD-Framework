@@ -35,14 +35,13 @@ int main(void)
 		}
 		
 		if (deviceState & DEVICE_STATE_RECORDING) {
-		#ifdef DMA_TO_SD_ENABLE
-		sdmmc_dma_transfer_control();
-		
+			#ifdef DMA_TO_SD_ENABLE
+			sdmmc_dma_transfer_control();
+			#endif
+		}
 		// Module for stopping recording. Only needed for SD card
 		if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 			stopRecording();
-		}
-		#endif
 		}
 		#endif //#if defined(PYTHON480_ENABLE)
 		
