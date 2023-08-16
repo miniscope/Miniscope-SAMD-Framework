@@ -45,8 +45,6 @@
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
 #define SPI_SERCOM0_ENABLE
-#define ADMA_ENABLE
-#define SPI_LUT_ENABLE
 #define SDO_32BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
@@ -80,9 +78,8 @@
 #define WPT_ADC_ENABLE
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
-//#define IR_TRIGGER_ENABLE
 #define STATUS_LED_ENABLE
-#define IR_UART_ENABLE
+//#define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
 #define ADMA_ENABLE
 #define STOP_ENABLE
@@ -119,7 +116,7 @@
 
 
 // SPI
-#define SPI_ICSPACE_MS				1 // Clock cycle between word
+#define SPI_ICSPACE_MS				0 // Clock cycle between word
 #define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
 
 // USART
