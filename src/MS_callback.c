@@ -61,14 +61,14 @@ void irReceive_cb(void)
 void update_recording()
 {
 	uint8_t targetPeripheral = (uint8_t)((serialCommand & 0x0F00) >> 8);
-	uint8_t targetValue = (uint8_t)((serialCommand & 0x0F));
+	uint8_t targetValue = (uint8_t)((serialCommand & 0xFF));
 	
 	switch (targetPeripheral) {
 		case 0: // LED
 		setExcitationLED((uint32_t) targetValue, 1);
 		break;
 		case 1: // EWL
-		setEWL((uint32_t) serialCommand);
+		setEWL((uint32_t) targetValue);
 		break;
 		default:
 		return;
@@ -87,8 +87,8 @@ void usart_rx_cb(void)
 		if ((uartBuffer & 0b11000000) >> 6 == 0b00000010) { // first half of command
 			// Initiate command
 			serialCommand = 0x0000;
-			serialCommand |= (uint16_t)(uartBuffer & 0b00110000) << 4; // Store peripheral ID
-			serialCommand |= (uint16_t)(uartBuffer & 0b00001111) << 4; // Store MSB for value
+			serialCommand |= (uint16_t)((uartBuffer & 0b00110000) << 4); // Store peripheral ID
+			serialCommand |= (uint16_t)((uartBuffer & 0b00001111) << 4); // Store MSB for value
 		}
 		else if ((uartBuffer & 0b11000000) >> 6 == 0b00000001){ //Second half of command
 			if ((uint8_t)((serialCommand & 0b0000001100000000) >> 8) == (uartBuffer & 0b00110000) >> 4) { // Validate peripheral ID
