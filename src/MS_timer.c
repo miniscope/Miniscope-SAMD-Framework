@@ -24,7 +24,7 @@ void timerInit(void)
 	#endif
 	
 	#if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE)
-	TIMER_0_task2.interval = 1000; // Units are in ms so 1000 should check every 1 second
+	TIMER_0_task2.interval = 500; // Units are in ms so 1000 should check every 1 second
 	TIMER_0_task2.cb       = checkBattVoltage_cb;
 	TIMER_0_task2.mode     = TIMER_TASK_REPEAT;
 	timer_add_task(&TIMER_0, &TIMER_0_task2);
