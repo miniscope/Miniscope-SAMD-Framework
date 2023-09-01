@@ -22,10 +22,16 @@ void millisecondTimer_cb(const struct timer_task *const timer_task)
 #ifdef BATTERY_ENABLE
 void checkBattVoltage_cb(const struct timer_task *const timer_task)
 {
-	uint8_t adcValue;
+	uint8_t adcValueBattery;
+	uint8_t adcValueWPT;
 	// Uses ADC0 to check battery voltage
-	adc_sync_read_channel(&ADC_0, 0, &adcValue, 1);
-	battVolt = adcValue;
+	adc_sync_read_channel(&ADC_0, 0, &adcValueBattery, 1);
+	battVolt = adcValueBattery;
+	
+	#ifdef WPT_ADC_ENABLE
+	adc_sync_read_channel(&ADC_1, 0, &adcValueWPT, 1);
+	wptVolt = adcValueWPT;
+	#endif
 	
 	// If under voltage, set device state to ...
 	// Compare to 1.1V band gap
@@ -34,11 +40,33 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 	// Raise issue if voltage is under 3.4V
 	// 3.4V = 158
 	// 3.3V = 148
-	if (adcValue < getPropFromHeader(HEADER_RECORD_LENGTH_POS)) {
+	if (adcValueBattery < getPropFromHeader(HEADER_RECORD_LENGTH_POS)) {
 		// Low voltage problem
 		deviceState |= DEVICE_STATE_LOW_VOLTAGE;
 		deviceState |= DEVICE_STATE_STOP_RECORDING;
 	}
+	
+	#ifdef DEBUGLED_ENABLE
+	#ifdef WPT_ADC_ENABLE
+	if (wptVolt > ADC_WPT_HIGH)
+	{
+		gpio_set_pin_level(DEBUGLED3, (timeMS/500)%2);
+	}
+	else if (wptVolt > ADC_WPT_LOW)
+	{
+		gpio_set_pin_level(DEBUGLED3, 1);
+	}
+	#endif
+	
+	if (battVolt > ADC_BATTERY_HIGH)
+	{
+		gpio_set_pin_level(LED_STATUS, (timeMS/500)%2);
+	}
+	else if (battVolt < ADC_BATTERY_LOW)
+	{
+		gpio_set_pin_level(LED_STATUS, (timeMS/2000)%2);
+	}
+	#endif
 }
 #endif
 
@@ -288,7 +316,8 @@ void sdmmc_dma_transfer_control(void)
 			
 			bufferToWrite[BUFFER_HEADER_WRITE_BUFFER_COUNT_POS] = writeBufferCount;
 			bufferToWrite[BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS] = droppedBufferCount;
-			bufferToWrite[BUFFER_HEADER_WRITE_TIMESTAMP_POS] = getCurrentTimeMS() - startTimeMS;
+			bufferToWrite[BUFFER_HEADER_BATTERY_VOLTAGE_POS] = getCurrentTimeMS() - startTimeMS;
+			bufferToWrite[BUFFER_HEADER_WRITE_TIMESTAMP_POS] = battVolt;
 			
 			tempTimestamp[(writeBufferCount + droppedBufferCount) % 100] = getCurrentTimeMS() - startTimeMS;
 			
@@ -383,7 +412,8 @@ void sdmmc_dma_transfer_control(void)
 		//setEWL(0xFE);
 		//}
 		//}
-		if (((getCurrentTimeMS() - startTimeMS) >= getPropFromHeader(HEADER_RECORD_LENGTH_POS) * 1000) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
+//		if (((getCurrentTimeMS() - startTimeMS) >= getPropFromHeader(HEADER_RECORD_LENGTH_POS) * 1000) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
+		if (((getCurrentTimeMS() - startTimeMS) >= 5 * 60 * 1000) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
 			//if (((getCurrentTimeMS() - startTimeMS) >= 10 * 1000*60) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
 			deviceState |= DEVICE_STATE_STOP_RECORDING; // Sets the flag to want to end current recording
 		}
