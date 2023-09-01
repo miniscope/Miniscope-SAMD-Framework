@@ -5,6 +5,7 @@
  *  Author: Takuya
  */ 
 
+#include "MS_config.h"
 #include "MS_definitions.h"
 
 // ------------ GLOBAL VARIABLES --------
@@ -33,6 +34,7 @@ volatile uint32_t startTimeMS;
 volatile uint32_t timeMS = 0;
 
 volatile uint8_t battVolt;
+volatile uint8_t wptVolt;
 
 // used for tracking recording and inc. DMA buffers
 volatile uint32_t writeFrameNum;

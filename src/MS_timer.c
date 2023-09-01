@@ -6,6 +6,7 @@
  */ 
 
 #include "MS_definitions.h"
+#include "MS_config.h"
 //#include <math.h>
 
 #if defined(BATTERY_ENABLE) || defined(WPT_ADC_ENABLE) || defined(PYTHON480_ENABLE) || defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)

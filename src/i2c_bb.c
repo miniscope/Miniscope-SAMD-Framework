@@ -8,6 +8,7 @@
 //#ifdef EWL_ENABLE
 
 #include "i2c_bb.h"
+#include "MS_config.h"
 #include "MS_definitions.h"
 
 //I2C_BB_SDA and I2C_BB_SCL pins are defined in atmel_start_pins.h

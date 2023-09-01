@@ -1,4 +1,5 @@
 #include <atmel_start.h>
+#include "MS_config.h"
 #include "MS_definitions.h"
 
 int main(void)
@@ -24,7 +25,7 @@ int main(void)
 	__enable_irq();
 
 	#ifdef AUTOSTART_ENABLE
-	delay_ms(5000);
+	delay_ms(1000);
 	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif
 		

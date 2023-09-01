@@ -36,6 +36,8 @@
 #include <utils.h>
 #include <hpl_dmac_config.h>
 #include <utils_repeat_macro.h>
+
+#include "MS_config.h"
 #include "MS_definitions.h"
 
 /* Section containing first descriptors for all DMAC channels */

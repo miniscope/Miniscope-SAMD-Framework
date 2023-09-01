@@ -6,6 +6,7 @@
  */ 
 
 #include "python480.h"
+#include "MS_config.h"
 #include "MS_definitions.h"
 
 uint16_t python480_testconfig = 0x00;

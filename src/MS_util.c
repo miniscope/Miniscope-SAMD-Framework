@@ -6,6 +6,7 @@
 */
 
 #include <atmel_start.h>
+#include "MS_config.h"
 #include "MS_definitions.h"
 
 #include "python480.h"
