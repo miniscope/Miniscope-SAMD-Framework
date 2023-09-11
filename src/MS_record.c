@@ -32,6 +32,11 @@ void startRecording()
 	#endif
 	
 	startTimeMS = getCurrentTimeMS();
+	#ifdef RECORDTIME_DISABLE
+	endTimeMS = 5 * 60 * 1000; // 5 min recording
+	#else
+	endTimeMS = getPropFromHeader(HEADER_RECORD_LENGTH_POS) * 1000;
+	#endif
 	
 	#ifdef DMA_TO_SD_ENABLE
 	#ifndef PRESET_HEADER_ENABLE

@@ -31,6 +31,7 @@ volatile uint32_t bufferCount = 0;
 volatile uint32_t frameBufferCount = 0;
 
 volatile uint32_t startTimeMS;
+volatile uint32_t endTimeMS;
 volatile uint32_t timeMS = 0;
 
 volatile uint8_t battVolt;

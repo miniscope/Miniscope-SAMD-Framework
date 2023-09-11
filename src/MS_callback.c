@@ -390,43 +390,10 @@ void sdmmc_dma_transfer_control(void)
 			#endif // not ADMA_ENABLE
 			#endif // DMA_TO_SD_ENABLE
 		}
-		//Code for demonstration
-		//I jump through three planes using the EWL and different LED values
-		//if (((getCurrentTimeMS() - startTimeMS) < 6*1000*10
-		//)){
-		//if((getCurrentTimeMS() - startTimeMS)<5*1000*2.5)
-		//{
-		//setExcitationLED(1,1);
-		//setEWL(0x20);
-		//}
-		////num >= lower && num <= upper
-		////else if(2*1000*2.5<=(getCurrentTimeMS() - startTimeMS)<2*1000*5)
-		//else if((getCurrentTimeMS() - startTimeMS)>=5*1000*2.5 && (getCurrentTimeMS() - startTimeMS)<=5*1000*5)
-		//{
-		////setExcitationLED(5,1);
-		//setExcitationLED(2,1);
-		//setEWL(0x50);
-		//}
-		//else if((getCurrentTimeMS() - startTimeMS)>5*1000*5)
-		//{
-		//setExcitationLED(4,1);
-		//setEWL(0xFE);
-		//}
-		//}
-//		if (((getCurrentTimeMS() - startTimeMS) >= getPropFromHeader(HEADER_RECORD_LENGTH_POS) * 1000) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
-		if (((getCurrentTimeMS() - startTimeMS) >= 5 * 60 * 1000) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
-			//if (((getCurrentTimeMS() - startTimeMS) >= 10 * 1000*60) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
+
+		if (((getCurrentTimeMS() - startTimeMS) >= endTimeMS) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
 			deviceState |= DEVICE_STATE_STOP_RECORDING; // Sets the flag to want to end current recording
 		}
-		
-		// Code used during testing to record for a fixed, hard-coded lengths
-		//if (((getCurrentTimeMS() - startTimeMS) >= 1000*30000))
-		//{
-
-		//// Recording time has elapsed
-		//deviceState |= DEVICE_STATE_STOP_RECORDING; // Sets the flag to want to end current recording
-		//}
-		
 	}
 	
 }

@@ -160,6 +160,7 @@ extern volatile uint32_t deviceState;
 extern volatile uint8_t battVolt;
 extern volatile uint8_t wptVolt;
 extern volatile uint32_t startTimeMS;
+extern volatile uint32_t endTimeMS;
 extern volatile uint32_t timeMS;
 extern volatile uint32_t frameBufferCount;
 extern volatile uint32_t frameNum;
