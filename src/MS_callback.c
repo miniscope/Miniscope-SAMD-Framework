@@ -58,13 +58,9 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 	}
 	#endif
 	
-	if (battVolt > ADC_BATTERY_HIGH)
+	if (battVolt < ADC_BATTERY_LOW)
 	{
 		gpio_set_pin_level(LED_STATUS, (timeMS/500)%2);
-	}
-	else if (battVolt < ADC_BATTERY_LOW)
-	{
-		gpio_set_pin_level(LED_STATUS, (timeMS/2000)%2);
 	}
 	#endif
 }
