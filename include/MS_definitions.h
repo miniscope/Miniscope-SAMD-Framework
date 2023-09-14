@@ -122,7 +122,7 @@
 // -------------------------------------------
 
 // ADC Level Definition
-#define ADC_BATTERY_LOW		191 // 3.8 V (x5 attenuation, 8-bit)
+#define ADC_BATTERY_LOW		186 // 4.0 V (x5 attenuation, 8-bit)
 //#define ADC_BATTERY_LOW		177 // 3.8 V (x5 attenuation, 8-bit)
 #define ADC_BATTERY_HIGH	191 // 4.1 V (x5 attenuation, 8-bit)
 #define ADC_WPT_LOW			89 // 4.2 V (x11 attenuation, 8-bit)
@@ -158,7 +158,7 @@ extern volatile uint32_t currentBlock;
 extern volatile uint32_t initBlocksRemaining;
 
 extern volatile uint32_t deviceState;
-extern volatile uint8_t battVolt;
+extern volatile uint16_t battVolt;
 extern volatile uint8_t wptVolt;
 extern volatile uint32_t startTimeMS;
 extern volatile uint32_t endTimeMS;

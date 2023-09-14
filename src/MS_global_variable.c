@@ -34,7 +34,7 @@ volatile uint32_t startTimeMS;
 volatile uint32_t endTimeMS;
 volatile uint32_t timeMS = 0;
 
-volatile uint8_t battVolt;
+volatile uint16_t battVolt;
 volatile uint8_t wptVolt;
 
 // used for tracking recording and inc. DMA buffers

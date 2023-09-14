@@ -22,7 +22,7 @@ void millisecondTimer_cb(const struct timer_task *const timer_task)
 #ifdef BATTERY_ENABLE
 void checkBattVoltage_cb(const struct timer_task *const timer_task)
 {
-	uint8_t adcValueBattery;
+	uint16_t adcValueBattery;
 	uint8_t adcValueWPT;
 	// Uses ADC0 to check battery voltage
 	adc_sync_read_channel(&ADC_0, 0, &adcValueBattery, 1);
@@ -222,6 +222,18 @@ void frameValid_cb(void)
 				//deviceState &= ~(DEVICE_STATE_STOP_RECORDING);
 				//deviceState |= DEVICE_STATE_IDLE;
 			}
+			#ifdef EWL_SWEEP_ENABLE
+			if ((frameNum + 1) % 5 == 0 & ewlvalue < 255)
+			{
+				ewlvalue++;
+				setEWL(ewlvalue);
+			}		
+			else if ((frameNum + 1) % 5 == 0 & ewlvalue >= 255)
+			{				
+				ewlvalue = 0;
+				setEWL(ewlvalue);
+			}
+			#endif
 		}
 		else if (deviceState & DEVICE_STATE_START_RECORDING_WAITING) {
 			// We wait till !FV to enable recording so the first buffer starts at the beginning and not middle of a frame

@@ -30,10 +30,10 @@ void startRecording()
 	initBlocksRemaining = BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK;
 	#endif // not ADMA_ENABLE
 	#endif
-	
+
 	startTimeMS = getCurrentTimeMS();
 	#ifdef RECORDTIME_DISABLE
-	endTimeMS = 5 * 60 * 1000; // 5 min recording
+	endTimeMS = 5 * 60 * 1000; // 10 min recording
 	#else
 	endTimeMS = getPropFromHeader(HEADER_RECORD_LENGTH_POS) * 1000;
 	#endif
