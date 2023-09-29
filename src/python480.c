@@ -60,8 +60,8 @@ void python480SetFPS(uint32_t value)
 		spi_BB_Write(199, 28); // Exposure/Frame rate config, spi_BB_Write(199, 0x0299);
 		break;
 		case (10):
-		spi_BB_Write(0xC9, 10000);
-		spi_BB_Write(199, 28); // Exposure/Frame rate config, spi_BB_Write(199, 0x0299);
+		spi_BB_Write(0xC9, 5000);
+		spi_BB_Write(199, 56); // Exposure/Frame rate config, spi_BB_Write(199, 0x0299);
 		break;
 		case (15):
 		spi_BB_Write(0xC9, 6667);

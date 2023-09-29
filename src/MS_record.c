@@ -33,7 +33,7 @@ void startRecording()
 
 	startTimeMS = getCurrentTimeMS();
 	#ifdef RECORDTIME_DISABLE
-	endTimeMS = 5 * 60 * 1000; // 10 min recording
+	endTimeMS = 15 * 1000; // 10 min recording
 	#else
 	endTimeMS = getPropFromHeader(HEADER_RECORD_LENGTH_POS) * 1000;
 	#endif

@@ -10,7 +10,7 @@ int main(void)
 	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
-	
+
 	//Note sure if this is needed. Takuya
 	__disable_irq();
 

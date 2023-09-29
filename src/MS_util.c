@@ -48,6 +48,12 @@ void debugHeaderProp(void){
 	frameratevalue = getPropFromHeader(HEADER_FRAME_RATE_POS);
 	delayvalue = getPropFromHeader(HEADER_DELAY_START_POS);
 	reclengthvalue = getPropFromHeader(HEADER_RECORD_LENGTH_POS);
+	
+	ewlScanEnable = getPropFromHeader(HEADER_EWL_SCAN_ENABLE_POS);
+	ewlStart = getPropFromHeader(HEADER_EWL_START_POS);
+	ewlStop = getPropFromHeader(HEADER_EWL_STOP_POS);
+	ewlStep = getPropFromHeader(HEADER_EWL_STEP_POS);
+	ewlStepTime = getPropFromHeader(HEADER_EWL_STEP_TIME_POS);
 }
 
 void getBuffersPerFrame(void)

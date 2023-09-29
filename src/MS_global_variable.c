@@ -58,6 +58,13 @@ volatile uint32_t frameratevalue;
 volatile uint32_t delayvalue;
 volatile uint32_t reclengthvalue;
 
+volatile uint32_t ewlScanEnable;
+volatile uint32_t ewlStart;
+volatile uint32_t ewlStop;
+volatile uint32_t ewlStep;
+volatile uint32_t ewlStepTime;
+volatile uint32_t ewlCount = 0;
+
 volatile uint16_t serialCommand;
 volatile uint8_t uartBuffer;
 

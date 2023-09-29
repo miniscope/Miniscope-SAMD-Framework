@@ -21,9 +21,9 @@
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
-//#define WLMS_SPI_MODE
+#define WLMS_SPI_MODE
 //#define WLMS_USART_MODE
-#define WLMS_SD_MODE
+//#define WLMS_SD_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 
@@ -34,11 +34,11 @@
 
 // ------ HARDWARE PERIPHERAL ENABLE ------------------------
 #ifdef WLMS_SPI_MODE
+#define TEST_PATTERN_ENABLE // For dev
 #define PYTHON480_ENABLE
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
-#define WPT_ADC_ENABLE
 #define EWL_ENABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
@@ -49,7 +49,10 @@
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
 #define AUTOSTART_ENABLE
-#define FRAMERATE_20FPS
+#define FRAMERATE_1FPS
+//#define FRAMERATE_5FPS
+//#define FRAMERATE_10FPS
+//#define FRAMERATE_20FPS
 #endif
 
 #ifdef WLMS_USART_MODE
@@ -86,11 +89,9 @@
 #define STOP_ENABLE
 #define FRAMERATE_20FPS
 //#define PRESET_HEADER_ENABLE
-#define DEBUGLED_ENABLE
+//#define DEBUGLED_ENABLE
 #define AUTOSTART_ENABLE
-#define RECORDTIME_DISABLE
-#define DEBUGLED_ENABLE
-//#define EWL_SWEEP_ENABLE
+//#define RECORDTIME_DISABLE
 #endif
 
 #ifdef DMA_TO_SPI_TESTMODE

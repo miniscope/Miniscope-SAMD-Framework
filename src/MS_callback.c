@@ -40,11 +40,13 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 	// Raise issue if voltage is under 3.4V
 	// 3.4V = 158
 	// 3.3V = 148
+	#if 0
 	if (adcValueBattery < getPropFromHeader(HEADER_RECORD_LENGTH_POS)) {
 		// Low voltage problem
 		deviceState |= DEVICE_STATE_LOW_VOLTAGE;
 		deviceState |= DEVICE_STATE_STOP_RECORDING;
 	}
+	#endif
 	
 	#ifdef DEBUGLED_ENABLE
 	#ifdef WPT_ADC_ENABLE
@@ -58,11 +60,15 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 	}
 	#endif
 	
-	if (battVolt < ADC_BATTERY_LOW)
+	#endif
+	if (deviceState & DEVICE_STATE_IDLE)
+	{
+		gpio_set_pin_level(LED_STATUS, 0);
+	}
+	else if(battVolt < ADC_BATTERY_LOW)
 	{
 		gpio_set_pin_level(LED_STATUS, (timeMS/500)%2);
 	}
-	#endif
 }
 #endif
 
@@ -399,8 +405,24 @@ void sdmmc_dma_transfer_control(void)
 			#endif // DMA_TO_SD_ENABLE
 		}
 
-		if (((getCurrentTimeMS() - startTimeMS) >= endTimeMS) & (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
+		if ((getCurrentTimeMS() - startTimeMS) >= endTimeMS){
 			deviceState |= DEVICE_STATE_STOP_RECORDING; // Sets the flag to want to end current recording
+			for (int i = 0; i<20; i++)
+			{
+				gpio_toggle_pin_level(LED_STATUS);
+				delay_ms(200);
+			}
+		}
+		if (((getCurrentTimeMS() - startTimeMS) <= getPropFromHeader(HEADER_RECORD_LENGTH_POS) * 1000) && (getPropFromHeader(HEADER_EWL_SCAN_ENABLE_POS) == 1) && (getPropFromHeader(HEADER_RECORD_LENGTH_POS) != 0)){
+			//We set a new plane
+			if(ewlvalue > 0 && ewlvalue<= 255 && ewlvalue <= ewlStop){  //We make sure that we don't take invalid EWL planes and that we stop at the last value of EWL
+				if ((getCurrentTimeMS() - startTimeMS) >= ewlStepTime*1000 *(ewlCount+1)){
+					ewlvalue = ewlStart + (ewlCount+1)*ewlStep;
+					setEWL(ewlvalue);
+					ewlCount++;
+				}
+						
+			}
 		}
 	}
 	
@@ -410,6 +432,7 @@ void sdmmc_dma_transfer_control(void)
 #ifdef BATTERY_ENABLE
 void battCharging_cb(void)
 {
+	#if 0
 	bool pinState = gpio_get_pin_level(nCHRG);
 	if (pinState == true) {
 		// Not charging
@@ -426,5 +449,6 @@ void battCharging_cb(void)
 			delay_ms(250);
 		}
 	}
+	#endif
 }
 #endif

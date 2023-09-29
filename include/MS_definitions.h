@@ -12,17 +12,8 @@
 
 #include "MS_config.h"
 
-// SPI
-#define SPI_ICSPACE_MS				0 // Clock cycle between word
-#define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
-
-// USART
-#define USART_ICSPACE_MS				1 // Clock cycle between word
-#define USART_BAUD_MS					23 // f_baud = f_ref / (2*(BAUD + 1))
-
 // Peripheral address
 #define EWL_I2C_ADDR					0x23  //7 bit address!
-
 
 // ------ OTHER STUFF ------------------------
 #define MS_SUCCESS						1
@@ -119,6 +110,12 @@
 #define HEADER_FRAME_RATE_POS		8
 #define HEADER_DELAY_START_POS		9
 #define HEADER_BATT_CUTOFF_POS		10
+
+#define HEADER_EWL_SCAN_ENABLE_POS 	11
+#define HEADER_EWL_START_POS 		12
+#define HEADER_EWL_STOP_POS 		13
+#define HEADER_EWL_STEP_POS 		14
+#define HEADER_EWL_STEP_TIME_POS 		15
 // -------------------------------------------
 
 // ADC Level Definition
@@ -132,9 +129,24 @@
 // This should be defined from SD card header. Temporary
 #ifdef FRAMERATE_20FPS
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_10FPS)
+#define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_5FPS)
+#define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1))
 #elif defined(FRAMERATE_1FPS)
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					19 // f_baud = f_ref / (2*(BAUD + 1))
 #endif
+
+// SPI
+#define SPI_ICSPACE_MS				1 // Clock cycle between word
+
+// USART
+#define USART_ICSPACE_MS				1 // Clock cycle between word
+#define USART_BAUD_MS					23 // f_baud = f_ref / (2*(BAUD + 1))
 
 #define WIDTH						608
 #define HEIGHT						608
@@ -188,6 +200,13 @@ extern volatile uint32_t delayvalue;
 extern volatile uint32_t reclengthvalue;
 extern volatile uint32_t sdo_dma_cb_calls;
 extern volatile uint32_t pcc_dma_cb_calls;
+
+extern volatile uint32_t ewlScanEnable;
+extern volatile uint32_t ewlStart;
+extern volatile uint32_t ewlStop;
+extern volatile uint32_t ewlStep;
+extern volatile uint32_t ewlStepTime;
+extern volatile uint32_t ewlCount;
 
 extern volatile uint16_t regValue[];
 extern volatile uint32_t tempPCC[];
