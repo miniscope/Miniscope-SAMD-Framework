@@ -138,11 +138,11 @@
 #define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1))
 #elif defined(FRAMERATE_1FPS)
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					19 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_BAUD_MS					19//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
 #endif
 
 // SPI
-#define SPI_ICSPACE_MS				1 // Clock cycle between word
+#define SPI_ICSPACE_MS				0 //was 1 initially // Clock cycle between word
 
 // USART
 #define USART_ICSPACE_MS				1 // Clock cycle between word
