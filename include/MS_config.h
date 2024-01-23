@@ -34,7 +34,7 @@
 
 // ------ HARDWARE PERIPHERAL ENABLE ------------------------
 #ifdef WLMS_SPI_MODE
-#define TEST_PATTERN_ENABLE // For dev
+//#define TEST_PATTERN_ENABLE // For dev
 #define PYTHON480_ENABLE
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
@@ -44,13 +44,14 @@
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
-#define SPI_SERCOM0_ENABLE
+//#define SPI_SERCOM0_ENABLE
+#define SPI_SERCOM5_ENABLE
 #define SDO_32BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
 #define AUTOSTART_ENABLE
-#define FRAMERATE_1FPS
-//#define FRAMERATE_5FPS
+//#define FRAMERATE_1FPS
+#define FRAMERATE_5FPS
 //#define FRAMERATE_10FPS
 //#define FRAMERATE_20FPS
 #endif

@@ -4,12 +4,18 @@
 
 int main(void)
 {
+	
 	#ifdef PYTHON480_ENABLE
 	getBuffersPerFrame();
 	#endif
 	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
+	while (1) { // mostly recording_cb and framevalid_cb runs here
+		delay_us(5000);
+		gpio_toggle_pin_level(I2C_BB_SCL);
+	}
+
 
 	//Note sure if this is needed. Takuya
 	__disable_irq();
@@ -31,7 +37,7 @@ int main(void)
 	delay_ms(1000);
 	deviceState = DEVICE_STATE_START_RECORDING;
 	#endif
-		
+
 	while (1) { // mostly recording_cb and framevalid_cb runs here
 		#if defined(PYTHON480_ENABLE)
 		if (deviceState & DEVICE_STATE_START_RECORDING){

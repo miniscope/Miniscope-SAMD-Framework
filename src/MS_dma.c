@@ -75,6 +75,9 @@ void TXLinkedListInit(void)
 		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
 		#endif
+		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM5_ENABLE)
+		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->SPI.DATA.reg;
+		#endif
 		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM7->SPI.DATA.reg;
 		#endif
