@@ -4,8 +4,7 @@
  * Created: 5/26/2021 7:52:14 PM
  *  Author: dbaha
  */ 
-
-//#ifdef EWL_ENABLE
+#ifdef EWL_ENABLE
 
 #include "i2c_bb.h"
 #include "MS_config.h"
@@ -127,4 +126,4 @@ uint8_t I2C_BB_write(uint8_t addr, uint8_t value)
 	return 0;
 }
 
-//#endif
+#endif //EWL_ENABLE

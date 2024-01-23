@@ -6,7 +6,9 @@
  */ 
 
 #include <hpl_dmac_config.h>
+#ifdef PYTHON480_ENABLE
 #include <hpl_pcc_config.h>
+#endif 
 #include <hpl_dma.h>
 
 #include "MS_config.h"

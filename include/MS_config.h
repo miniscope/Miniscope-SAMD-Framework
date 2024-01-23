@@ -21,7 +21,8 @@
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
-#define WLMS_SPI_MODE
+// #define WLMS_SPI_MODE
+#define GS_MODE
 //#define WLMS_USART_MODE
 //#define WLMS_SD_MODE
 //#define DMA_TO_SPI_TESTMODE
@@ -73,6 +74,29 @@
 #define FRAMERATE_1FPS
 #define DEBUGLED_ENABLE
 #endif
+
+
+
+#ifdef GS_MODE
+#define NANEYE_ENABLE
+// #define DMA_TO_SD_ENABLE
+//#define EXLED_PWM_ENABLE // RE-ENABLE WITH PROPER PIN NAME
+// #define BATTERY_ENABLE
+// #define PUSH_BUT_ENABLE
+//#define STATUS_LED_ENABLE // RE-ENABLE WITH PROPER PIN NAME
+
+#define STOP_ENABLE
+#define FRAMERATE_20FPS
+#define PRESET_HEADER_ENABLE
+#define DEBUGLED_ENABLE
+#define SPI_LUT_ENABLE
+#define SDO_32BIT_ENABLE
+#define AUTOSTART_ENABLE
+
+//#define RECORDTIME_DISABLE
+#endif
+
+
 
 #ifdef WLMS_SD_MODE
 #define PYTHON480_ENABLE

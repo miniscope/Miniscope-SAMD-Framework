@@ -4,7 +4,7 @@
  * Created: 5/24/2023 11:11:46 AM
  *  Author: Takuya
  */ 
-
+#ifdef PYTHON480_ENABLE
 #include "python480.h"
 #include "MS_config.h"
 #include "MS_definitions.h"
@@ -447,3 +447,6 @@ void EnableSeq () {
 void DisableSeq () {
 	spi_BB_Write(192,0x0802);
 }
+
+
+#endif // python 480 enable

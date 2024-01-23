@@ -113,7 +113,10 @@ void peripheralInit(void)
 	SDCardInit();
 	#endif
 
+	#ifdef PYTHON480_ENABLE
 	imageSensorInit();
+	#endif
+	
 
 	#ifdef EWL_ENABLE
 	setEWL(getPropFromHeader(HEADER_EWL_POS));

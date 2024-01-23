@@ -51,7 +51,7 @@ int main(void)
 		
 		//Only for testing DMA to serial data out
 		#ifndef PYTHON480_ENABLE
-		sdo_dma_transfer_control(false);
+		//sdo_dma_transfer_control(false);
 		#endif
 	}
 }

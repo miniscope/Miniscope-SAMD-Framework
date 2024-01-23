@@ -8,8 +8,9 @@
 #include "MS_config.h"
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
-
+#ifdef PYTHON480_ENABLE
 #include <hpl_pcc_config.h>
+#endif 
 #include <hpl_dma.h>
 
 #ifdef PYTHON480_ENABLE

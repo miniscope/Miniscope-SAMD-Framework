@@ -3,6 +3,7 @@
  *
  * Created: 5/20/2023 1:39:43 PM
  *  Author: Takuya
+ HERE ADD GS_defintions.h
  */ 
 #ifndef MS_DEFINITIONS_H_
 #define MS_DEFINITIONS_H_
@@ -37,7 +38,7 @@
 
 // ----------- Buffer Definitions ------------
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
-#define NUM_BUFFERS				8  // can be edited by user to optimize speed
+#define NUM_BUFFERS				4  // can be edited by user to optimize speed
 #define PCC_BLOCK_SIZE_IN_WORDS		128
 #ifdef SDO_32BIT_ENABLE
 #define SDO_BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
