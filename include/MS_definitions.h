@@ -268,6 +268,8 @@ void usart_rx_cb(void);
 
 // DMA
 #define SDO_DMA_CHANNEL 0x1
+#define NE_DMA_CHANNEL 0x0 // HS CHECK DMA Channel settings (ATMEL Start)
+
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 
