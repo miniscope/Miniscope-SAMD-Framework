@@ -1,9 +1,9 @@
-/*
- * i2c_bb.c
- *
- * Created: 5/26/2021 7:52:14 PM
- *  Author: dbaha
- */ 
+/**
+@file
+@brief Functions for bitbang I2C interface
+@author Daniel, Takuya
+*/
+
 #include "MS_config.h"
 #include "MS_definitions.h"
 

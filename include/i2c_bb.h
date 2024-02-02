@@ -1,9 +1,8 @@
-/*
- * i2c_bb.h
- *
- * Created: 5/26/2021 7:52:03 PM
- *  Author: dbaha
- */ 
+/**
+@file
+@brief Functions for bitbang I2C interface
+@author Daniel, Takuya
+*/
 
 #ifndef I2C_BB_H_
 #define I2C_BB_H_

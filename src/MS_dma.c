@@ -1,9 +1,8 @@
-/*
- * MS_dma.c
- *
- * Created: 5/20/2023 3:47:16 PM
- *  Author: Takuya
- */ 
+/**
+@file
+@brief DMA related functions
+@author Takuya
+*/
 
 #include "MS_config.h"
 #include "MS_definitions.h"

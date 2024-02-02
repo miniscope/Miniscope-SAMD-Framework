@@ -1,10 +1,8 @@
-/*
- * MS_global_variable.c
- *
- * Created: 5/24/2023 10:51:24 AM
- *  Author: Takuya
- */ 
-
+/**
+@file
+@brief Global variables
+@author Takuya
+*/
 #include "MS_config.h"
 #include "MS_definitions.h"
 
