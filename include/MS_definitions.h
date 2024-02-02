@@ -194,6 +194,11 @@ extern volatile uint32_t droppedFrameCount;
 extern volatile uint32_t framesToDrop;
 extern volatile uint32_t *bufferToWrite;
 extern volatile uint32_t numBlocks;
+
+/*!
+@brief Not actual number of buffers per frame.
+@note It's confusing so it might be better to change name
+*/
 extern volatile uint32_t numBuffersPerFrame;
 
 // Debugging and checking stuff
@@ -230,7 +235,7 @@ extern volatile uint8_t configBlock[]; // Will hold the device config informatio
 // ----------- FUNCTIONS ----------------
 
 /**
-@brief Calculate the number of buffers needed to store one image frame
+@brief Calculate the number of buffers needed to store one image frame and store it into numBuffersPerFrame (extern).
 */
 void getBuffersPerFrame(void);
 

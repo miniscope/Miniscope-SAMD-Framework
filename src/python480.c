@@ -293,10 +293,10 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	spi_BB_Write(235, 0x00E1);
 
 	// Set ROI Size
-	spi_BB_Write(256, roi_x_stop<<8 + roi_x_start);
-	spi_BB_Write(258, roi_x_stop<<8 + roi_x_start);
-	spi_BB_Write(257, roi_y_stop<<8 + roi_y_start);
-	spi_BB_Write(259, roi_y_stop<<8 + roi_y_start);
+	spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+	spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+	spi_BB_Write(257, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
+	spi_BB_Write(259, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
 	//spi_BB_Write(256, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI0
 	//spi_BB_Write(258, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI1
 
