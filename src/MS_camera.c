@@ -8,6 +8,7 @@
 #include "MS_config.h"
 #include "MS_definitions.h"
 #include "python480.h"
+
 #ifdef PYTHON480_ENABLE
 void imageSensorInit(void){
 	// Setup Image Sensor
