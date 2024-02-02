@@ -10,6 +10,10 @@
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <script type="text/javascript" src="cookie.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
@@ -49,6 +53,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){initNavTree('dma__custom__driver_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -70,17 +91,15 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">dma_custom_driver.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Custom driver functions that are added to the ASF drivers.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;utils.h&gt;</code><br />
 </div>
 <p><a href="dma__custom__driver_8h_source.html">Go to the source code of this file.</a></p>
@@ -88,11 +107,16 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4c699b35cf1fd88cb75a6940dd8a0e85" id="r_a4c699b35cf1fd88cb75a6940dd8a0e85"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c699b35cf1fd88cb75a6940dd8a0e85">_dma_set_BTCTRL</a> (const uint8_t channel, uint32_t src)</td></tr>
+<tr class="memdesc:a4c699b35cf1fd88cb75a6940dd8a0e85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Driver function for setting the BTCTRL register.  <br /></td></tr>
 <tr class="separator:a4c699b35cf1fd88cb75a6940dd8a0e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2b46037f00a87c00f1690d9e1fea386" id="r_ae2b46037f00a87c00f1690d9e1fea386"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2b46037f00a87c00f1690d9e1fea386">_dma_get_DESCADDR</a> (const uint8_t channel)</td></tr>
+<tr class="memdesc:ae2b46037f00a87c00f1690d9e1fea386"><td class="mdescLeft">&#160;</td><td class="mdescRight">Driver function for setting the BTCTRL register.  <br /></td></tr>
 <tr class="separator:ae2b46037f00a87c00f1690d9e1fea386"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Custom driver functions that are added to the ASF drivers. </p>
+<dl class="section author"><dt>Author</dt><dd>Takuya </dd></dl>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="ae2b46037f00a87c00f1690d9e1fea386" name="ae2b46037f00a87c00f1690d9e1fea386"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae2b46037f00a87c00f1690d9e1fea386">&#9670;&#160;</a></span>_dma_get_DESCADDR()</h2>
 
@@ -107,6 +131,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Driver function for setting the BTCTRL register. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channel</td><td>DMA channel number </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>DESCADDR.reg value of the specified DMA channel </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Probably should move this to hpl_dmac.h at some point </dd></dl>
 
 </div>
 </div>
@@ -129,12 +163,27 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Driver function for setting the BTCTRL register. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channel</td><td>DMA channel number </td></tr>
+    <tr><td class="paramname">src</td><td>value of the BTCTRL register. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 (ERR_NONE) </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Probably should move this to hpl_dmac.h at some point </dd></dl>
+
 </div>
 </div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dma__custom__driver_8h.html">dma_custom_driver.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+  </ul>
+</div>
 </body>
 </html>

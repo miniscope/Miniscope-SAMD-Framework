@@ -1,9 +1,8 @@
-/*
- * MS_timer.c
- *
- * Created: 5/24/2023 10:55:50 AM
- *  Author: Takuya
- */ 
+/**
+@file
+@brief Timer setup functions
+@author Takuya
+*/
 
 #include "MS_definitions.h"
 #include "MS_config.h"

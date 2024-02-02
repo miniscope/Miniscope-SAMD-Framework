@@ -17,8 +17,8 @@ var searchData=
   ['interface_5fmode_5frx_5fpos_14',['INTERFACE_MODE_RX_POS',['../_nan_eye_8h.html#ae31d19878d2e55d18f4f4e7b45dd5eac',1,'NanEye.h']]],
   ['interface_5fmode_5fsize_15',['INTERFACE_MODE_SIZE',['../_nan_eye_8h.html#a9d5c3b9108959db04934b75455f6359a',1,'NanEye.h']]],
   ['interface_5fmode_5ftx_5fpos_16',['INTERFACE_MODE_TX_POS',['../_nan_eye_8h.html#a7395e39a21b6538ee4029d757e5d0883',1,'NanEye.h']]],
-  ['ir_5ftrigger_5fenable_17',['IR_TRIGGER_ENABLE',['../_m_s__config_8h.html#acd1acac760ad6f348342d561d437fcf8',1,'IR_TRIGGER_ENABLE:&#160;MS_config.h'],['../md__r_e_a_d_m_e.html#autotoc_md16',1,'IR_TRIGGER_ENABLE']]],
-  ['ir_5fuart_5fenable_18',['IR_UART_ENABLE',['../_m_s__config_8h.html#adb40be2f2c8d544f6e64f0e05e8752cc',1,'IR_UART_ENABLE:&#160;MS_config.h'],['../md__r_e_a_d_m_e.html#autotoc_md17',1,'IR_UART_ENABLE']]],
+  ['ir_5ftrigger_5fenable_17',['IR_TRIGGER_ENABLE',['../_m_s__config_8h.html#acd1acac760ad6f348342d561d437fcf8',1,'IR_TRIGGER_ENABLE:&#160;MS_config.h'],['../index.html#autotoc_md14',1,'IR_TRIGGER_ENABLE']]],
+  ['ir_5fuart_5fenable_18',['IR_UART_ENABLE',['../_m_s__config_8h.html#adb40be2f2c8d544f6e64f0e05e8752cc',1,'IR_UART_ENABLE:&#160;MS_config.h'],['../index.html#autotoc_md15',1,'IR_UART_ENABLE']]],
   ['irqinit_19',['irqInit',['../_m_s__definitions_8h.html#ab20f4701aefb86484839006e804e3323',1,'irqInit(void):&#160;MS_util.c'],['../_m_s__util_8c.html#ab20f4701aefb86484839006e804e3323',1,'irqInit(void):&#160;MS_util.c']]],
   ['irreceive_5fcb_20',['irReceive_cb',['../_m_s__definitions_8h.html#ac8fb15e150c84cb7ed36b1187a86a838',1,'MS_definitions.h']]]
 ];

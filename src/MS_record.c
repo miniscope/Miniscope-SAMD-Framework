@@ -1,9 +1,8 @@
-/*
- * MS_record.c
- *
- * Created: 5/20/2023 7:26:08 PM
- *  Author: Takuya
- */
+/**
+@file
+@brief Recording related control functions
+@author Takuya
+*/
 
 #include "MS_config.h"
 #include "MS_definitions.h"

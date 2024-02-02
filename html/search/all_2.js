@@ -1,7 +1,7 @@
 var searchData=
 [
   ['battcharging_5fcb_0',['battCharging_cb',['../_m_s__definitions_8h.html#a3888397de17ce696b0e288364ce99fb5',1,'MS_definitions.h']]],
-  ['battery_5fenable_1',['BATTERY_ENABLE',['../_m_s__config_8h.html#a7ddfd554cc4e91813d2b37ed9f052d77',1,'BATTERY_ENABLE:&#160;MS_config.h'],['../md__r_e_a_d_m_e.html#autotoc_md13',1,'BATTERY_ENABLE']]],
+  ['battery_5fenable_1',['BATTERY_ENABLE',['../_m_s__config_8h.html#a7ddfd554cc4e91813d2b37ed9f052d77',1,'BATTERY_ENABLE:&#160;MS_config.h'],['../index.html#autotoc_md11',1,'BATTERY_ENABLE']]],
   ['batteryvalue_2',['batteryvalue',['../_m_s__definitions_8h.html#a8541d24a78140a08dc6320bc4b0b1dc8',1,'batteryvalue:&#160;MS_global_variable.c'],['../_m_s__global__variable_8c.html#a8541d24a78140a08dc6320bc4b0b1dc8',1,'batteryvalue:&#160;MS_global_variable.c']]],
   ['battvolt_3',['battVolt',['../_m_s__definitions_8h.html#abf317ae48ae2c02993e0c88b1ef6bf5f',1,'battVolt:&#160;MS_global_variable.c'],['../_m_s__global__variable_8c.html#abf317ae48ae2c02993e0c88b1ef6bf5f',1,'battVolt:&#160;MS_global_variable.c']]],
   ['binning_4',['BINNING',['../_m_s__definitions_8h.html#a209c604b439febfd778bd2ad4f24ddd0',1,'MS_definitions.h']]],

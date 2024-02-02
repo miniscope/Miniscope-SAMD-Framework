@@ -10,6 +10,10 @@
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <script type="text/javascript" src="cookie.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
@@ -49,11 +53,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() { codefold.init(0); });
+$(function(){initNavTree('_nan_eye_8h_source.html',''); initResizable(); });
 /* @license-end */
 </script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -75,114 +91,101 @@ $(function() { codefold.init(0); });
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle"><div class="title">NanEye.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="_nan_eye_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// this is where GS_Definitions.h will go</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * definitions.h</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> * Created: 9/1/2022 10:16:19 PM</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> *  Author: Daniel Aharoni</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment"> * Modified: 10/1/2022 10:16:19 AM</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> *  Author: Hemal Semwal</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> </span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> */</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#ifndef DEFINITIONS_H_</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#define DEFINITIONS_H_</span></div>
+<a href="_nan_eye_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#ifndef DEFINITIONS_H_</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#define DEFINITIONS_H_</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">// States</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#aafff27c7165f059a969fe60fee51f683">   12</a></span><span class="preprocessor">#define STATE_IDLE              0 </span><span class="comment">// uint32 all 0</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a639ef17ed86ce0e637222dd7f42b270e">   13</a></span><span class="preprocessor">#define STATE_INTERFACE         1&lt;&lt;0 </span><span class="comment">// uint31 ....00001</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a33e8df951a80b25922dfd38ac3c072f0">   14</a></span><span class="preprocessor">#define STATE_SYNC_AND_DELAY    1&lt;&lt;1 </span><span class="comment">// uint31 ....00010</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a77e7abe537b487cbd5741afafe140cc7">   15</a></span><span class="preprocessor">#define STATE_READOUT           1&lt;&lt;2 </span><span class="comment">// uint31 ....00100</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment">// States</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#aafff27c7165f059a969fe60fee51f683">   18</a></span><span class="preprocessor">#define STATE_IDLE              0 </span><span class="comment">// uint32 all 0</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a639ef17ed86ce0e637222dd7f42b270e">   19</a></span><span class="preprocessor">#define STATE_INTERFACE         1&lt;&lt;0 </span><span class="comment">// uint31 ....00001</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a33e8df951a80b25922dfd38ac3c072f0">   20</a></span><span class="preprocessor">#define STATE_SYNC_AND_DELAY    1&lt;&lt;1 </span><span class="comment">// uint31 ....00010</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a77e7abe537b487cbd5741afafe140cc7">   21</a></span><span class="preprocessor">#define STATE_READOUT           1&lt;&lt;2 </span><span class="comment">// uint31 ....00100</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment">//NaneyeC values</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a0918247bbcdffe97ae5132a0b1f640cb">   18</a></span><span class="preprocessor">#define NANEYE_REG0_DEFAULT_VALUE   0b1000000010010101</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a998d448777987fe879d902e0f402b718">   19</a></span><span class="preprocessor">#define NANEYE_REG1_DEFAULT_VALUE   0b0000001101011010</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ab856d5cb0670a87a7e7ccd7bae54402a">   21</a></span><span class="preprocessor">#define NANEYE_LAST_INTERFACE_BYTE  0b000000010101</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">//NaneyeC values</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a0918247bbcdffe97ae5132a0b1f640cb">   24</a></span><span class="preprocessor">#define NANEYE_REG0_DEFAULT_VALUE   0b1000000010010101</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a998d448777987fe879d902e0f402b718">   25</a></span><span class="preprocessor">#define NANEYE_REG1_DEFAULT_VALUE   0b0000001101011010</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ab856d5cb0670a87a7e7ccd7bae54402a">   27</a></span><span class="preprocessor">#define NANEYE_LAST_INTERFACE_BYTE  0b000000010101</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a6b7f7250b6ad75ada8a8ad546160ac51">   29</a></span><span class="preprocessor">#define NANEYE_INITIAL_INTERFACE_BYTE   0b00</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment">// DMA Transfer Definitions</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment">// </span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a9d5c3b9108959db04934b75455f6359a">   33</a></span><span class="preprocessor">#define INTERFACE_MODE_SIZE     972 </span><span class="comment">// (648 * 12 / 8) in bytes</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad839f65dc5ea6f1a2b920ed3535dc63f">   34</a></span><span class="preprocessor">#define SYNC_MODE_SIZE          984 </span><span class="comment">// 656 * 12 / 8) in bytes</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#aaf2b90d1b689fab508ada65695cb0837">   35</a></span><span class="preprocessor">#define DELAY_MODE_MIN_SIZE     984 </span><span class="comment">// 2 * 328 * 12 / 8) in bytes</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad9bfdebbe605c21f8df9c793c650ae66">   36</a></span><span class="preprocessor">#define READOUT_MODE_SIZE       157452 </span><span class="comment">// (320 * (8 + 320) +8) * 12/8 in bytes</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a04f9513a9f9255be870cb65bf53b3f12">   37</a></span><span class="preprocessor">#define INITIAL_INTERFACE_MODE_SIZE 1 </span><span class="comment">// 1 cycle in total, 342 *12/8 = 513 for full II sequence</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a42f86dd5d167c04c5011fb6014515504">   39</a></span><span class="preprocessor">#define BUFFER_FRAME_SIZE       2 </span><span class="comment">// Number of frames that can be held in spi receive buffer</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">// DMA Config positions</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a7395e39a21b6538ee4029d757e5d0883">   42</a></span><span class="preprocessor">#define INTERFACE_MODE_TX_POS       0</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ae31d19878d2e55d18f4f4e7b45dd5eac">   43</a></span><span class="preprocessor">#define INTERFACE_MODE_RX_POS       1</span></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#af278be326283dc1bf91c604955b95c98">   44</a></span><span class="preprocessor">#define SYNC_AND_DELAY_MODE_TX_POS  2</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a18305f03a54512336d41195b17af3af3">   45</a></span><span class="preprocessor">#define SYNC_AND_DELAY_MODE_RX_POS  3</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ab3ac7ea05e8069cc8a85c2b88337123b">   46</a></span><span class="preprocessor">#define READOUT_MODE_TX_POS         4</span></div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a0415de21cb0cd8ae6744e51d31228605">   47</a></span><span class="preprocessor">#define READOUT_MODE_RX_POS         5</span></div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="comment">// trying the initial interface mode HS added</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ac1b1e7d923f6d30b86683bca91c8b567">   50</a></span><span class="preprocessor">#define INITIAL_INTERFACE_MODE_TX_POS       6</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a99abf28b4ddb58f8e654a55b0796b9a6">   51</a></span><span class="preprocessor">#define INITIAL_INTERFACE_MODE_RX_POS       7</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a6b7f7250b6ad75ada8a8ad546160ac51">   23</a></span><span class="preprocessor">#define NANEYE_INITIAL_INTERFACE_BYTE   0b00</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="comment">// DMA Transfer Definitions</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">// </span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a9d5c3b9108959db04934b75455f6359a">   27</a></span><span class="preprocessor">#define INTERFACE_MODE_SIZE     972 </span><span class="comment">// (648 * 12 / 8) in bytes</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad839f65dc5ea6f1a2b920ed3535dc63f">   28</a></span><span class="preprocessor">#define SYNC_MODE_SIZE          984 </span><span class="comment">// 656 * 12 / 8) in bytes</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#aaf2b90d1b689fab508ada65695cb0837">   29</a></span><span class="preprocessor">#define DELAY_MODE_MIN_SIZE     984 </span><span class="comment">// 2 * 328 * 12 / 8) in bytes</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad9bfdebbe605c21f8df9c793c650ae66">   30</a></span><span class="preprocessor">#define READOUT_MODE_SIZE       157452 </span><span class="comment">// (320 * (8 + 320) +8) * 12/8 in bytes</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a04f9513a9f9255be870cb65bf53b3f12">   31</a></span><span class="preprocessor">#define INITIAL_INTERFACE_MODE_SIZE 1 </span><span class="comment">// 1 cycle in total, 342 *12/8 = 513 for full II sequence</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a42f86dd5d167c04c5011fb6014515504">   33</a></span><span class="preprocessor">#define BUFFER_FRAME_SIZE       2 </span><span class="comment">// Number of frames that can be held in spi receive buffer</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="comment">// DMA Config positions</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a7395e39a21b6538ee4029d757e5d0883">   36</a></span><span class="preprocessor">#define INTERFACE_MODE_TX_POS       0</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ae31d19878d2e55d18f4f4e7b45dd5eac">   37</a></span><span class="preprocessor">#define INTERFACE_MODE_RX_POS       1</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#af278be326283dc1bf91c604955b95c98">   38</a></span><span class="preprocessor">#define SYNC_AND_DELAY_MODE_TX_POS  2</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a18305f03a54512336d41195b17af3af3">   39</a></span><span class="preprocessor">#define SYNC_AND_DELAY_MODE_RX_POS  3</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ab3ac7ea05e8069cc8a85c2b88337123b">   40</a></span><span class="preprocessor">#define READOUT_MODE_TX_POS         4</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a0415de21cb0cd8ae6744e51d31228605">   41</a></span><span class="preprocessor">#define READOUT_MODE_RX_POS         5</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment">// trying the initial interface mode HS added</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ac1b1e7d923f6d30b86683bca91c8b567">   44</a></span><span class="preprocessor">#define INITIAL_INTERFACE_MODE_TX_POS       6</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a99abf28b4ddb58f8e654a55b0796b9a6">   45</a></span><span class="preprocessor">#define INITIAL_INTERFACE_MODE_RX_POS       7</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment">// ------- SPI Definitions</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad3831f075a1915b2987c74660c9088f6">   49</a></span><span class="preprocessor">#define SPI_MASTER_BASE     SPI0</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a94968442da7155836d4834753b546d34">   50</a></span><span class="preprocessor">#define SPI_IRQn            SPI0_IRQn</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a261d000a4b56de5d3749695f97dfea63">   51</a></span><span class="preprocessor">#define SPI_ID              ID_SPI0</span></div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="comment">// ------- SPI Definitions</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad3831f075a1915b2987c74660c9088f6">   55</a></span><span class="preprocessor">#define SPI_MASTER_BASE     SPI0</span></div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a94968442da7155836d4834753b546d34">   56</a></span><span class="preprocessor">#define SPI_IRQn            SPI0_IRQn</span></div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a261d000a4b56de5d3749695f97dfea63">   57</a></span><span class="preprocessor">#define SPI_ID              ID_SPI0</span></div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a31e66d68a6e77c5dab2d4315f790ac78">   59</a></span><span class="preprocessor">#define SPI_CHIP_SEL        0</span></div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a10380e683627ad44cef2d5b0f758b270">   60</a></span><span class="preprocessor">#define SPI_CHIP_PCS        spi_get_pcs(SPI_CHIP_SEL)</span></div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a30e93a3290cf04fae37d2539d2fb119a">   61</a></span><span class="preprocessor">#define SPI_DLYBS           0x0 </span><span class="comment">//Delay between NPCS activation to first SPCK (0 is half clock cycle)</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a6072cb9d3ae9bb3f024e257532ae6ec0">   62</a></span><span class="preprocessor">#define SPI_DLYBCT          0x00 </span><span class="comment">//Delay between consecutive transfers. A delay before CS is pulled up at end of transfer</span></div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a16181ca614d283b6ae6272d7ed5056b8">   64</a></span><span class="preprocessor">#define SPI_DLYBCS          0x00 </span><span class="comment">// Delay NPCS is held high before next transmit</span></div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#add43c9bea4c3651888ddd858eee36c28">   65</a></span><span class="preprocessor">#define SPI_CLK_RATE        16000000 </span><span class="comment">// 16000000 // 24000000 // MHz</span></div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="comment">// pin defintions for first NE camera (RGB) sensor</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a315722498711fce1e1aa6ea6654385cf">   68</a></span><span class="preprocessor">#define SPI_MISO_PIN        PIO_PD20_IDX</span></div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a202817a103c8fd8126069d7e3e804f07">   69</a></span><span class="preprocessor">#define SPI_MISO_MODE       IOPORT_MODE_MUX_B</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a67d2c0b6e0ecbd0351958756e4830172">   70</a></span><span class="preprocessor">#define SPI_MOSI_PIN        PIO_PD21_IDX</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a4e2e5e75bb12908088b5008c9b8db42d">   71</a></span><span class="preprocessor">#define SPI_MOSI_MODE       IOPORT_MODE_MUX_B</span></div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#aea129e68ba2b7684e471ea784f290047">   72</a></span><span class="preprocessor">#define SPI_SPCK_PIN        PIO_PD22_IDX</span></div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a159084c4fcb262a7b38ab4bda47b7633">   73</a></span><span class="preprocessor">#define SPI_SPCK_MODE       IOPORT_MODE_MUX_B</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad453924c70e85c0ba13f89a6b90cbcc5">   74</a></span><span class="preprocessor">#define SPI_NPCS_PIN        PIO_PB2_IDX</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#afd9bda5b0d849054b8078bf8a29a5129">   75</a></span><span class="preprocessor">#define SPI_NPCS_MODE       IOPORT_MODE_MUX_D</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a31e66d68a6e77c5dab2d4315f790ac78">   53</a></span><span class="preprocessor">#define SPI_CHIP_SEL        0</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a10380e683627ad44cef2d5b0f758b270">   54</a></span><span class="preprocessor">#define SPI_CHIP_PCS        spi_get_pcs(SPI_CHIP_SEL)</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a30e93a3290cf04fae37d2539d2fb119a">   55</a></span><span class="preprocessor">#define SPI_DLYBS           0x0 </span><span class="comment">//Delay between NPCS activation to first SPCK (0 is half clock cycle)</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a6072cb9d3ae9bb3f024e257532ae6ec0">   56</a></span><span class="preprocessor">#define SPI_DLYBCT          0x00 </span><span class="comment">//Delay between consecutive transfers. A delay before CS is pulled up at end of transfer</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a16181ca614d283b6ae6272d7ed5056b8">   58</a></span><span class="preprocessor">#define SPI_DLYBCS          0x00 </span><span class="comment">// Delay NPCS is held high before next transmit</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#add43c9bea4c3651888ddd858eee36c28">   59</a></span><span class="preprocessor">#define SPI_CLK_RATE        16000000 </span><span class="comment">// 16000000 // 24000000 // MHz</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment">// pin defintions for first NE camera (RGB) sensor</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a315722498711fce1e1aa6ea6654385cf">   62</a></span><span class="preprocessor">#define SPI_MISO_PIN        PIO_PD20_IDX</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a202817a103c8fd8126069d7e3e804f07">   63</a></span><span class="preprocessor">#define SPI_MISO_MODE       IOPORT_MODE_MUX_B</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a67d2c0b6e0ecbd0351958756e4830172">   64</a></span><span class="preprocessor">#define SPI_MOSI_PIN        PIO_PD21_IDX</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a4e2e5e75bb12908088b5008c9b8db42d">   65</a></span><span class="preprocessor">#define SPI_MOSI_MODE       IOPORT_MODE_MUX_B</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#aea129e68ba2b7684e471ea784f290047">   66</a></span><span class="preprocessor">#define SPI_SPCK_PIN        PIO_PD22_IDX</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a159084c4fcb262a7b38ab4bda47b7633">   67</a></span><span class="preprocessor">#define SPI_SPCK_MODE       IOPORT_MODE_MUX_B</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#ad453924c70e85c0ba13f89a6b90cbcc5">   68</a></span><span class="preprocessor">#define SPI_NPCS_PIN        PIO_PB2_IDX</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#afd9bda5b0d849054b8078bf8a29a5129">   69</a></span><span class="preprocessor">#define SPI_NPCS_MODE       IOPORT_MODE_MUX_D</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment">// SPI DMA</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a8a5d543fcdb694da3201390e143efedf">   72</a></span><span class="preprocessor">#define SPI0_XDMAC_TX_CH_NUM    1 </span><span class="comment">//XDMAC Channel HW Interface for SPI0</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a92716f2f6675f26082536432b644cb1f">   73</a></span><span class="preprocessor">#define SPI0_XDMAC_RX_CH_NUM    2 </span><span class="comment">//XDMAC Channel HW Interface for SPI0</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a5e721488b01076aaef06150fc1100bdf">   74</a></span><span class="preprocessor">#define XDMAC_TX_CH             0 </span><span class="comment">//XDMAC Channel</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a7746a2c3caf1b5667acae27cb703d067">   75</a></span><span class="preprocessor">#define XDMAC_RX_CH             1 </span><span class="comment">//XDMAC Channel</span></div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="comment">// SPI DMA</span></div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a8a5d543fcdb694da3201390e143efedf">   78</a></span><span class="preprocessor">#define SPI0_XDMAC_TX_CH_NUM    1 </span><span class="comment">//XDMAC Channel HW Interface for SPI0</span></div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a92716f2f6675f26082536432b644cb1f">   79</a></span><span class="preprocessor">#define SPI0_XDMAC_RX_CH_NUM    2 </span><span class="comment">//XDMAC Channel HW Interface for SPI0</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a5e721488b01076aaef06150fc1100bdf">   80</a></span><span class="preprocessor">#define XDMAC_TX_CH             0 </span><span class="comment">//XDMAC Channel</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="_nan_eye_8h.html#a7746a2c3caf1b5667acae27cb703d067">   81</a></span><span class="preprocessor">#define XDMAC_RX_CH             1 </span><span class="comment">//XDMAC Channel</span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="comment">// pin defintions for first NE camera (RGB) sensor</span></div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="comment">// #define SPI_MISO_PIN     PIO_PD20_IDX</span></div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="comment">// #define SPI_MISO_MODE        IOPORT_MODE_MUX_B</span></div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="comment">// #define SPI_MOSI_PIN     PIO_PD25_IDX</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="comment">// #define SPI_MOSI_MODE        IOPORT_MODE_MUX_B</span></div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">// #define SPI_SPCK_PIN     PIO_PD28_IDX</span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment">// #define SPI_SPCK_MODE        IOPORT_MODE_MUX_B</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment">// #define SPI_NPCS_PIN     PIO_PB2_IDX</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment">// #define SPI_NPCS_MODE        IOPORT_MODE_MUX_D</span></div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#endif </span><span class="comment">/* DEFINITIONS_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="comment">// pin defintions for first NE camera (RGB) sensor</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment">// #define SPI_MISO_PIN     PIO_PD20_IDX</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">// #define SPI_MISO_MODE        IOPORT_MODE_MUX_B</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="comment">// #define SPI_MOSI_PIN     PIO_PD25_IDX</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="comment">// #define SPI_MOSI_MODE        IOPORT_MODE_MUX_B</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="comment">// #define SPI_SPCK_PIN     PIO_PD28_IDX</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="comment">// #define SPI_SPCK_MODE        IOPORT_MODE_MUX_B</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="comment">// #define SPI_NPCS_PIN     PIO_PB2_IDX</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="comment">// #define SPI_NPCS_MODE        IOPORT_MODE_MUX_D</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="preprocessor">#endif </span><span class="comment">/* DEFINITIONS_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="_nan_eye_8h.html">NanEye.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+  </ul>
+</div>
 </body>
 </html>

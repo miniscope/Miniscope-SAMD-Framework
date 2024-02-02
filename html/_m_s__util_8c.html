@@ -10,6 +10,10 @@
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <script type="text/javascript" src="cookie.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
@@ -49,6 +53,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){initNavTree('_m_s__util_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -70,17 +91,15 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">MS_util.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Utility functions for Miniscope.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;atmel_start.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="_m_s__config_8h_source.html">MS_config.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_m_s__definitions_8h_source.html">MS_definitions.h</a>&quot;</code><br />
@@ -95,6 +114,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a212682811696a5955f4248328fe35776" id="r_a212682811696a5955f4248328fe35776"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a212682811696a5955f4248328fe35776">debugHeaderProp</a> (void)</td></tr>
 <tr class="separator:a212682811696a5955f4248328fe35776"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68bac06268371c4514ae6c6888557fc1" id="r_a68bac06268371c4514ae6c6888557fc1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68bac06268371c4514ae6c6888557fc1">getBuffersPerFrame</a> (void)</td></tr>
+<tr class="memdesc:a68bac06268371c4514ae6c6888557fc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the number of buffers needed to store one image frame.  <br /></td></tr>
 <tr class="separator:a68bac06268371c4514ae6c6888557fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae80f56f3274a1d4b4f34bca247d73cdb" id="r_ae80f56f3274a1d4b4f34bca247d73cdb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae80f56f3274a1d4b4f34bca247d73cdb">peripheralInit</a> (void)</td></tr>
 <tr class="separator:ae80f56f3274a1d4b4f34bca247d73cdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,7 +125,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a326eb351db04aa1af9f9de8f4cf6aba4" id="r_a326eb351db04aa1af9f9de8f4cf6aba4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a326eb351db04aa1af9f9de8f4cf6aba4">setConfigBlockProp</a> (uint8_t position, uint32_t value)</td></tr>
 <tr class="separator:a326eb351db04aa1af9f9de8f4cf6aba4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Utility functions for Miniscope. </p>
+<dl class="section author"><dt>Author</dt><dd>Takuya </dd></dl>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a2f6530fba6d4d3b2d77ec0d5074cd378" name="a2f6530fba6d4d3b2d77ec0d5074cd378"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2f6530fba6d4d3b2d77ec0d5074cd378">&#9670;&#160;</a></span>configPropInit()</h2>
 
@@ -120,11 +143,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">  180</span>                         {</div>
-<div class="line"><span class="lineno">  181</span>    <span class="comment">// Set some parameters in config buffer to be written to SD card at end of recording</span></div>
-<div class="line"><span class="lineno">  182</span>    <span class="comment">// TODO: Add additional info in the config block to cover everything needed for offline processing</span></div>
-<div class="line"><span class="lineno">  183</span> </div>
-<div class="line"><span class="lineno">  184</span>}</div>
+<div class="fragment"><div class="line"><span class="lineno">  179</span>                         {</div>
+<div class="line"><span class="lineno">  180</span>    <span class="comment">// Set some parameters in config buffer to be written to SD card at end of recording</span></div>
+<div class="line"><span class="lineno">  181</span>    <span class="comment">// TODO: Add additional info in the config block to cover everything needed for offline processing</span></div>
+<div class="line"><span class="lineno">  182</span> </div>
+<div class="line"><span class="lineno">  183</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -142,43 +165,43 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   44</span>                          {</div>
-<div class="line"><span class="lineno">   45</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#af3d1a402c6d133b7a32132aae806e7c8">ewlvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#af95e432de200579afa144622d232178d">HEADER_EWL_POS</a>);</div>
-<div class="line"><span class="lineno">   46</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a8541d24a78140a08dc6320bc4b0b1dc8">batteryvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a648a9420590996036d6448877047bf3b">HEADER_BATT_CUTOFF_POS</a>);</div>
-<div class="line"><span class="lineno">   47</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a724ad3abd3e2ad2b1733aed63d8125ac">ledvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a192fae17de81454f33a1c700525dc293">HEADER_LED_POS</a>);</div>
-<div class="line"><span class="lineno">   48</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#aa5fa1a648f9c63503a26a4c4b4b76784">frameratevalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a20cbe690933e23d25b4203f3e2db517d">HEADER_FRAME_RATE_POS</a>);</div>
-<div class="line"><span class="lineno">   49</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a058857128a10ffcff93debed826d7b15">delayvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a5059788d4e3c68eef41d2b0bff09033b">HEADER_DELAY_START_POS</a>);</div>
-<div class="line"><span class="lineno">   50</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#ae613acc1f2a919c2ad202f7245098516">reclengthvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#ac4855eb4a09c9c286812a5e3fffd7615">HEADER_RECORD_LENGTH_POS</a>);</div>
-<div class="line"><span class="lineno">   51</span>    </div>
-<div class="line"><span class="lineno">   52</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#adbc803039ccf7e6d9211ba8a203acc37">ewlScanEnable</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#adb3f411027aa4bb9cbc576fb0960e15d">HEADER_EWL_SCAN_ENABLE_POS</a>);</div>
-<div class="line"><span class="lineno">   53</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a9eec56d218efd8b0f667b52e36dfe243">ewlStart</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a4d21f9c59065826105f69f472b988206">HEADER_EWL_START_POS</a>);</div>
-<div class="line"><span class="lineno">   54</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a0bda8e8b7d2858fc1a971bdd3aaa46db">ewlStop</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a1e8745a4931b336706f52afed6644a9c">HEADER_EWL_STOP_POS</a>);</div>
-<div class="line"><span class="lineno">   55</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a94410698fe92d34aa742774099448b43">ewlStep</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a0e2f3c28f100f5977527e7a22b70c19a">HEADER_EWL_STEP_POS</a>);</div>
-<div class="line"><span class="lineno">   56</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#ae9312b933eea6d62e8963765d5006081">ewlStepTime</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a720f2e8e107725ae3a0d45e40ec6ba0c">HEADER_EWL_STEP_TIME_POS</a>);</div>
-<div class="line"><span class="lineno">   57</span>}</div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a058857128a10ffcff93debed826d7b15"><div class="ttname"><a href="_m_s__definitions_8h.html#a058857128a10ffcff93debed826d7b15">delayvalue</a></div><div class="ttdeci">volatile uint32_t delayvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:58</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a0bda8e8b7d2858fc1a971bdd3aaa46db"><div class="ttname"><a href="_m_s__definitions_8h.html#a0bda8e8b7d2858fc1a971bdd3aaa46db">ewlStop</a></div><div class="ttdeci">volatile uint32_t ewlStop</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:63</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a0e2f3c28f100f5977527e7a22b70c19a"><div class="ttname"><a href="_m_s__definitions_8h.html#a0e2f3c28f100f5977527e7a22b70c19a">HEADER_EWL_STEP_POS</a></div><div class="ttdeci">#define HEADER_EWL_STEP_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:117</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a192fae17de81454f33a1c700525dc293"><div class="ttname"><a href="_m_s__definitions_8h.html#a192fae17de81454f33a1c700525dc293">HEADER_LED_POS</a></div><div class="ttdeci">#define HEADER_LED_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:107</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a1e8745a4931b336706f52afed6644a9c"><div class="ttname"><a href="_m_s__definitions_8h.html#a1e8745a4931b336706f52afed6644a9c">HEADER_EWL_STOP_POS</a></div><div class="ttdeci">#define HEADER_EWL_STOP_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:116</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a20cbe690933e23d25b4203f3e2db517d"><div class="ttname"><a href="_m_s__definitions_8h.html#a20cbe690933e23d25b4203f3e2db517d">HEADER_FRAME_RATE_POS</a></div><div class="ttdeci">#define HEADER_FRAME_RATE_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:110</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a4d21f9c59065826105f69f472b988206"><div class="ttname"><a href="_m_s__definitions_8h.html#a4d21f9c59065826105f69f472b988206">HEADER_EWL_START_POS</a></div><div class="ttdeci">#define HEADER_EWL_START_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:115</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a5059788d4e3c68eef41d2b0bff09033b"><div class="ttname"><a href="_m_s__definitions_8h.html#a5059788d4e3c68eef41d2b0bff09033b">HEADER_DELAY_START_POS</a></div><div class="ttdeci">#define HEADER_DELAY_START_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:111</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a648a9420590996036d6448877047bf3b"><div class="ttname"><a href="_m_s__definitions_8h.html#a648a9420590996036d6448877047bf3b">HEADER_BATT_CUTOFF_POS</a></div><div class="ttdeci">#define HEADER_BATT_CUTOFF_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:112</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a720f2e8e107725ae3a0d45e40ec6ba0c"><div class="ttname"><a href="_m_s__definitions_8h.html#a720f2e8e107725ae3a0d45e40ec6ba0c">HEADER_EWL_STEP_TIME_POS</a></div><div class="ttdeci">#define HEADER_EWL_STEP_TIME_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:118</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a724ad3abd3e2ad2b1733aed63d8125ac"><div class="ttname"><a href="_m_s__definitions_8h.html#a724ad3abd3e2ad2b1733aed63d8125ac">ledvalue</a></div><div class="ttdeci">volatile uint32_t ledvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:56</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a8541d24a78140a08dc6320bc4b0b1dc8"><div class="ttname"><a href="_m_s__definitions_8h.html#a8541d24a78140a08dc6320bc4b0b1dc8">batteryvalue</a></div><div class="ttdeci">volatile uint32_t batteryvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:55</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a94410698fe92d34aa742774099448b43"><div class="ttname"><a href="_m_s__definitions_8h.html#a94410698fe92d34aa742774099448b43">ewlStep</a></div><div class="ttdeci">volatile uint32_t ewlStep</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:64</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a9eec56d218efd8b0f667b52e36dfe243"><div class="ttname"><a href="_m_s__definitions_8h.html#a9eec56d218efd8b0f667b52e36dfe243">ewlStart</a></div><div class="ttdeci">volatile uint32_t ewlStart</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:62</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_aa5fa1a648f9c63503a26a4c4b4b76784"><div class="ttname"><a href="_m_s__definitions_8h.html#aa5fa1a648f9c63503a26a4c4b4b76784">frameratevalue</a></div><div class="ttdeci">volatile uint32_t frameratevalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:57</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_ac4855eb4a09c9c286812a5e3fffd7615"><div class="ttname"><a href="_m_s__definitions_8h.html#ac4855eb4a09c9c286812a5e3fffd7615">HEADER_RECORD_LENGTH_POS</a></div><div class="ttdeci">#define HEADER_RECORD_LENGTH_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:109</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_adb3f411027aa4bb9cbc576fb0960e15d"><div class="ttname"><a href="_m_s__definitions_8h.html#adb3f411027aa4bb9cbc576fb0960e15d">HEADER_EWL_SCAN_ENABLE_POS</a></div><div class="ttdeci">#define HEADER_EWL_SCAN_ENABLE_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:114</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_adbc803039ccf7e6d9211ba8a203acc37"><div class="ttname"><a href="_m_s__definitions_8h.html#adbc803039ccf7e6d9211ba8a203acc37">ewlScanEnable</a></div><div class="ttdeci">volatile uint32_t ewlScanEnable</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:61</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_ae613acc1f2a919c2ad202f7245098516"><div class="ttname"><a href="_m_s__definitions_8h.html#ae613acc1f2a919c2ad202f7245098516">reclengthvalue</a></div><div class="ttdeci">volatile uint32_t reclengthvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:59</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_ae9312b933eea6d62e8963765d5006081"><div class="ttname"><a href="_m_s__definitions_8h.html#ae9312b933eea6d62e8963765d5006081">ewlStepTime</a></div><div class="ttdeci">volatile uint32_t ewlStepTime</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:65</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_af3d1a402c6d133b7a32132aae806e7c8"><div class="ttname"><a href="_m_s__definitions_8h.html#af3d1a402c6d133b7a32132aae806e7c8">ewlvalue</a></div><div class="ttdeci">volatile uint32_t ewlvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:54</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_af95e432de200579afa144622d232178d"><div class="ttname"><a href="_m_s__definitions_8h.html#af95e432de200579afa144622d232178d">HEADER_EWL_POS</a></div><div class="ttdeci">#define HEADER_EWL_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:108</div></div>
-<div class="ttc" id="a_m_s__util_8c_html_a74d393ad7d62230c68aed8448e7fa00f"><div class="ttname"><a href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a></div><div class="ttdeci">uint32_t getPropFromHeader(uint8_t headerPos)</div><div class="ttdef"><b>Definition</b> MS_util.c:38</div></div>
+<div class="fragment"><div class="line"><span class="lineno">   43</span>                          {</div>
+<div class="line"><span class="lineno">   44</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#af3d1a402c6d133b7a32132aae806e7c8">ewlvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#af95e432de200579afa144622d232178d">HEADER_EWL_POS</a>);</div>
+<div class="line"><span class="lineno">   45</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a8541d24a78140a08dc6320bc4b0b1dc8">batteryvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a648a9420590996036d6448877047bf3b">HEADER_BATT_CUTOFF_POS</a>);</div>
+<div class="line"><span class="lineno">   46</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a724ad3abd3e2ad2b1733aed63d8125ac">ledvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a192fae17de81454f33a1c700525dc293">HEADER_LED_POS</a>);</div>
+<div class="line"><span class="lineno">   47</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#aa5fa1a648f9c63503a26a4c4b4b76784">frameratevalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a20cbe690933e23d25b4203f3e2db517d">HEADER_FRAME_RATE_POS</a>);</div>
+<div class="line"><span class="lineno">   48</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a058857128a10ffcff93debed826d7b15">delayvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a5059788d4e3c68eef41d2b0bff09033b">HEADER_DELAY_START_POS</a>);</div>
+<div class="line"><span class="lineno">   49</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#ae613acc1f2a919c2ad202f7245098516">reclengthvalue</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#ac4855eb4a09c9c286812a5e3fffd7615">HEADER_RECORD_LENGTH_POS</a>);</div>
+<div class="line"><span class="lineno">   50</span>    </div>
+<div class="line"><span class="lineno">   51</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#adbc803039ccf7e6d9211ba8a203acc37">ewlScanEnable</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#adb3f411027aa4bb9cbc576fb0960e15d">HEADER_EWL_SCAN_ENABLE_POS</a>);</div>
+<div class="line"><span class="lineno">   52</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a9eec56d218efd8b0f667b52e36dfe243">ewlStart</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a4d21f9c59065826105f69f472b988206">HEADER_EWL_START_POS</a>);</div>
+<div class="line"><span class="lineno">   53</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a0bda8e8b7d2858fc1a971bdd3aaa46db">ewlStop</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a1e8745a4931b336706f52afed6644a9c">HEADER_EWL_STOP_POS</a>);</div>
+<div class="line"><span class="lineno">   54</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a94410698fe92d34aa742774099448b43">ewlStep</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a0e2f3c28f100f5977527e7a22b70c19a">HEADER_EWL_STEP_POS</a>);</div>
+<div class="line"><span class="lineno">   55</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#ae9312b933eea6d62e8963765d5006081">ewlStepTime</a> = <a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#a720f2e8e107725ae3a0d45e40ec6ba0c">HEADER_EWL_STEP_TIME_POS</a>);</div>
+<div class="line"><span class="lineno">   56</span>}</div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a058857128a10ffcff93debed826d7b15"><div class="ttname"><a href="_m_s__definitions_8h.html#a058857128a10ffcff93debed826d7b15">delayvalue</a></div><div class="ttdeci">volatile uint32_t delayvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:56</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a0bda8e8b7d2858fc1a971bdd3aaa46db"><div class="ttname"><a href="_m_s__definitions_8h.html#a0bda8e8b7d2858fc1a971bdd3aaa46db">ewlStop</a></div><div class="ttdeci">volatile uint32_t ewlStop</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:61</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a0e2f3c28f100f5977527e7a22b70c19a"><div class="ttname"><a href="_m_s__definitions_8h.html#a0e2f3c28f100f5977527e7a22b70c19a">HEADER_EWL_STEP_POS</a></div><div class="ttdeci">#define HEADER_EWL_STEP_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:116</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a192fae17de81454f33a1c700525dc293"><div class="ttname"><a href="_m_s__definitions_8h.html#a192fae17de81454f33a1c700525dc293">HEADER_LED_POS</a></div><div class="ttdeci">#define HEADER_LED_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:106</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a1e8745a4931b336706f52afed6644a9c"><div class="ttname"><a href="_m_s__definitions_8h.html#a1e8745a4931b336706f52afed6644a9c">HEADER_EWL_STOP_POS</a></div><div class="ttdeci">#define HEADER_EWL_STOP_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:115</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a20cbe690933e23d25b4203f3e2db517d"><div class="ttname"><a href="_m_s__definitions_8h.html#a20cbe690933e23d25b4203f3e2db517d">HEADER_FRAME_RATE_POS</a></div><div class="ttdeci">#define HEADER_FRAME_RATE_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:109</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a4d21f9c59065826105f69f472b988206"><div class="ttname"><a href="_m_s__definitions_8h.html#a4d21f9c59065826105f69f472b988206">HEADER_EWL_START_POS</a></div><div class="ttdeci">#define HEADER_EWL_START_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:114</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a5059788d4e3c68eef41d2b0bff09033b"><div class="ttname"><a href="_m_s__definitions_8h.html#a5059788d4e3c68eef41d2b0bff09033b">HEADER_DELAY_START_POS</a></div><div class="ttdeci">#define HEADER_DELAY_START_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:110</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a648a9420590996036d6448877047bf3b"><div class="ttname"><a href="_m_s__definitions_8h.html#a648a9420590996036d6448877047bf3b">HEADER_BATT_CUTOFF_POS</a></div><div class="ttdeci">#define HEADER_BATT_CUTOFF_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:111</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a720f2e8e107725ae3a0d45e40ec6ba0c"><div class="ttname"><a href="_m_s__definitions_8h.html#a720f2e8e107725ae3a0d45e40ec6ba0c">HEADER_EWL_STEP_TIME_POS</a></div><div class="ttdeci">#define HEADER_EWL_STEP_TIME_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:117</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a724ad3abd3e2ad2b1733aed63d8125ac"><div class="ttname"><a href="_m_s__definitions_8h.html#a724ad3abd3e2ad2b1733aed63d8125ac">ledvalue</a></div><div class="ttdeci">volatile uint32_t ledvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:54</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a8541d24a78140a08dc6320bc4b0b1dc8"><div class="ttname"><a href="_m_s__definitions_8h.html#a8541d24a78140a08dc6320bc4b0b1dc8">batteryvalue</a></div><div class="ttdeci">volatile uint32_t batteryvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:53</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a94410698fe92d34aa742774099448b43"><div class="ttname"><a href="_m_s__definitions_8h.html#a94410698fe92d34aa742774099448b43">ewlStep</a></div><div class="ttdeci">volatile uint32_t ewlStep</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:62</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a9eec56d218efd8b0f667b52e36dfe243"><div class="ttname"><a href="_m_s__definitions_8h.html#a9eec56d218efd8b0f667b52e36dfe243">ewlStart</a></div><div class="ttdeci">volatile uint32_t ewlStart</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:60</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_aa5fa1a648f9c63503a26a4c4b4b76784"><div class="ttname"><a href="_m_s__definitions_8h.html#aa5fa1a648f9c63503a26a4c4b4b76784">frameratevalue</a></div><div class="ttdeci">volatile uint32_t frameratevalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:55</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_ac4855eb4a09c9c286812a5e3fffd7615"><div class="ttname"><a href="_m_s__definitions_8h.html#ac4855eb4a09c9c286812a5e3fffd7615">HEADER_RECORD_LENGTH_POS</a></div><div class="ttdeci">#define HEADER_RECORD_LENGTH_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:108</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_adb3f411027aa4bb9cbc576fb0960e15d"><div class="ttname"><a href="_m_s__definitions_8h.html#adb3f411027aa4bb9cbc576fb0960e15d">HEADER_EWL_SCAN_ENABLE_POS</a></div><div class="ttdeci">#define HEADER_EWL_SCAN_ENABLE_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:113</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_adbc803039ccf7e6d9211ba8a203acc37"><div class="ttname"><a href="_m_s__definitions_8h.html#adbc803039ccf7e6d9211ba8a203acc37">ewlScanEnable</a></div><div class="ttdeci">volatile uint32_t ewlScanEnable</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:59</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_ae613acc1f2a919c2ad202f7245098516"><div class="ttname"><a href="_m_s__definitions_8h.html#ae613acc1f2a919c2ad202f7245098516">reclengthvalue</a></div><div class="ttdeci">volatile uint32_t reclengthvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:57</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_ae9312b933eea6d62e8963765d5006081"><div class="ttname"><a href="_m_s__definitions_8h.html#ae9312b933eea6d62e8963765d5006081">ewlStepTime</a></div><div class="ttdeci">volatile uint32_t ewlStepTime</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:63</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_af3d1a402c6d133b7a32132aae806e7c8"><div class="ttname"><a href="_m_s__definitions_8h.html#af3d1a402c6d133b7a32132aae806e7c8">ewlvalue</a></div><div class="ttdeci">volatile uint32_t ewlvalue</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:52</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_af95e432de200579afa144622d232178d"><div class="ttname"><a href="_m_s__definitions_8h.html#af95e432de200579afa144622d232178d">HEADER_EWL_POS</a></div><div class="ttdeci">#define HEADER_EWL_POS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:107</div></div>
+<div class="ttc" id="a_m_s__util_8c_html_a74d393ad7d62230c68aed8448e7fa00f"><div class="ttname"><a href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a></div><div class="ttdeci">uint32_t getPropFromHeader(uint8_t headerPos)</div><div class="ttdef"><b>Definition</b> MS_util.c:37</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -196,20 +219,22 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   60</span>{</div>
-<div class="line"><span class="lineno">   61</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
-<div class="line"><span class="lineno">   62</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a> = (<a class="code hl_define" href="_m_s__definitions_8h.html#a241aeeb764887ae5e3de58b98f04b16d">WIDTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e">HEIGHT</a>) / (<a class="code hl_define" href="_m_s__config_8h.html#ac8efbebc6d01869dfb8333a1a5b9395a">BUFFER_BLOCK_LENGTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#a451aeffb68f3ecfb82eae03c88e9e48c">SD_BLOCK_SIZE</a> - (<a class="code hl_define" href="_m_s__definitions_8h.html#a5727d59ff5eb79b18dfc97788fc45154">BUFFER_HEADER_LENGTH</a> * 4));</div>
-<div class="line"><span class="lineno">   63</span>    <span class="keywordflow">if</span>((<a class="code hl_define" href="_m_s__definitions_8h.html#a241aeeb764887ae5e3de58b98f04b16d">WIDTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e">HEIGHT</a>) % (<a class="code hl_define" href="_m_s__config_8h.html#ac8efbebc6d01869dfb8333a1a5b9395a">BUFFER_BLOCK_LENGTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#a451aeffb68f3ecfb82eae03c88e9e48c">SD_BLOCK_SIZE</a> - (<a class="code hl_define" href="_m_s__definitions_8h.html#a5727d59ff5eb79b18dfc97788fc45154">BUFFER_HEADER_LENGTH</a> * 4)) != 0)</div>
-<div class="line"><span class="lineno">   64</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a> += 1;</div>
-<div class="line"><span class="lineno">   65</span>    <span class="comment">// Need to add 1 to account for partially filled buffer</span></div>
-<div class="line"><span class="lineno">   66</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">   67</span>}</div>
-<div class="ttc" id="a_m_s__config_8h_html_ac8efbebc6d01869dfb8333a1a5b9395a"><div class="ttname"><a href="_m_s__config_8h.html#ac8efbebc6d01869dfb8333a1a5b9395a">BUFFER_BLOCK_LENGTH</a></div><div class="ttdeci">#define BUFFER_BLOCK_LENGTH</div><div class="ttdef"><b>Definition</b> MS_config.h:57</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a241aeeb764887ae5e3de58b98f04b16d"><div class="ttname"><a href="_m_s__definitions_8h.html#a241aeeb764887ae5e3de58b98f04b16d">WIDTH</a></div><div class="ttdeci">#define WIDTH</div><div class="ttdef"><b>Definition</b> MS_definitions.h:151</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a451aeffb68f3ecfb82eae03c88e9e48c"><div class="ttname"><a href="_m_s__definitions_8h.html#a451aeffb68f3ecfb82eae03c88e9e48c">SD_BLOCK_SIZE</a></div><div class="ttdeci">#define SD_BLOCK_SIZE</div><div class="ttdef"><b>Definition</b> MS_definitions.h:90</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a5727d59ff5eb79b18dfc97788fc45154"><div class="ttname"><a href="_m_s__definitions_8h.html#a5727d59ff5eb79b18dfc97788fc45154">BUFFER_HEADER_LENGTH</a></div><div class="ttdeci">#define BUFFER_HEADER_LENGTH</div><div class="ttdef"><b>Definition</b> MS_definitions.h:49</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a654e7aa1d58acfb280a007c6de40dbce"><div class="ttname"><a href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a></div><div class="ttdeci">volatile uint32_t numBuffersPerFrame</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:48</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_aed89bd71aee8be823e8a20ec4e093c1e"><div class="ttname"><a href="_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e">HEIGHT</a></div><div class="ttdeci">#define HEIGHT</div><div class="ttdef"><b>Definition</b> MS_definitions.h:152</div></div>
+
+<p>Calculate the number of buffers needed to store one image frame. </p>
+<div class="fragment"><div class="line"><span class="lineno">   59</span>{</div>
+<div class="line"><span class="lineno">   60</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
+<div class="line"><span class="lineno">   61</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a> = (<a class="code hl_define" href="_m_s__definitions_8h.html#a241aeeb764887ae5e3de58b98f04b16d">WIDTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e">HEIGHT</a>) / (<a class="code hl_define" href="_m_s__config_8h.html#ac8efbebc6d01869dfb8333a1a5b9395a">BUFFER_BLOCK_LENGTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#a451aeffb68f3ecfb82eae03c88e9e48c">SD_BLOCK_SIZE</a> - (<a class="code hl_define" href="_m_s__definitions_8h.html#a5727d59ff5eb79b18dfc97788fc45154">BUFFER_HEADER_LENGTH</a> * 4));</div>
+<div class="line"><span class="lineno">   62</span>    <span class="keywordflow">if</span>((<a class="code hl_define" href="_m_s__definitions_8h.html#a241aeeb764887ae5e3de58b98f04b16d">WIDTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e">HEIGHT</a>) % (<a class="code hl_define" href="_m_s__config_8h.html#ac8efbebc6d01869dfb8333a1a5b9395a">BUFFER_BLOCK_LENGTH</a> * <a class="code hl_define" href="_m_s__definitions_8h.html#a451aeffb68f3ecfb82eae03c88e9e48c">SD_BLOCK_SIZE</a> - (<a class="code hl_define" href="_m_s__definitions_8h.html#a5727d59ff5eb79b18dfc97788fc45154">BUFFER_HEADER_LENGTH</a> * 4)) != 0)</div>
+<div class="line"><span class="lineno">   63</span>    <a class="code hl_variable" href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a> += 1;</div>
+<div class="line"><span class="lineno">   64</span>    <span class="comment">// Need to add 1 to account for partially filled buffer</span></div>
+<div class="line"><span class="lineno">   65</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   66</span>}</div>
+<div class="ttc" id="a_m_s__config_8h_html_ac8efbebc6d01869dfb8333a1a5b9395a"><div class="ttname"><a href="_m_s__config_8h.html#ac8efbebc6d01869dfb8333a1a5b9395a">BUFFER_BLOCK_LENGTH</a></div><div class="ttdeci">#define BUFFER_BLOCK_LENGTH</div><div class="ttdef"><b>Definition</b> MS_config.h:59</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a241aeeb764887ae5e3de58b98f04b16d"><div class="ttname"><a href="_m_s__definitions_8h.html#a241aeeb764887ae5e3de58b98f04b16d">WIDTH</a></div><div class="ttdeci">#define WIDTH</div><div class="ttdef"><b>Definition</b> MS_definitions.h:150</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a451aeffb68f3ecfb82eae03c88e9e48c"><div class="ttname"><a href="_m_s__definitions_8h.html#a451aeffb68f3ecfb82eae03c88e9e48c">SD_BLOCK_SIZE</a></div><div class="ttdeci">#define SD_BLOCK_SIZE</div><div class="ttdef"><b>Definition</b> MS_definitions.h:89</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a5727d59ff5eb79b18dfc97788fc45154"><div class="ttname"><a href="_m_s__definitions_8h.html#a5727d59ff5eb79b18dfc97788fc45154">BUFFER_HEADER_LENGTH</a></div><div class="ttdeci">#define BUFFER_HEADER_LENGTH</div><div class="ttdef"><b>Definition</b> MS_definitions.h:48</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a654e7aa1d58acfb280a007c6de40dbce"><div class="ttname"><a href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a></div><div class="ttdeci">volatile uint32_t numBuffersPerFrame</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:46</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_aed89bd71aee8be823e8a20ec4e093c1e"><div class="ttname"><a href="_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e">HEIGHT</a></div><div class="ttdeci">#define HEIGHT</div><div class="ttdef"><b>Definition</b> MS_definitions.h:151</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -227,12 +252,12 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   38</span>                                              {</div>
-<div class="line"><span class="lineno">   39</span>    uint32_t *header32bit = (uint32_t *)<a class="code hl_variable" href="_m_s__definitions_8h.html#aff0c795141bee04a0c412e235b9de5bf">headerBlock</a>;</div>
-<div class="line"><span class="lineno">   40</span>    </div>
-<div class="line"><span class="lineno">   41</span>    <span class="keywordflow">return</span> header32bit[headerPos];</div>
-<div class="line"><span class="lineno">   42</span>}</div>
-<div class="ttc" id="a_m_s__definitions_8h_html_aff0c795141bee04a0c412e235b9de5bf"><div class="ttname"><a href="_m_s__definitions_8h.html#aff0c795141bee04a0c412e235b9de5bf">headerBlock</a></div><div class="ttdeci">volatile uint8_t headerBlock[]</div><div class="ttdef"><b>Definition</b> MS_definitions.h:221</div></div>
+<div class="fragment"><div class="line"><span class="lineno">   37</span>                                              {</div>
+<div class="line"><span class="lineno">   38</span>    uint32_t *header32bit = (uint32_t *)<a class="code hl_variable" href="_m_s__definitions_8h.html#aff0c795141bee04a0c412e235b9de5bf">headerBlock</a>;</div>
+<div class="line"><span class="lineno">   39</span>    </div>
+<div class="line"><span class="lineno">   40</span>    <span class="keywordflow">return</span> header32bit[headerPos];</div>
+<div class="line"><span class="lineno">   41</span>}</div>
+<div class="ttc" id="a_m_s__definitions_8h_html_aff0c795141bee04a0c412e235b9de5bf"><div class="ttname"><a href="_m_s__definitions_8h.html#aff0c795141bee04a0c412e235b9de5bf">headerBlock</a></div><div class="ttdeci">volatile uint8_t headerBlock[]</div><div class="ttdef"><b>Definition</b> MS_definitions.h:219</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -250,24 +275,24 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">  231</span>                  {</div>
-<div class="line"><span class="lineno">  232</span>    <span class="comment">// Setup callbacks for interrupts</span></div>
-<div class="line"><span class="lineno">  233</span><span class="preprocessor">    #ifdef IR_TRIGGER_ENABLE</span></div>
-<div class="line"><span class="lineno">  234</span>    ext_irq_register(PIN_PB22, <a class="code hl_function" href="_m_s__definitions_8h.html#ac8fb15e150c84cb7ed36b1187a86a838">irReceive_cb</a>);</div>
-<div class="line"><span class="lineno">  235</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  236</span>    </div>
-<div class="line"><span class="lineno">  237</span><span class="preprocessor">    #ifdef BATTERY_ENABLE</span></div>
-<div class="line"><span class="lineno">  238</span>    ext_irq_register(PIN_PB23, <a class="code hl_function" href="_m_s__definitions_8h.html#a3888397de17ce696b0e288364ce99fb5">battCharging_cb</a>);</div>
-<div class="line"><span class="lineno">  239</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  240</span>    </div>
-<div class="line"><span class="lineno">  241</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
-<div class="line"><span class="lineno">  242</span>    ext_irq_register(PIN_PB14, <a class="code hl_function" href="_m_s__definitions_8h.html#a8b68d18269f72c23047170d77f19d41d">frameValid_cb</a>);</div>
-<div class="line"><span class="lineno">  243</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  244</span>    </div>
-<div class="line"><span class="lineno">  245</span><span class="preprocessor">    #ifdef PUSH_BUT_ENABLE</span></div>
-<div class="line"><span class="lineno">  246</span>    ext_irq_register(PIN_PA25, <a class="code hl_function" href="_m_s__definitions_8h.html#a7df51d9ec9f20a6a76d987f6e1c47679">pushButton_cb</a>);</div>
-<div class="line"><span class="lineno">  247</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  248</span>}</div>
+<div class="fragment"><div class="line"><span class="lineno">  230</span>                  {</div>
+<div class="line"><span class="lineno">  231</span>    <span class="comment">// Setup callbacks for interrupts</span></div>
+<div class="line"><span class="lineno">  232</span><span class="preprocessor">    #ifdef IR_TRIGGER_ENABLE</span></div>
+<div class="line"><span class="lineno">  233</span>    ext_irq_register(PIN_PB22, <a class="code hl_function" href="_m_s__definitions_8h.html#ac8fb15e150c84cb7ed36b1187a86a838">irReceive_cb</a>);</div>
+<div class="line"><span class="lineno">  234</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  235</span>    </div>
+<div class="line"><span class="lineno">  236</span><span class="preprocessor">    #ifdef BATTERY_ENABLE</span></div>
+<div class="line"><span class="lineno">  237</span>    ext_irq_register(PIN_PB23, <a class="code hl_function" href="_m_s__definitions_8h.html#a3888397de17ce696b0e288364ce99fb5">battCharging_cb</a>);</div>
+<div class="line"><span class="lineno">  238</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  239</span>    </div>
+<div class="line"><span class="lineno">  240</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
+<div class="line"><span class="lineno">  241</span>    ext_irq_register(PIN_PB14, <a class="code hl_function" href="_m_s__definitions_8h.html#a8b68d18269f72c23047170d77f19d41d">frameValid_cb</a>);</div>
+<div class="line"><span class="lineno">  242</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  243</span>    </div>
+<div class="line"><span class="lineno">  244</span><span class="preprocessor">    #ifdef PUSH_BUT_ENABLE</span></div>
+<div class="line"><span class="lineno">  245</span>    ext_irq_register(PIN_PA25, <a class="code hl_function" href="_m_s__definitions_8h.html#a7df51d9ec9f20a6a76d987f6e1c47679">pushButton_cb</a>);</div>
+<div class="line"><span class="lineno">  246</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  247</span>}</div>
 <div class="ttc" id="a_m_s__definitions_8h_html_a3888397de17ce696b0e288364ce99fb5"><div class="ttname"><a href="_m_s__definitions_8h.html#a3888397de17ce696b0e288364ce99fb5">battCharging_cb</a></div><div class="ttdeci">void battCharging_cb(void)</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_a7df51d9ec9f20a6a76d987f6e1c47679"><div class="ttname"><a href="_m_s__definitions_8h.html#a7df51d9ec9f20a6a76d987f6e1c47679">pushButton_cb</a></div><div class="ttdeci">void pushButton_cb(void)</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_a8b68d18269f72c23047170d77f19d41d"><div class="ttname"><a href="_m_s__definitions_8h.html#a8b68d18269f72c23047170d77f19d41d">frameValid_cb</a></div><div class="ttdeci">void frameValid_cb(void)</div></div>
@@ -289,126 +314,126 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   70</span>{</div>
-<div class="line"><span class="lineno">   71</span>    </div>
-<div class="line"><span class="lineno">   72</span><span class="preprocessor">    #ifdef EXLED_PWM_ENABLE</span></div>
-<div class="line"><span class="lineno">   73</span>    <span class="comment">// We need to change the PWM mode from MPWM to NPWM because we are using WO[0] as waveform output</span></div>
-<div class="line"><span class="lineno">   74</span>    hri_tc_write_WAVE_reg(TC0, TC_WAVE_WAVEGEN_NPWM_Val);</div>
-<div class="line"><span class="lineno">   75</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">   76</span>    </div>
-<div class="line"><span class="lineno">   77</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
-<div class="line"><span class="lineno">   78</span>    <span class="comment">// Enable the 3.3V regulator</span></div>
-<div class="line"><span class="lineno">   79</span>    gpio_set_pin_level(EN_3V3, <span class="keyword">true</span>);</div>
-<div class="line"><span class="lineno">   80</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">   81</span> </div>
-<div class="line"><span class="lineno">   82</span><span class="preprocessor">    #ifdef BATTERY_ENABLE</span></div>
-<div class="line"><span class="lineno">   83</span>    <span class="comment">// Enable ADC for checking battery voltage</span></div>
-<div class="line"><span class="lineno">   84</span>    adc_sync_enable_channel(&amp;ADC_0, 0);</div>
-<div class="line"><span class="lineno">   85</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">   86</span>    </div>
-<div class="line"><span class="lineno">   87</span><span class="preprocessor">    #ifdef WPT_ADC_ENABLE</span></div>
-<div class="line"><span class="lineno">   88</span>    <span class="comment">// Enable ADC for checking battery voltage</span></div>
-<div class="line"><span class="lineno">   89</span>    adc_sync_enable_channel(&amp;ADC_1, 0);</div>
-<div class="line"><span class="lineno">   90</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">   91</span>    </div>
-<div class="line"><span class="lineno">   92</span><span class="preprocessor">    #ifdef IR_UART_ENABLE</span></div>
-<div class="line"><span class="lineno">   93</span>    usart_async_register_callback(&amp;USART_0, USART_ASYNC_RXC_CB, <a class="code hl_function" href="_m_s__definitions_8h.html#a190c0a1b0db8817766d7c0710f0e1fab">usart_rx_cb</a>);</div>
-<div class="line"><span class="lineno">   94</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">   95</span>    </div>
-<div class="line"><span class="lineno">   96</span><span class="preprocessor">    #ifdef EWL_ENABLE</span></div>
-<div class="line"><span class="lineno">   97</span>    <a class="code hl_function" href="i2c__bb_8h.html#a8abad26158d7ca08e3902b3e6dfb54eb">I2C_BB_init</a>();</div>
-<div class="line"><span class="lineno">   98</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">   99</span> </div>
-<div class="line"><span class="lineno">  100</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#a1cabbdb02f36420b24c4ccd132972080">timerInit</a>();</div>
-<div class="line"><span class="lineno">  101</span>    </div>
-<div class="line"><span class="lineno">  102</span>    <a class="code hl_function" href="#ab20f4701aefb86484839006e804e3323">irqInit</a>();</div>
-<div class="line"><span class="lineno">  103</span>    </div>
-<div class="line"><span class="lineno">  104</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
-<div class="line"><span class="lineno">  105</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#ad445875dc7336f1658d4cf9225939be7">PCCLinkedListInit</a>();</div>
-<div class="line"><span class="lineno">  106</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  107</span> </div>
-<div class="line"><span class="lineno">  108</span><span class="preprocessor">    #ifdef NANEYE_ENABLE</span></div>
-<div class="line"><span class="lineno">  109</span>    NELinkedListInit(); <span class="comment">// Connects to MS_dma.c</span></div>
-<div class="line"><span class="lineno">  110</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  111</span> </div>
-<div class="line"><span class="lineno">  112</span><span class="preprocessor">    #if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)</span></div>
-<div class="line"><span class="lineno">  113</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#ad7279c9e8340a127a98e97910eae6fbc">TXLinkedListInit</a>();</div>
-<div class="line"><span class="lineno">  114</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  115</span>    </div>
-<div class="line"><span class="lineno">  116</span><span class="preprocessor">    #ifdef DMA_TO_SD_ENABLE</span></div>
-<div class="line"><span class="lineno">  117</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#af148a997174c1b0d2e4acc82abba2f8d">SDCardInit</a>();</div>
-<div class="line"><span class="lineno">  118</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  119</span> </div>
-<div class="line"><span class="lineno">  120</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
-<div class="line"><span class="lineno">  121</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#a144a9613f02e1434dfa20cfe1a3deb44">imageSensorInit</a>();</div>
-<div class="line"><span class="lineno">  122</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  123</span>    </div>
-<div class="line"><span class="lineno">  124</span> </div>
-<div class="line"><span class="lineno">  125</span><span class="preprocessor">    #ifdef EWL_ENABLE</span></div>
-<div class="line"><span class="lineno">  126</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#a0eebb19c55ff37539a5276d8453afb61">setEWL</a>(<a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#af95e432de200579afa144622d232178d">HEADER_EWL_POS</a>));</div>
-<div class="line"><span class="lineno">  127</span>    <span class="comment">//setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);</span></div>
-<div class="line"><span class="lineno">  128</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  129</span>    </div>
-<div class="line"><span class="lineno">  130</span><span class="preprocessor">    #if defined(DMA_TO_USART_ENABLE) &amp;&amp; defined(USART_SERCOM5_ENABLE)</span></div>
-<div class="line"><span class="lineno">  131</span>    SERCOM5-&gt;USART.CTRLA.bit.ENABLE = 0; <span class="comment">// Disable UART</span></div>
-<div class="line"><span class="lineno">  132</span>    <span class="keywordflow">while</span> (SERCOM5-&gt;USART.SYNCBUSY.bit.ENABLE)</div>
-<div class="line"><span class="lineno">  133</span>    ;                                 <span class="comment">// Wait for disable</span></div>
-<div class="line"><span class="lineno">  134</span>    <span class="comment">//hri_sercomusart_write_BAUD_reg(SERCOM5, USART_BAUD_MS);</span></div>
-<div class="line"><span class="lineno">  135</span>    <span class="comment">//SERCOM5-&gt;USART.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode. Still packet structure is 8-bit</span></div>
-<div class="line"><span class="lineno">  136</span>    SERCOM5-&gt;USART.CTRLA.bit.ENABLE = 1;  <span class="comment">// Re-enable USART</span></div>
-<div class="line"><span class="lineno">  137</span>    <span class="keywordflow">while</span> (SERCOM5-&gt;USART.SYNCBUSY.bit.ENABLE)</div>
-<div class="line"><span class="lineno">  138</span>    ;                                 <span class="comment">// Wait for disable</span></div>
-<div class="line"><span class="lineno">  139</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  140</span> </div>
-<div class="line"><span class="lineno">  141</span><span class="preprocessor">    #if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM0_ENABLE)</span></div>
-<div class="line"><span class="lineno">  142</span>    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 0; <span class="comment">// Disable SPI</span></div>
-<div class="line"><span class="lineno">  143</span>    <span class="keywordflow">while</span> (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</div>
-<div class="line"><span class="lineno">  144</span>    ;                                 <span class="comment">// Wait for disable</span></div>
-<div class="line"><span class="lineno">  145</span>    hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, <a class="code hl_define" href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a>);</div>
-<div class="line"><span class="lineno">  146</span>    hri_sercomspi_write_BAUD_reg(SERCOM0, <a class="code hl_define" href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a>);</div>
-<div class="line"><span class="lineno">  147</span>    SERCOM0-&gt;SPI.CTRLC.bit.DATA32B = 1; <span class="comment">// Enable 32-bit mode</span></div>
-<div class="line"><span class="lineno">  148</span>    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 1;  <span class="comment">// Re-enable SPI</span></div>
-<div class="line"><span class="lineno">  149</span>    <span class="keywordflow">while</span> (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</div>
-<div class="line"><span class="lineno">  150</span>    ;                                 <span class="comment">// Wait for disable</span></div>
-<div class="line"><span class="lineno">  151</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  152</span><span class="comment">// HS CHECK: MIght need to add something for the NE Camera here:</span></div>
-<div class="line"><span class="lineno">  153</span><span class="comment">// if peripheral is running, refuses to change - disables SPI and then waits until SPI gets disabled, and then changes</span></div>
-<div class="line"><span class="lineno">  154</span><span class="comment">// the parameters, and then restarts SPI, and restarts peripherals</span></div>
-<div class="line"><span class="lineno">  155</span>    <span class="comment">/*</span></div>
-<div class="line"><span class="lineno">  156</span><span class="comment">    #if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM0_ENABLE)</span></div>
-<div class="line"><span class="lineno">  157</span><span class="comment">    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 0; // Disable SPI</span></div>
-<div class="line"><span class="lineno">  158</span><span class="comment">    while (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</span></div>
-<div class="line"><span class="lineno">  159</span><span class="comment">    ;                                 // Wait for disable</span></div>
-<div class="line"><span class="lineno">  160</span><span class="comment">    hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);</span></div>
-<div class="line"><span class="lineno">  161</span><span class="comment">    hri_sercomspi_write_BAUD_reg(SERCOM0, SPI_BAUD_MS);</span></div>
-<div class="line"><span class="lineno">  162</span><span class="comment">    SERCOM0-&gt;SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode</span></div>
-<div class="line"><span class="lineno">  163</span><span class="comment">    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI</span></div>
-<div class="line"><span class="lineno">  164</span><span class="comment">    while (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</span></div>
-<div class="line"><span class="lineno">  165</span><span class="comment">    ;                                 // Wait for disable</span></div>
-<div class="line"><span class="lineno">  166</span><span class="comment">    #endif</span></div>
-<div class="line"><span class="lineno">  167</span><span class="comment">*/</span></div>
-<div class="line"><span class="lineno">  168</span><span class="preprocessor">    #if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM7_ENABLE)</span></div>
-<div class="line"><span class="lineno">  169</span>    hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM7, <a class="code hl_define" href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a>);</div>
-<div class="line"><span class="lineno">  170</span>    hri_sercomspi_write_BAUD_reg(SERCOM7, <a class="code hl_define" href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a>);</div>
-<div class="line"><span class="lineno">  171</span>    spi_m_sync_enable(&amp;SPI_0);</div>
-<div class="line"><span class="lineno">  172</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  173</span>    </div>
-<div class="line"><span class="lineno">  174</span><span class="preprocessor">    #if defined(NODMA_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM0_ENABLE)</span></div>
-<div class="line"><span class="lineno">  175</span>    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 0x01;</div>
-<div class="line"><span class="lineno">  176</span>    SERCOM0-&gt;SPI.DATA.reg = (uint32_t) <a class="code hl_variable" href="_m_s__definitions_8h.html#a9a7765d7385c0d0ad153092ad9dbe959">dataBuffer</a>[0][1];</div>
-<div class="line"><span class="lineno">  177</span><span class="preprocessor">    #endif</span></div>
-<div class="line"><span class="lineno">  178</span>}</div>
+<div class="fragment"><div class="line"><span class="lineno">   69</span>{</div>
+<div class="line"><span class="lineno">   70</span>    </div>
+<div class="line"><span class="lineno">   71</span><span class="preprocessor">    #ifdef EXLED_PWM_ENABLE</span></div>
+<div class="line"><span class="lineno">   72</span>    <span class="comment">// We need to change the PWM mode from MPWM to NPWM because we are using WO[0] as waveform output</span></div>
+<div class="line"><span class="lineno">   73</span>    hri_tc_write_WAVE_reg(TC0, TC_WAVE_WAVEGEN_NPWM_Val);</div>
+<div class="line"><span class="lineno">   74</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   75</span>    </div>
+<div class="line"><span class="lineno">   76</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
+<div class="line"><span class="lineno">   77</span>    <span class="comment">// Enable the 3.3V regulator</span></div>
+<div class="line"><span class="lineno">   78</span>    gpio_set_pin_level(EN_3V3, <span class="keyword">true</span>);</div>
+<div class="line"><span class="lineno">   79</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   80</span> </div>
+<div class="line"><span class="lineno">   81</span><span class="preprocessor">    #ifdef BATTERY_ENABLE</span></div>
+<div class="line"><span class="lineno">   82</span>    <span class="comment">// Enable ADC for checking battery voltage</span></div>
+<div class="line"><span class="lineno">   83</span>    adc_sync_enable_channel(&amp;ADC_0, 0);</div>
+<div class="line"><span class="lineno">   84</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   85</span>    </div>
+<div class="line"><span class="lineno">   86</span><span class="preprocessor">    #ifdef WPT_ADC_ENABLE</span></div>
+<div class="line"><span class="lineno">   87</span>    <span class="comment">// Enable ADC for checking battery voltage</span></div>
+<div class="line"><span class="lineno">   88</span>    adc_sync_enable_channel(&amp;ADC_1, 0);</div>
+<div class="line"><span class="lineno">   89</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   90</span>    </div>
+<div class="line"><span class="lineno">   91</span><span class="preprocessor">    #ifdef IR_UART_ENABLE</span></div>
+<div class="line"><span class="lineno">   92</span>    usart_async_register_callback(&amp;USART_0, USART_ASYNC_RXC_CB, <a class="code hl_function" href="_m_s__definitions_8h.html#a190c0a1b0db8817766d7c0710f0e1fab">usart_rx_cb</a>);</div>
+<div class="line"><span class="lineno">   93</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   94</span>    </div>
+<div class="line"><span class="lineno">   95</span><span class="preprocessor">    #ifdef EWL_ENABLE</span></div>
+<div class="line"><span class="lineno">   96</span>    <a class="code hl_function" href="i2c__bb_8h.html#a8abad26158d7ca08e3902b3e6dfb54eb">I2C_BB_init</a>();</div>
+<div class="line"><span class="lineno">   97</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">   98</span> </div>
+<div class="line"><span class="lineno">   99</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#a1cabbdb02f36420b24c4ccd132972080">timerInit</a>();</div>
+<div class="line"><span class="lineno">  100</span>    </div>
+<div class="line"><span class="lineno">  101</span>    <a class="code hl_function" href="#ab20f4701aefb86484839006e804e3323">irqInit</a>();</div>
+<div class="line"><span class="lineno">  102</span>    </div>
+<div class="line"><span class="lineno">  103</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
+<div class="line"><span class="lineno">  104</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#ad445875dc7336f1658d4cf9225939be7">PCCLinkedListInit</a>();</div>
+<div class="line"><span class="lineno">  105</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  106</span> </div>
+<div class="line"><span class="lineno">  107</span><span class="preprocessor">    #ifdef NANEYE_ENABLE</span></div>
+<div class="line"><span class="lineno">  108</span>    NELinkedListInit(); <span class="comment">// Connects to MS_dma.c</span></div>
+<div class="line"><span class="lineno">  109</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  110</span> </div>
+<div class="line"><span class="lineno">  111</span><span class="preprocessor">    #if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)</span></div>
+<div class="line"><span class="lineno">  112</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#ad7279c9e8340a127a98e97910eae6fbc">TXLinkedListInit</a>();</div>
+<div class="line"><span class="lineno">  113</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  114</span>    </div>
+<div class="line"><span class="lineno">  115</span><span class="preprocessor">    #ifdef DMA_TO_SD_ENABLE</span></div>
+<div class="line"><span class="lineno">  116</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#af148a997174c1b0d2e4acc82abba2f8d">SDCardInit</a>();</div>
+<div class="line"><span class="lineno">  117</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  118</span> </div>
+<div class="line"><span class="lineno">  119</span><span class="preprocessor">    #ifdef PYTHON480_ENABLE</span></div>
+<div class="line"><span class="lineno">  120</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#a144a9613f02e1434dfa20cfe1a3deb44">imageSensorInit</a>();</div>
+<div class="line"><span class="lineno">  121</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  122</span>    </div>
+<div class="line"><span class="lineno">  123</span> </div>
+<div class="line"><span class="lineno">  124</span><span class="preprocessor">    #ifdef EWL_ENABLE</span></div>
+<div class="line"><span class="lineno">  125</span>    <a class="code hl_function" href="_m_s__definitions_8h.html#a0eebb19c55ff37539a5276d8453afb61">setEWL</a>(<a class="code hl_function" href="#a74d393ad7d62230c68aed8448e7fa00f">getPropFromHeader</a>(<a class="code hl_define" href="_m_s__definitions_8h.html#af95e432de200579afa144622d232178d">HEADER_EWL_POS</a>));</div>
+<div class="line"><span class="lineno">  126</span>    <span class="comment">//setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);</span></div>
+<div class="line"><span class="lineno">  127</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  128</span>    </div>
+<div class="line"><span class="lineno">  129</span><span class="preprocessor">    #if defined(DMA_TO_USART_ENABLE) &amp;&amp; defined(USART_SERCOM5_ENABLE)</span></div>
+<div class="line"><span class="lineno">  130</span>    SERCOM5-&gt;USART.CTRLA.bit.ENABLE = 0; <span class="comment">// Disable UART</span></div>
+<div class="line"><span class="lineno">  131</span>    <span class="keywordflow">while</span> (SERCOM5-&gt;USART.SYNCBUSY.bit.ENABLE)</div>
+<div class="line"><span class="lineno">  132</span>    ;                                 <span class="comment">// Wait for disable</span></div>
+<div class="line"><span class="lineno">  133</span>    <span class="comment">//hri_sercomusart_write_BAUD_reg(SERCOM5, USART_BAUD_MS);</span></div>
+<div class="line"><span class="lineno">  134</span>    <span class="comment">//SERCOM5-&gt;USART.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode. Still packet structure is 8-bit</span></div>
+<div class="line"><span class="lineno">  135</span>    SERCOM5-&gt;USART.CTRLA.bit.ENABLE = 1;  <span class="comment">// Re-enable USART</span></div>
+<div class="line"><span class="lineno">  136</span>    <span class="keywordflow">while</span> (SERCOM5-&gt;USART.SYNCBUSY.bit.ENABLE)</div>
+<div class="line"><span class="lineno">  137</span>    ;                                 <span class="comment">// Wait for disable</span></div>
+<div class="line"><span class="lineno">  138</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  139</span> </div>
+<div class="line"><span class="lineno">  140</span><span class="preprocessor">    #if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM0_ENABLE)</span></div>
+<div class="line"><span class="lineno">  141</span>    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 0; <span class="comment">// Disable SPI</span></div>
+<div class="line"><span class="lineno">  142</span>    <span class="keywordflow">while</span> (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</div>
+<div class="line"><span class="lineno">  143</span>    ;                                 <span class="comment">// Wait for disable</span></div>
+<div class="line"><span class="lineno">  144</span>    hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, <a class="code hl_define" href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a>);</div>
+<div class="line"><span class="lineno">  145</span>    hri_sercomspi_write_BAUD_reg(SERCOM0, <a class="code hl_define" href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a>);</div>
+<div class="line"><span class="lineno">  146</span>    SERCOM0-&gt;SPI.CTRLC.bit.DATA32B = 1; <span class="comment">// Enable 32-bit mode</span></div>
+<div class="line"><span class="lineno">  147</span>    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 1;  <span class="comment">// Re-enable SPI</span></div>
+<div class="line"><span class="lineno">  148</span>    <span class="keywordflow">while</span> (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</div>
+<div class="line"><span class="lineno">  149</span>    ;                                 <span class="comment">// Wait for disable</span></div>
+<div class="line"><span class="lineno">  150</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  151</span><span class="comment">// HS CHECK: MIght need to add something for the NE Camera here:</span></div>
+<div class="line"><span class="lineno">  152</span><span class="comment">// if peripheral is running, refuses to change - disables SPI and then waits until SPI gets disabled, and then changes</span></div>
+<div class="line"><span class="lineno">  153</span><span class="comment">// the parameters, and then restarts SPI, and restarts peripherals</span></div>
+<div class="line"><span class="lineno">  154</span>    <span class="comment">/*</span></div>
+<div class="line"><span class="lineno">  155</span><span class="comment">    #if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM0_ENABLE)</span></div>
+<div class="line"><span class="lineno">  156</span><span class="comment">    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 0; // Disable SPI</span></div>
+<div class="line"><span class="lineno">  157</span><span class="comment">    while (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</span></div>
+<div class="line"><span class="lineno">  158</span><span class="comment">    ;                                 // Wait for disable</span></div>
+<div class="line"><span class="lineno">  159</span><span class="comment">    hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);</span></div>
+<div class="line"><span class="lineno">  160</span><span class="comment">    hri_sercomspi_write_BAUD_reg(SERCOM0, SPI_BAUD_MS);</span></div>
+<div class="line"><span class="lineno">  161</span><span class="comment">    SERCOM0-&gt;SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode</span></div>
+<div class="line"><span class="lineno">  162</span><span class="comment">    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI</span></div>
+<div class="line"><span class="lineno">  163</span><span class="comment">    while (SERCOM0-&gt;SPI.SYNCBUSY.bit.ENABLE)</span></div>
+<div class="line"><span class="lineno">  164</span><span class="comment">    ;                                 // Wait for disable</span></div>
+<div class="line"><span class="lineno">  165</span><span class="comment">    #endif</span></div>
+<div class="line"><span class="lineno">  166</span><span class="comment">*/</span></div>
+<div class="line"><span class="lineno">  167</span><span class="preprocessor">    #if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM7_ENABLE)</span></div>
+<div class="line"><span class="lineno">  168</span>    hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM7, <a class="code hl_define" href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a>);</div>
+<div class="line"><span class="lineno">  169</span>    hri_sercomspi_write_BAUD_reg(SERCOM7, <a class="code hl_define" href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a>);</div>
+<div class="line"><span class="lineno">  170</span>    spi_m_sync_enable(&amp;SPI_0);</div>
+<div class="line"><span class="lineno">  171</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  172</span>    </div>
+<div class="line"><span class="lineno">  173</span><span class="preprocessor">    #if defined(NODMA_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM0_ENABLE)</span></div>
+<div class="line"><span class="lineno">  174</span>    SERCOM0-&gt;SPI.CTRLA.bit.ENABLE = 0x01;</div>
+<div class="line"><span class="lineno">  175</span>    SERCOM0-&gt;SPI.DATA.reg = (uint32_t) <a class="code hl_variable" href="_m_s__definitions_8h.html#a9a7765d7385c0d0ad153092ad9dbe959">dataBuffer</a>[0][1];</div>
+<div class="line"><span class="lineno">  176</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><span class="lineno">  177</span>}</div>
 <div class="ttc" id="a_m_s__definitions_8h_html_a0eebb19c55ff37539a5276d8453afb61"><div class="ttname"><a href="_m_s__definitions_8h.html#a0eebb19c55ff37539a5276d8453afb61">setEWL</a></div><div class="ttdeci">void setEWL(uint32_t value)</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_a144a9613f02e1434dfa20cfe1a3deb44"><div class="ttname"><a href="_m_s__definitions_8h.html#a144a9613f02e1434dfa20cfe1a3deb44">imageSensorInit</a></div><div class="ttdeci">void imageSensorInit(void)</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_a190c0a1b0db8817766d7c0710f0e1fab"><div class="ttname"><a href="_m_s__definitions_8h.html#a190c0a1b0db8817766d7c0710f0e1fab">usart_rx_cb</a></div><div class="ttdeci">void usart_rx_cb(void)</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a1cabbdb02f36420b24c4ccd132972080"><div class="ttname"><a href="_m_s__definitions_8h.html#a1cabbdb02f36420b24c4ccd132972080">timerInit</a></div><div class="ttdeci">void timerInit(void)</div><div class="ttdef"><b>Definition</b> MS_timer.c:16</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a9a7765d7385c0d0ad153092ad9dbe959"><div class="ttname"><a href="_m_s__definitions_8h.html#a9a7765d7385c0d0ad153092ad9dbe959">dataBuffer</a></div><div class="ttdeci">volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH *PCC_BLOCK_SIZE_IN_WORDS]</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:13</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_abbfc45efa0171b70322968fbdc561077"><div class="ttname"><a href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a></div><div class="ttdeci">#define SPI_ICSPACE_MS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:145</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_abec5ae8ff61eac42d1ea8af141edf66c"><div class="ttname"><a href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a></div><div class="ttdeci">#define SPI_BAUD_MS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:141</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a1cabbdb02f36420b24c4ccd132972080"><div class="ttname"><a href="_m_s__definitions_8h.html#a1cabbdb02f36420b24c4ccd132972080">timerInit</a></div><div class="ttdeci">void timerInit(void)</div><div class="ttdef"><b>Definition</b> MS_timer.c:15</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a9a7765d7385c0d0ad153092ad9dbe959"><div class="ttname"><a href="_m_s__definitions_8h.html#a9a7765d7385c0d0ad153092ad9dbe959">dataBuffer</a></div><div class="ttdeci">volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH *PCC_BLOCK_SIZE_IN_WORDS]</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:11</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_abbfc45efa0171b70322968fbdc561077"><div class="ttname"><a href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a></div><div class="ttdeci">#define SPI_ICSPACE_MS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:144</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_abec5ae8ff61eac42d1ea8af141edf66c"><div class="ttname"><a href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a></div><div class="ttdeci">#define SPI_BAUD_MS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:140</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_ad445875dc7336f1658d4cf9225939be7"><div class="ttname"><a href="_m_s__definitions_8h.html#ad445875dc7336f1658d4cf9225939be7">PCCLinkedListInit</a></div><div class="ttdeci">void PCCLinkedListInit(void)</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_ad7279c9e8340a127a98e97910eae6fbc"><div class="ttname"><a href="_m_s__definitions_8h.html#ad7279c9e8340a127a98e97910eae6fbc">TXLinkedListInit</a></div><div class="ttdeci">void TXLinkedListInit(void)</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_af148a997174c1b0d2e4acc82abba2f8d"><div class="ttname"><a href="_m_s__definitions_8h.html#af148a997174c1b0d2e4acc82abba2f8d">SDCardInit</a></div><div class="ttdeci">void SDCardInit(void)</div></div>
-<div class="ttc" id="a_m_s__util_8c_html_ab20f4701aefb86484839006e804e3323"><div class="ttname"><a href="#ab20f4701aefb86484839006e804e3323">irqInit</a></div><div class="ttdeci">void irqInit(void)</div><div class="ttdef"><b>Definition</b> MS_util.c:231</div></div>
+<div class="ttc" id="a_m_s__util_8c_html_ab20f4701aefb86484839006e804e3323"><div class="ttname"><a href="#ab20f4701aefb86484839006e804e3323">irqInit</a></div><div class="ttdeci">void irqInit(void)</div><div class="ttdef"><b>Definition</b> MS_util.c:230</div></div>
 <div class="ttc" id="ai2c__bb_8h_html_a8abad26158d7ca08e3902b3e6dfb54eb"><div class="ttname"><a href="i2c__bb_8h.html#a8abad26158d7ca08e3902b3e6dfb54eb">I2C_BB_init</a></div><div class="ttdeci">void I2C_BB_init(void)</div></div>
 </div><!-- fragment -->
 </div>
@@ -431,19 +456,23 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">  250</span>                                                          {</div>
-<div class="line"><span class="lineno">  251</span>    uint32_t *configBlock32bit = (uint32_t *)<a class="code hl_variable" href="_m_s__definitions_8h.html#a0e2e10ea8898a2164c34fe33cfff7ca8">configBlock</a>;</div>
-<div class="line"><span class="lineno">  252</span>    </div>
-<div class="line"><span class="lineno">  253</span>    configBlock32bit[position] = value;</div>
-<div class="line"><span class="lineno">  254</span>}</div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a0e2e10ea8898a2164c34fe33cfff7ca8"><div class="ttname"><a href="_m_s__definitions_8h.html#a0e2e10ea8898a2164c34fe33cfff7ca8">configBlock</a></div><div class="ttdeci">volatile uint8_t configBlock[]</div><div class="ttdef"><b>Definition</b> MS_definitions.h:222</div></div>
+<div class="fragment"><div class="line"><span class="lineno">  249</span>                                                          {</div>
+<div class="line"><span class="lineno">  250</span>    uint32_t *configBlock32bit = (uint32_t *)<a class="code hl_variable" href="_m_s__definitions_8h.html#a0e2e10ea8898a2164c34fe33cfff7ca8">configBlock</a>;</div>
+<div class="line"><span class="lineno">  251</span>    </div>
+<div class="line"><span class="lineno">  252</span>    configBlock32bit[position] = value;</div>
+<div class="line"><span class="lineno">  253</span>}</div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a0e2e10ea8898a2164c34fe33cfff7ca8"><div class="ttname"><a href="_m_s__definitions_8h.html#a0e2e10ea8898a2164c34fe33cfff7ca8">configBlock</a></div><div class="ttdeci">volatile uint8_t configBlock[]</div><div class="ttdef"><b>Definition</b> MS_definitions.h:220</div></div>
 </div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="_m_s__util_8c.html">MS_util.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0 </li>
+  </ul>
+</div>
 </body>
 </html>

@@ -15,5 +15,5 @@ var searchData=
   ['header_5frecord_5flength_5fpos_12',['HEADER_RECORD_LENGTH_POS',['../_m_s__definitions_8h.html#ac4855eb4a09c9c286812a5e3fffd7615',1,'MS_definitions.h']]],
   ['headerblock_13',['headerBlock',['../_m_s__definitions_8h.html#aff0c795141bee04a0c412e235b9de5bf',1,'headerBlock:&#160;MS_definitions.h'],['../_m_s__global__variable_8c.html#abf38cb5972b8b11a4227f86eb83d42de',1,'headerBlock:&#160;MS_global_variable.c']]],
   ['height_14',['HEIGHT',['../_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e',1,'MS_definitions.h']]],
-  ['how_20to_20configure_20the_20git_20submodule_15',['How to configure the git submodule',['../md__r_e_a_d_m_e.html#autotoc_md5',1,'']]]
+  ['how_20to_20configure_20the_20git_20submodule_15',['How to configure the git submodule',['../index.html#autotoc_md3',1,'']]]
 ];

@@ -1,9 +1,8 @@
-/*
- * python480.h
- *
- * Created: 5/29/2021 1:33:16 PM
- *  Author: dbaha
- */ 
+/**
+@file
+@brief Functions to interface Python 480 (image sensor)
+@author Daniel, Takuya
+*/
 
 
 #ifndef PYTHON480_H_
