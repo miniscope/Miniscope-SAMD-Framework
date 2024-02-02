@@ -13,6 +13,7 @@ var _m_s__config_8h =
     [ "PREAMBLE_ENABLE", "_m_s__config_8h.html#ad0893543d21ecb53b1899803ec515274", null ],
     [ "PRESET_HEADER_ENABLE", "_m_s__config_8h.html#a6e07f1c785355ce600b48cc59d515602", null ],
     [ "PUSH_BUT_ENABLE", "_m_s__config_8h.html#ada0c7435c08199473c823e6fff930d3b", null ],
+    [ "PYTHON480_152PX", "_m_s__config_8h.html#aa9fb92d516779efddb208f03d808fbec", null ],
     [ "PYTHON480_ENABLE", "_m_s__config_8h.html#a0cb747f2b97932a55d93ebb05adf124e", null ],
     [ "SDO_32BIT_ENABLE", "_m_s__config_8h.html#ae209b8e384c6244e4be1a76eacbcc000", null ],
     [ "SPI_SERCOM0_ENABLE", "_m_s__config_8h.html#ae9e898fed1f5b27c01e8162708957fab", null ],

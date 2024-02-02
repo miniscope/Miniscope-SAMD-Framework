@@ -12,6 +12,5 @@ var searchData=
   ['header_5fframe_5frate_5fpos_9',['HEADER_FRAME_RATE_POS',['../_m_s__definitions_8h.html#a20cbe690933e23d25b4203f3e2db517d',1,'MS_definitions.h']]],
   ['header_5fgain_5fpos_10',['HEADER_GAIN_POS',['../_m_s__definitions_8h.html#a7b43e8dc65f9383657b3dbddc42869ff',1,'MS_definitions.h']]],
   ['header_5fled_5fpos_11',['HEADER_LED_POS',['../_m_s__definitions_8h.html#a192fae17de81454f33a1c700525dc293',1,'MS_definitions.h']]],
-  ['header_5frecord_5flength_5fpos_12',['HEADER_RECORD_LENGTH_POS',['../_m_s__definitions_8h.html#ac4855eb4a09c9c286812a5e3fffd7615',1,'MS_definitions.h']]],
-  ['height_13',['HEIGHT',['../_m_s__definitions_8h.html#aed89bd71aee8be823e8a20ec4e093c1e',1,'MS_definitions.h']]]
+  ['header_5frecord_5flength_5fpos_12',['HEADER_RECORD_LENGTH_POS',['../_m_s__definitions_8h.html#ac4855eb4a09c9c286812a5e3fffd7615',1,'MS_definitions.h']]]
 ];

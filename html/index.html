@@ -187,25 +187,21 @@ Conditional compile</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#ifdef PYTHON480_ENABLE</span></div>
 <div class="line"><span class="comment">// Enable the 3.3V regulator</span></div>
 <div class="line">gpio_set_pin_level(EN_3V3, <span class="keyword">true</span>);</div>
-<div class="line"><a class="code hl_function" href="i2c__bb_8h.html#a8abad26158d7ca08e3902b3e6dfb54eb">I2C_BB_init</a>();</div>
+<div class="line">I2C_BB_init();</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="ai2c__bb_8h_html_a8abad26158d7ca08e3902b3e6dfb54eb"><div class="ttname"><a href="i2c__bb_8h.html#a8abad26158d7ca08e3902b3e6dfb54eb">I2C_BB_init</a></div><div class="ttdeci">void I2C_BB_init(void)</div></div>
 </div><!-- fragment --><div class="fragment"><div class="line"><span class="preprocessor">#if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM7_ENABLE)</span></div>
-<div class="line">hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM7, <a class="code hl_define" href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a>);</div>
-<div class="line">hri_sercomspi_write_BAUD_reg(SERCOM7, <a class="code hl_define" href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a>);</div>
+<div class="line">hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM7, SPI_ICSPACE_MS);</div>
+<div class="line">hri_sercomspi_write_BAUD_reg(SERCOM7, SPI_BAUD_MS);</div>
 <div class="line">spi_m_sync_enable(&amp;</div>
 <div class="line">);</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_abbfc45efa0171b70322968fbdc561077"><div class="ttname"><a href="_m_s__definitions_8h.html#abbfc45efa0171b70322968fbdc561077">SPI_ICSPACE_MS</a></div><div class="ttdeci">#define SPI_ICSPACE_MS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:144</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_abec5ae8ff61eac42d1ea8af141edf66c"><div class="ttname"><a href="_m_s__definitions_8h.html#abec5ae8ff61eac42d1ea8af141edf66c">SPI_BAUD_MS</a></div><div class="ttdeci">#define SPI_BAUD_MS</div><div class="ttdef"><b>Definition</b> MS_definitions.h:140</div></div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md8"></a>
 SERCOM for DMA</h3>
 <ul>
 <li>Define SERCOM setting in ATMEL START</li>
 <li>Only part that should be manually changed is the DMA's DSTADDR.reg in <a class="el" href="_m_s__dma_8c.html" title="DMA related functions.">MS_dma.c</a>. This should be defined using conditional compile. <div class="fragment"><div class="line"><span class="preprocessor">#if defined(DMA_TO_SPI_ENABLE) &amp;&amp; defined(SPI_SERCOM0_ENABLE)</span></div>
-<div class="line"><a class="code hl_variable" href="_m_s__definitions_8h.html#ab2490f3815816b16b0d7666f0045c9fc">TXLinkedList</a>[i].DSTADDR.reg = (uint32_t) &amp;SERCOM0-&gt;SPI.DATA.reg;</div>
+<div class="line">TXLinkedList[i].DSTADDR.reg = (uint32_t) &amp;SERCOM0-&gt;SPI.DATA.reg;</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_ab2490f3815816b16b0d7666f0045c9fc"><div class="ttname"><a href="_m_s__definitions_8h.html#ab2490f3815816b16b0d7666f0045c9fc">TXLinkedList</a></div><div class="ttdeci">volatile DmacDescriptor TXLinkedList[]</div><div class="ttdef"><b>Definition</b> MS_definitions.h:274</div></div>
 </div><!-- fragment --></li>
 </ul>
 <h2><a class="anchor" id="autotoc_md9"></a>
