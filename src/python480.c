@@ -5,9 +5,11 @@
  *  Author: Takuya
  */ 
 
-#include "python480.h"
 #include "MS_config.h"
 #include "MS_definitions.h"
+
+#ifdef PYTHON480_ENABLE
+#include "python480.h"
 
 uint16_t python480_testconfig = 0x00;
 
@@ -447,3 +449,6 @@ void EnableSeq () {
 void DisableSeq () {
 	spi_BB_Write(192,0x0802);
 }
+
+
+#endif // python 480 enable

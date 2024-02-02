@@ -5,19 +5,28 @@
  *  Author: Takuya
  */ 
 
-#include <hpl_dmac_config.h>
-#include <hpl_pcc_config.h>
-#include <hpl_dma.h>
-
 #include "MS_config.h"
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
 
+#include <hpl_dmac_config.h>
+#ifdef PYTHON480_ENABLE
+#include <hpl_pcc_config.h>
+#endif 
+#include <hpl_dma.h>
+
 COMPILER_ALIGNED(16)
 volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
 
+#ifdef NANEYE_ENABLE
+COMPILER_ALIGNED(16) // not sure if necesary
+volatile DmacDescriptor NE_LinkedList[NUM_BUFFERS];// naneye linked list
+#endif
+
+#ifdef PYTHON480_ENABLE
 COMPILER_ALIGNED(16)
 volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
+#endif
 
 void dmaEnable(void){
 	#ifdef PYTHON480_ENABLE
@@ -43,8 +52,15 @@ void dmaEnable(void){
 	//DMAC->Channel[SDO_DMA_CHANNEL].CHPRILVL.reg = DMAC_CHPRILVL_PRILVL_LVL0;
 	dmac_register_callback(SDO_DMA_CHANNEL, sdo_dma_transfer_complete_cb);
 	#endif
+	// registering the callbacks after DMA transfer, if transfer is completed
+	// call the SDO_DMA transfer function
+	#if 0 // HS CHECK should be #ifdef NANEYE_ENABLE
+	DMAC->Channel[NE_DMA_CHANNEL].CHINTENSET.reg = DMAC_CHINTENSET_TCMPL;
+	dmac_register_callback(NE_DMA_CHANNEL, sdo_dma_transfer_complete_cb);// HS CHECK, registers call back function for NanEYE camera
+	#endif
+	// goes into controlling function, if < 2 buffers, stops
 }
-
+// initiating TX linked list
 #if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 void TXLinkedListInit(void)
 {
@@ -75,6 +91,10 @@ void TXLinkedListInit(void)
 		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
 		#endif
+		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM5_ENABLE)
+		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->SPI.DATA.reg;
+		#endif
+
 		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
 		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM7->SPI.DATA.reg;
 		#endif
@@ -85,6 +105,51 @@ void TXLinkedListInit(void)
 	setTXLinkedListPosition(0);
 }
 
+#ifdef NANEYE_ENABLE
+
+void NELinkedListInit(void)
+{
+	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
+		if (i == (NUM_BUFFERS - 1)) NE_LinkedList[i].DESCADDR.reg = (uint32_t)&TXLinkedList[0];
+		// Last buffer in list. Need to loop back
+		else NE_LinkedList[i].DESCADDR.reg = (uint32_t)&NE_LinkedList[i + 1];
+		
+		
+		NE_LinkedList[i].BTCNT.reg = BUFFER_BLOCK_LENGTH * SDO_BLOCK_SIZE_IN_WORDS;
+
+		// We aren't actually using the STEPSIZE part of incrementing the source address.
+		NE_LinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
+		| (CONF_DMAC_DSTINC_1 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_1 << DMAC_BTCTRL_SRCINC_Pos)\
+		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_1) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_1 | 0x01)\
+		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_1) | DMAC_BTCTRL_VALID;
+		
+		// For sending out data
+		#ifdef SDO_32BIT_ENABLE
+		NE_LinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][0]) + NE_LinkedList[i].BTCNT.reg * 4;
+		#endif
+		#ifdef SDO_8BIT_ENABLE
+		NE_LinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][0]) + NE_LinkedList[i].BTCNT.reg;
+		#endif
+		// Destination address when incrementing address needs to be the end address and not the start address.
+		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
+		
+		NE_LinkedList[i].SRCADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg; // SERCOM for NE Camera HS CHECK
+// make sure to associate this SERCOM number in ATMEL Start
+	}
+	setNELinkedListPosition(0);
+}
+
+void setNELinkedListPosition(uint8_t pos)
+{
+	_dma_set_destination_address(NE_DMA_CHANNEL, (void *)NE_LinkedList[pos].DSTADDR.reg);
+	_dma_set_data_amount(NE_DMA_CHANNEL, NE_LinkedList[pos].BTCNT.reg);
+	_dma_set_BTCTRL(NE_DMA_CHANNEL, (void *)NE_LinkedList[pos].BTCTRL.reg); //block transfer control
+	_dma_set_DESCADDR(NE_DMA_CHANNEL, NE_LinkedList[pos].DESCADDR.reg);
+	_dma_set_source_address(NE_DMA_CHANNEL, (void *)NE_LinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
+}
+
+#endif
+
 void setTXLinkedListPosition(uint8_t pos)
 {
 	_dma_set_destination_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].DSTADDR.reg);
@@ -93,6 +158,7 @@ void setTXLinkedListPosition(uint8_t pos)
 	_dma_set_DESCADDR(SDO_DMA_CHANNEL, TXLinkedList[pos].DESCADDR.reg);
 	_dma_set_source_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
 }
+
 
 void sdo_dma_transfer_trigger(void)
 {
@@ -107,7 +173,7 @@ void sdo_dma_transfer_complete_cb(void)
 	//increment if appropriate
 	sdo_dma_transfer_control(true);
 }
-
+// HS CHECK with naneye camera here
 void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 {
 		// for first call; if not enabled
@@ -184,7 +250,7 @@ void DataBufferInit(void)
 		}
 	}
 }
-
+#ifdef PYTHON480_ENABLE
 void PCCLinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
@@ -210,7 +276,6 @@ void PCCLinkedListInit(void)
 	setPCCLinkedListPosition(0);
 }
 
-#ifdef PYTHON480_ENABLE
 void setPCCLinkedListPosition(uint8_t pos)
 {
 	// Set up initial DMA descriptor for DMA channel handling PCC. BTCNT is already setup in DMA init step

@@ -3,12 +3,14 @@
  *
  * Created: 5/20/2023 1:39:43 PM
  *  Author: Takuya
+ HERE ADD GS_defintions.h
  */ 
 #ifndef MS_DEFINITIONS_H_
 #define MS_DEFINITIONS_H_
 
 #include <atmel_start.h>
 #include <utils.h>
+// test comment
 
 #include "MS_config.h"
 
@@ -35,8 +37,6 @@
 // -------------------------------------------
 
 // ----------- Buffer Definitions ------------
-#define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
-#define NUM_BUFFERS				8  // can be edited by user to optimize speed
 #define PCC_BLOCK_SIZE_IN_WORDS		128
 #ifdef SDO_32BIT_ENABLE
 #define SDO_BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
@@ -266,6 +266,8 @@ void usart_rx_cb(void);
 
 // DMA
 #define SDO_DMA_CHANNEL 0x1
+#define NE_DMA_CHANNEL 0x0 // HS CHECK DMA Channel settings (ATMEL Start)
+
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 
