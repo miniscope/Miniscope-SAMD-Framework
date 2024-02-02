@@ -147,9 +147,17 @@
 #define USART_ICSPACE_MS				1 // Clock cycle between word
 #define USART_BAUD_MS					23 // f_baud = f_ref / (2*(BAUD + 1))
 
+#ifdef PYTHON480_304PX
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
+#endif
+
+#ifdef PYTHON480_152PX
+#define WIDTH						304
+#define HEIGHT						304
+#define BINNING						2
+#endif
 
 #define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
 
