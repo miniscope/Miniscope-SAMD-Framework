@@ -37,8 +37,6 @@
 // -------------------------------------------
 
 // ----------- Buffer Definitions ------------
-#define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
-#define NUM_BUFFERS				4  // can be edited by user to optimize speed
 #define PCC_BLOCK_SIZE_IN_WORDS		128
 #ifdef SDO_32BIT_ENABLE
 #define SDO_BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)

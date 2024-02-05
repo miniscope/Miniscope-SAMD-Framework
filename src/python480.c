@@ -4,10 +4,12 @@
  * Created: 5/24/2023 11:11:46 AM
  *  Author: Takuya
  */ 
-#ifdef PYTHON480_ENABLE
-#include "python480.h"
+
 #include "MS_config.h"
 #include "MS_definitions.h"
+
+#ifdef PYTHON480_ENABLE
+#include "python480.h"
 
 uint16_t python480_testconfig = 0x00;
 
