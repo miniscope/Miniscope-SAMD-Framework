@@ -21,6 +21,18 @@ volatile uint32_t deviceState = DEVICE_STATE_IDLE;
 //COMPILER_ALIGNED(16) // Taken from hpl_dmac.c but I think this could be '8' since descriptors need to be 64bit aligned from data sheet
 //volatile DmacDescriptor linkedList[NUM_BUFFERS];
 
+#ifdef SPI_SERCOM0_ENABLE
+Sercom *sercom_sdo = SERCOM0;
+#elif SPI_SERCOM5_ENABLE
+Sercom *sercom_sdo = SERCOM5;
+#elif SPI_SERCOM7_ENABLE
+Sercom *sercom_sdo = SERCOM7;
+#elif USART_SERCOM5_ENABLE
+Sercom *sercom_sdo = SERCOM5;
+#endif
+
+volatile uint32_t sdo_data_reg;
+
 // Probably should turn this into a struct to be more easily understandable
 volatile uint64_t SDTransferDescriptor; // I think we will only use 1 of these for now. Each descriptor is 64bits long 
 

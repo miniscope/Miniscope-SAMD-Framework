@@ -170,6 +170,18 @@ extern volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WO
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 
+/**
+@var sercom_sdo
+@brief This stores SERCOM hardware pointer used for data transmission (memory -> SERCOM)
+*/
+extern Sercom *sercom_sdo;
+
+/**
+@var sdo_data_reg
+@brief This stores SERCOM hardware data register address used for data transmission (memory -> SERCOM)
+*/
+extern volatile uint32_t sdo_data_reg;
+
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
 extern volatile uint32_t currentBlock;
@@ -240,6 +252,12 @@ extern volatile uint8_t configBlock[]; // Will hold the device config informatio
 void getBuffersPerFrame(void);
 
 void peripheralInit(void);
+
+/**
+@brief Store SERCOM hardware data register in global variables
+@note This is a temporary turnaround for avoiding "initializer element is not constant" error.
+*/
+void set_sdo_data_reg(void);
 void timerInit(void);
 void irqInit(void);
 uint8_t loadSDCardHeader(void);

@@ -87,19 +87,8 @@ void TXLinkedListInit(void)
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
 		
-		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
-		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
-		#endif
-		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM5_ENABLE)
-		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->SPI.DATA.reg;
-		#endif
-
-		#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
-		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM7->SPI.DATA.reg;
-		#endif
-		#if defined(DMA_TO_USART_ENABLE) && defined(USART_SERCOM5_ENABLE)
-		TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM5->USART.DATA.reg;
-		#endif
+		// SDO_DATA_REG address should be SERCOM data register. This is defined in MS_definition.h
+		TXLinkedList[i].DSTADDR.reg = sdo_data_reg;
 	}
 	setTXLinkedListPosition(0);
 }
@@ -132,6 +121,7 @@ void NELinkedListInit(void)
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
 		
+		// To do (low priority): make sercom hw a variable
 		NE_LinkedList[i].SRCADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg; // SERCOM for NE Camera HS CHECK
 // make sure to associate this SERCOM number in ATMEL Start
 	}
