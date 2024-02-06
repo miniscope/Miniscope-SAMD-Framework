@@ -1,9 +1,11 @@
-/*
- * MS_config.h
- *
- * Created: 8/23/2023 5:18:12 PM
- *  Author: Takuya
- */ 
+/**
+@file
+@brief Configuration files of the project.
+*_MODE flags refer to the hardware configuration used.
+*_ENABLE flags refer to the peripherals that will be included.
+The modes should be a set of peripherals used in the specified mode.
+@author Takuya
+*/
 
 
 #ifndef MS_CONFIG_H_

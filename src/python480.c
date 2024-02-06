@@ -1,9 +1,8 @@
-/*
- * python480.c
- *
- * Created: 5/24/2023 11:11:46 AM
- *  Author: Takuya
- */ 
+/**
+@file
+@brief Functions for interfacing python 480 (image sensor)
+@author Daniel, Takuya
+*/
 
 #include "MS_config.h"
 #include "MS_definitions.h"

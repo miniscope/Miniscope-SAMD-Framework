@@ -1,9 +1,8 @@
-/*
- * MS_cb.c
- *
- * Created: 5/20/2023 7:41:53 PM
- *  Author: Takuya
- */ 
+/**
+@file
+@brief Callback functions
+@author Takuya
+*/
 
 #include "MS_config.h"
 #include "MS_definitions.h"

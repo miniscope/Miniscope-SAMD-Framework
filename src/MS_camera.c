@@ -1,9 +1,9 @@
-/*
- * MS_camera.c
- *
- * Created: 5/24/2023 10:56:53 AM
- *  Author: Takuya
- */ 
+/**
+@file
+@brief Camera related initiation functions
+@author Takuya
+@note This could be integrated into python480.c in the future
+*/
 
 #include "MS_config.h"
 #include "MS_definitions.h"

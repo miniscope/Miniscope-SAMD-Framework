@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['battery_5fenable_0',['BATTERY_ENABLE',['../_m_s__config_8h.html#a7ddfd554cc4e91813d2b37ed9f052d77',1,'MS_config.h']]],
+  ['buffer_5fblock_5flength_1',['BUFFER_BLOCK_LENGTH',['../_m_s__config_8h.html#ac8efbebc6d01869dfb8333a1a5b9395a',1,'MS_config.h']]],
+  ['buffer_5fframe_5fsize_2',['BUFFER_FRAME_SIZE',['../_nan_eye_8h.html#a42f86dd5d167c04c5011fb6014515504',1,'NanEye.h']]],
+  ['buffer_5fheader_5fbattery_5fvoltage_5fpos_3',['BUFFER_HEADER_BATTERY_VOLTAGE_POS',['../_m_s__definitions_8h.html#afc5028f8ed13c659217188a58db3ca5a',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fbuffer_5fcount_5fpos_4',['BUFFER_HEADER_BUFFER_COUNT_POS',['../_m_s__definitions_8h.html#aa3242894ab02918a050f44703270cff5',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fdata_5flength_5fpos_5',['BUFFER_HEADER_DATA_LENGTH_POS',['../_m_s__definitions_8h.html#a632a6547e5cfb160f442834a9f78606b',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fdropped_5fbuffer_5fcount_5fpos_6',['BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS',['../_m_s__definitions_8h.html#a852f62860cd0402e0bd1a45890275dce',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fewl_5fpos_7',['BUFFER_HEADER_EWL_POS',['../_m_s__definitions_8h.html#a0bb3fa59b611c605d2463c217555d3cf',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fframe_5fbuffer_5fcount_5fpos_8',['BUFFER_HEADER_FRAME_BUFFER_COUNT_POS',['../_m_s__definitions_8h.html#ac27b0eeae889e8eb6249a6811c52e5de',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fframe_5fnum_5fpos_9',['BUFFER_HEADER_FRAME_NUM_POS',['../_m_s__definitions_8h.html#a0c8806806e75462cbfbf9029e1a37649',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fheader_5flength_5fpos_10',['BUFFER_HEADER_HEADER_LENGTH_POS',['../_m_s__definitions_8h.html#a7ffeaff8afb81ab9d8b71bfaa4f7ad82',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5flength_11',['BUFFER_HEADER_LENGTH',['../_m_s__definitions_8h.html#a5727d59ff5eb79b18dfc97788fc45154',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5flinked_5flist_5fpos_12',['BUFFER_HEADER_LINKED_LIST_POS',['../_m_s__definitions_8h.html#ad023d784fe61f4a7b8d12cc532fe2008',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5ftimestamp_5fpos_13',['BUFFER_HEADER_TIMESTAMP_POS',['../_m_s__definitions_8h.html#aeb037ce7f269c329a099f64952086e20',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fwrite_5fbuffer_5fcount_5fpos_14',['BUFFER_HEADER_WRITE_BUFFER_COUNT_POS',['../_m_s__definitions_8h.html#a62bb9355956de569919bc6cbc9887b0c',1,'MS_definitions.h']]],
+  ['buffer_5fheader_5fwrite_5ftimestamp_5fpos_15',['BUFFER_HEADER_WRITE_TIMESTAMP_POS',['../_m_s__definitions_8h.html#ab6a13e7f4f69c47e7da622247b99ba1f',1,'MS_definitions.h']]]
+];

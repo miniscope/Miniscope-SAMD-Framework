@@ -1,15 +1,9 @@
-// this is where GS_Definitions.h will go
-
-/*
- * definitions.h
- *
- * Created: 9/1/2022 10:16:19 PM
- *  Author: Daniel Aharoni
- * Modified: 10/1/2022 10:16:19 AM
- *  Author: Hemal Semwal
- 
- */ 
-
+/**
+@file
+@brief Functions to interface NanEyeC (image sensor)
+@author Daniel, Hemal
+@note this is where GS_Definitions.h will go
+*/
 
 #ifndef DEFINITIONS_H_
 #define DEFINITIONS_H_

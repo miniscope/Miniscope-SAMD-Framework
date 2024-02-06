@@ -1,10 +1,9 @@
-/*
- * MS_definitions.h
- *
- * Created: 5/20/2023 1:39:43 PM
- *  Author: Takuya
- HERE ADD GS_defintions.h
- */ 
+/**
+@file
+@brief Internal definitions and parameters. All application specific functions should be declared here.
+@author Takuya
+*/
+
 #ifndef MS_DEFINITIONS_H_
 #define MS_DEFINITIONS_H_
 
@@ -159,7 +158,6 @@
 
 // ----------- GLOBAL VARIABLES -----------
 
-
 extern volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS]; //Allocate memory for DMA image buffers
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
@@ -223,7 +221,11 @@ extern volatile uint8_t configBlock[]; // Will hold the device config informatio
 
 // ----------- FUNCTIONS ----------------
 
+/**
+@brief Calculate the number of buffers needed to store one image frame
+*/
 void getBuffersPerFrame(void);
+
 void peripheralInit(void);
 void timerInit(void);
 void irqInit(void);

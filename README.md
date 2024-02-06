@@ -1,16 +1,8 @@
-# Coding framework
-## Current state / notes
-Working modes
-- v4WF (parameters aren't correct)
-- DMA to SPI testmode
+## README
+See documentation by cloning this repository and locally opening [html/index.html] with browser.
+- To do: host this somewhere after making this public.
 
-The goal of this framework is to:
-- Run all SAMD-based Miniscope devices with the same code.
-- Allow automatic configuration updates using Atmel START (no more manual driver file update and fixing).
-- Make mantainance/development/debug easier.
-
----
-## General tips
+### Tips
 - Use this as a Git submodule.
     - If you're not building a Atmel project inside a git repository, you can do a normal clone too.
 - Only edit the files in Miniscope-SAMD-Framework
@@ -19,13 +11,13 @@ The goal of this framework is to:
 - Follow git flow (main, dev, feature)
     - You need to make a branch **inside** the nested git submodule.
 
-## Repository structure
+### Repository structure
 - src: custom functions
 - include: header files for files in src
 - ASF_custom: customized ASF drivers
 - script: scripts for taking care of conflicts with Atmel START
 
-## How to configure the git submodule
+### How to configure the git submodule
 1. Set up an Atmel START project
     - Make sure to follow the Peripheral requirements stated below.
 2. Go to the directory including main.c using git bash (or equivalent shell) 
@@ -48,13 +40,13 @@ git config --global protocol.file.allow always
 powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "..\MS_module\script\MS_prebuild.ps1"
 ```
 
-## Conditional compile flag
+### Conditional compile flag
 - All mode/peripheral enable should be defined in MS_definitions.h
     - Firmware mode: end by _MODE or _TESTMODE
     - Peripheral mode  : end by _ENABLE or _DISABLE
 - Conditional compile should be flagged by _ENABLE or _DISABLE
 
-### Mode flag
+#### Mode flag
 - Select/define one of the modes using #define
 - End mode with _MODE or _TESTMODE
 ```c
@@ -65,7 +57,7 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "..\MS_m
 //#define DMA_TO_SPI_METRO_TESTMODE
 ```
 
-### Peripheral enable flag
+#### Peripheral enable flag
 - Select/define the enabled peripherals using #ifdef or #if
 - End with _ENABLE or _DISABLE
 ```c
@@ -84,7 +76,7 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "..\MS_m
 #endif
 ```
 
-### Conditional compile
+#### Conditional compile
 Define peripheral functions within a peripheral enable flag (avoid using mode flags)
 
 ```c
@@ -104,7 +96,7 @@ spi_m_sync_enable(&
 #endif
    ```
 
-### SERCOM for DMA
+#### SERCOM for DMA
 - Define SERCOM setting in ATMEL START
 - Only part that should be manually changed is the DMA's DSTADDR.reg in MS_dma.c. This should be defined using conditional compile.
 ```c
@@ -113,8 +105,8 @@ TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
 #endif
 ```
 
-## Peripheral requirements (Atmel START config)
-### PYTHON480_ENABLE
+### Peripheral requirements (Atmel START config)
+#### PYTHON480_ENABLE
 Drivers
 ```
 TIMER_0
@@ -139,64 +131,39 @@ MONITOR0
 GCLK1_OUT
 ```
 
-### BATTERY_ENABLE
+#### BATTERY_ENABLE
 ```
 BATT_VOLT
 ```
 
-### WPT_ENABLE
+#### WPT_ENABLE
 ```
 WPT_VOLT
 ```
 
-### EWL_ENABLE
+#### EWL_ENABLE
 ```
 I2C_BB_SCL
 I2C_BB_SDA
 ```
 
-### IR_TRIGGER_ENABLE
+#### IR_TRIGGER_ENABLE
 ```
 IR_RX
 ```
 
-### IR_UART_ENABLE
+#### IR_UART_ENABLE
 ```
 IR_RX
 ```
 
-### EXLED_PWM_ENABLE
+#### EXLED_PWM_ENABLE
 ```
 LED_PWM
 ENT_LED
 ```
 
-### DMA_TO_SPI_ENABLE
-```
-
-```
-
-## Global variables
-- Define in ```MS_global_variable.c```
-- Declare in ```MS_definitions.h```
-
-## Functions
-- All application specific functions should be declared in MS_definitions.h
-### Application functions
-- i2c_bb.c: bit-bang I2C 
-- MS_util.c: general application functions
-- MS_callback.c: callback functions
-- MS_dma.c: project specific DMA functions
-- MS_record.c: for recording fuction
-- MS_camera.c: for camera
-- MS_global_variable.c: for global variables
-- MS_timer.c: timer related
-- python480.c: python 480 utilities
-
-## Declarations
-- MS_definitions.h: Application specific function declerations
-
-## Open questions / to do
+### Open questions / to do
 - Write everything for minimum prototype
 - Ask someone to add module
     - I think Marcel is interesting in adding the LUTmodule

@@ -1,8 +1,7 @@
-/*
-* MS_util.c
-*
-* Created: 5/20/2023 7:16:23 PM
-*  Author: Takuya
+/**
+@file
+@brief Utility functions for Miniscope
+@author Takuya
 */
 
 #include <atmel_start.h>
