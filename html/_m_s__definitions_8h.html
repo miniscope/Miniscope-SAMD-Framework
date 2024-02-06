@@ -355,6 +355,8 @@ Functions</h2></td></tr>
 <tr class="memitem:ae80f56f3274a1d4b4f34bca247d73cdb" id="r_ae80f56f3274a1d4b4f34bca247d73cdb"><td class="memItemLeft" align="right" valign="top"><a id="ae80f56f3274a1d4b4f34bca247d73cdb" name="ae80f56f3274a1d4b4f34bca247d73cdb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>peripheralInit</b> (void)</td></tr>
 <tr class="separator:ae80f56f3274a1d4b4f34bca247d73cdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf5a4bebb502d8cd50b3c213bd80eefa" id="r_acf5a4bebb502d8cd50b3c213bd80eefa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf5a4bebb502d8cd50b3c213bd80eefa">set_sdo_data_reg</a> (void)</td></tr>
+<tr class="separator:acf5a4bebb502d8cd50b3c213bd80eefa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cabbdb02f36420b24c4ccd132972080" id="r_a1cabbdb02f36420b24c4ccd132972080"><td class="memItemLeft" align="right" valign="top"><a id="a1cabbdb02f36420b24c4ccd132972080" name="a1cabbdb02f36420b24c4ccd132972080"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>timerInit</b> (void)</td></tr>
 <tr class="separator:a1cabbdb02f36420b24c4ccd132972080"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -490,6 +492,10 @@ volatile DmacDescriptor&#160;</td><td class="memItemRight" valign="bottom"><b>PC
 <tr class="memitem:ab2490f3815816b16b0d7666f0045c9fc" id="r_ab2490f3815816b16b0d7666f0045c9fc"><td class="memItemLeft" align="right" valign="top"><a id="ab2490f3815816b16b0d7666f0045c9fc" name="ab2490f3815816b16b0d7666f0045c9fc"></a>
 volatile DmacDescriptor&#160;</td><td class="memItemRight" valign="bottom"><b>TXLinkedList</b> []</td></tr>
 <tr class="separator:ab2490f3815816b16b0d7666f0045c9fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a586574923924671d68ae3fe3c5a97cc6" id="r_a586574923924671d68ae3fe3c5a97cc6"><td class="memItemLeft" align="right" valign="top">Sercom *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a586574923924671d68ae3fe3c5a97cc6">sercom_sdo</a></td></tr>
+<tr class="separator:a586574923924671d68ae3fe3c5a97cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa335ebfd68e38a6cb093238a036862ff" id="r_aa335ebfd68e38a6cb093238a036862ff"><td class="memItemLeft" align="right" valign="top">volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa335ebfd68e38a6cb093238a036862ff">sdo_data_reg</a></td></tr>
+<tr class="separator:aa335ebfd68e38a6cb093238a036862ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff0c795141bee04a0c412e235b9de5bf" id="r_aff0c795141bee04a0c412e235b9de5bf"><td class="memItemLeft" align="right" valign="top"><a id="aff0c795141bee04a0c412e235b9de5bf" name="aff0c795141bee04a0c412e235b9de5bf"></a>
 volatile uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>headerBlock</b> []</td></tr>
 <tr class="separator:aff0c795141bee04a0c412e235b9de5bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -645,6 +651,26 @@ volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>SDTransf
 
 </div>
 </div>
+<a id="acf5a4bebb502d8cd50b3c213bd80eefa" name="acf5a4bebb502d8cd50b3c213bd80eefa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf5a4bebb502d8cd50b3c213bd80eefa">&#9670;&#160;</a></span>set_sdo_data_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void set_sdo_data_reg </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Store SERCOM hardware data register in global variables. </p>
+<dl class="section note"><dt>Note</dt><dd>This is a temporary turnaround for avoiding "initializer element is not constant" error. </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a654e7aa1d58acfb280a007c6de40dbce" name="a654e7aa1d58acfb280a007c6de40dbce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a654e7aa1d58acfb280a007c6de40dbce">&#9670;&#160;</a></span>numBuffersPerFrame</h2>
@@ -668,6 +694,54 @@ volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>SDTransf
 
 <p>Not actual number of buffers per frame. </p>
 <dl class="section note"><dt>Note</dt><dd>It's confusing so it might be better to change name </dd></dl>
+
+</div>
+</div>
+<a id="aa335ebfd68e38a6cb093238a036862ff" name="aa335ebfd68e38a6cb093238a036862ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa335ebfd68e38a6cb093238a036862ff">&#9670;&#160;</a></span>sdo_data_reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sdo_data_reg</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This stores SERCOM hardware data register address used for data transmission (memory -&gt; SERCOM) </p>
+
+</div>
+</div>
+<a id="a586574923924671d68ae3fe3c5a97cc6" name="a586574923924671d68ae3fe3c5a97cc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a586574923924671d68ae3fe3c5a97cc6">&#9670;&#160;</a></span>sercom_sdo</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sercom_sdo</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This stores SERCOM hardware pointer used for data transmission (memory -&gt; SERCOM) </p>
 
 </div>
 </div>
