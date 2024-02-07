@@ -31,8 +31,6 @@ Sercom *sercom_sdo = SERCOM7;
 Sercom *sercom_sdo = SERCOM5;
 #endif
 
-volatile uint32_t sdo_data_reg;
-
 // Probably should turn this into a struct to be more easily understandable
 volatile uint64_t SDTransferDescriptor; // I think we will only use 1 of these for now. Each descriptor is 64bits long 
 

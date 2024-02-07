@@ -88,7 +88,12 @@ void TXLinkedListInit(void)
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
 		
 		// SDO_DATA_REG address should be SERCOM data register. This is defined in MS_definition.h
-		TXLinkedList[i].DSTADDR.reg = sdo_data_reg;
+		//TXLinkedList[i].DSTADDR.reg = (uint32_t) &sercom_sdo->SPI.DATA.reg;
+		#ifdef DMA_TO_SPI_ENABLE
+		TXLinkedList[i].DSTADDR.reg = (uint32_t) &sercom_sdo->SPI.DATA.reg;
+		#elif defined(DMA_TO_USART_ENABLE)
+		TXLinkedList[i].DSTADDR.reg = (uint32_t) &sercom_sdo->USART.DATA.reg;
+		#endif
 	}
 	setTXLinkedListPosition(0);
 }
