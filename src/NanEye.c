@@ -33,12 +33,12 @@ volatile uint32_t clk_freq;
 void NanEyeRUN (void); // DANIEL Added the main loop function here
 
 // -------------- Functions -----------------
-void systick_init(void);
+void systick_init(void); // DANIEL Probably dont need this
 
-void spi_init(void);
-void spi_xdmac_configure(Spi *const pspi);
-void spi_disable_xdmac(void);
-void spi_enable_xdmac(void);
+void spi_init(void); // DANIEL Probably dont need this
+void spi_xdmac_configure(Spi *const pspi); // DANIEL Probably dont need this
+void spi_disable_xdmac(void); 
+void spi_enable_xdmac(void); 
 
 void interface_buffer_init(void);
 void initial_interface_buffer_init(void);
@@ -48,7 +48,7 @@ void interface_buffer_reg_clear(void);
 void spi_config_interface_mode(void); // need to switch polarity and not tristate MOSI
 void spi_config_readout_mode(void);   // need to switch polarity and tristate MOSI
 void spi_config_initial_interface_mode(void); // HS added for initializing IIM (initial interface mode)
-void uart_handle_input(void);
+void uart_handle_input(void);  // DANIEL Probably dont need this
 // ------------------------------------------
 
 void interface_buffer_init(void) {
@@ -83,8 +83,13 @@ void interface_buffer_reg_clear(void) {
 // instead of using atmel start, this is written from scratch
 // Daniel original NE code, configuration of MISO/MOSI pins, might be redundant
 // this might be included in atmel_start_pins.h
+// also I have some SPI initialization stuff at the end of this document
 
 void spi_init(void) {
+		// DANIEL THIS SHOULD BE IOPORT FROM THE atmel_start_pin.h or configuration, SEE BELOW 3 lines
+// 	#define PB13 GPIO(GPIO_PORTB, 13) // DANIEL SCK
+// 	#define PB14 GPIO(GPIO_PORTB, 14) // DANIEL MISO
+// 	#define PB15 GPIO(GPIO_PORTB, 15) // DANIEL MO
 	// Initial setup of SPI peripheral. We will need to tristate MOSI during Interface Mode
 	ioport_set_pin_mode(SPI_MISO_PIN,SPI_MISO_MODE);
 	ioport_disable_pin(SPI_MISO_PIN);
@@ -96,7 +101,7 @@ void spi_init(void) {
 	ioport_disable_pin(SPI_NPCS_PIN);
 	
 	
-	pmc_enable_periph_clk(SPI_ID);// turns on module/clock
+// 	pmc_enable_periph_clk(SPI_ID);// turns on module/clock DANIEL Probably dont need
 
 	SPI_MASTER_BASE->SPI_CR = SPI_CR_SPIDIS; //Disabled SPI
 	SPI_MASTER_BASE->SPI_CR = SPI_CR_SWRST; //Resets SPI
@@ -138,7 +143,7 @@ void spi_init(void) {
 
 void spi_config_readout_mode(void) {
 	// Set MOSI as tristate and set phase
-	
+	// DANIEL, this should be changed to the SAMD framework
 	SPI_MASTER_BASE->SPI_CR = SPI_CR_SPIDIS; //Disabled SPI
 	
 	ioport_enable_pin(SPI_MOSI_PIN); // This should give PIO control back of the pin
@@ -156,7 +161,7 @@ void spi_xdmac_configure(Spi *const pspi)
 	// Here we will configure all 6 DMA transfer types
 	// We need to toggle on and off the tristate for MOSI so using linked lists won't be too useful
 
-	pmc_enable_periph_clk(ID_XDMAC);
+	pmc_enable_periph_clk(ID_XDMAC);  // DANIEL probably dont need this function
 	
 	// Set transfer size
 	xdmac_cfg[INTERFACE_MODE_TX_POS].mbr_ubc = INTERFACE_MODE_SIZE;
@@ -402,12 +407,12 @@ int NanEyeRUN (void)
 	NVIC_EnableIRQ(XDMAC_IRQn); // Enable a device specific interrupt
 	
 	// Systick Init for handling keeping track of time
-	systick_init();
+	//systick_init(); // DANIEL PROBABLY DONT NEED THIS
 	
 	// USART enable UART for serial comm
-	pmc_enable_periph_clk(ID_USART1); // Enable the specified peripheral clock.
+	//pmc_enable_periph_clk(ID_USART1); // Enable the specified peripheral clock.
 
-	
+	/* // DANIEL WE DONT NEED THIS
 	usart_serial_options_t usart_options = {
 		.baudrate = CONF_UART_BAUDRATE,
 		.charlength = US_MR_CHRL_8_BIT,
@@ -415,6 +420,7 @@ int NanEyeRUN (void)
 		.stopbits = US_MR_NBSTOP_1_BIT
 	};
 	usart_serial_init(CONF_UART, &usart_options);
+	*/
 	// Fill interface buffer with all 1's
 	interface_buffer_init(); // Just sets all values to 0xFF here
 	
@@ -463,9 +469,9 @@ int NanEyeRUN (void)
 	spi_config_interface_mode(); // This enables the MOSI peripheral pin and sets the correct clock phase
 	// Set the correct DMA transfer config (forcing MOSI pin to be internally connected in readout mode)
 	// 2 DMA running in parallel
-	xdmac_configure_transfer(XDMAC, XDMAC_TX_CH, &xdmac_cfg[INTERFACE_MODE_TX_POS]);//  gives the address for the 1st array in xdmac_cfg array
-	xdmac_configure_transfer(XDMAC, XDMAC_RX_CH, &xdmac_cfg[INTERFACE_MODE_RX_POS]);//  gives the address for the 2nd array in xdmac_cfg array
-
+// 	xdmac_configure_transfer(XDMAC, XDMAC_TX_CH, &xdmac_cfg[INTERFACE_MODE_TX_POS]);//  gives the address for the 1st array in xdmac_cfg array
+// 	xdmac_configure_transfer(XDMAC, XDMAC_RX_CH, &xdmac_cfg[INTERFACE_MODE_RX_POS]);//  gives the address for the 2nd array in xdmac_cfg array
+	delay_ms(1000);
 	// Later will need to add a 10us delay after sending out the configuration
 	spi_enable_xdmac(); // this is where the pulses begin to get sent out
 	state = STATE_INTERFACE;
@@ -590,4 +596,90 @@ void SysTick_Handler(void) {
 	ms_ticks++;
 }
 
+// DANIEL MY CUSTOM CODE FOR NE
+
+#include "MS_definitions.h"
+
+#include "GS_definitions.h"
+#include <utils.h>
+#include <atmel_start.h>
+
+#define INTERFACE_MODE_SIZE		972 // (648 * 12 / 8) in bytes
+
+volatile uint8_t naneye_new_reg_val_received = 0;
+volatile uint16_t naneyec_reg_val[2];
+volatile uint8_t spi_interface_mode_tx_buffer[INTERFACE_MODE_SIZE]; // Used to tx during interface mode
+
+void interface_buffer_init(void) {
+	// Fill interface tx buffer with all 1's
+	for (uint32_t i = 0; i < INTERFACE_MODE_SIZE; i++)
+	spi_interface_mode_tx_buffer[i] = 0xFF;
+}
+
+void interface_buffer_reg_set(uint32_t reg0, uint32_t reg1) {
+	// Cannot update regs in the first SPI clock of interface mode so we will start in the second byte location
+	
+	// For reg0
+	spi_interface_mode_tx_buffer[1] = 0b10010000 | ((reg0 >> 15) & 0x01);
+	spi_interface_mode_tx_buffer[2] = ((reg0 >> 7) & 0xFF);
+	spi_interface_mode_tx_buffer[3] = ((reg0 << 1) & 0xFF);
+	
+	// For reg1
+	// Lets give a 3 byte gap between writing the 2 registers
+	spi_interface_mode_tx_buffer[7] = 0b10010010 | ((reg1 >> 15) & 0x01);
+	spi_interface_mode_tx_buffer[8] = ((reg1 >> 7) & 0xFF);
+	spi_interface_mode_tx_buffer[9] = ((reg1 << 1) & 0xFF);
+}
+
+
+// send data
+void NanEyeInit(void)
+{
+	// Let's start naneye communication. To do this we will finish setting up the interface mode stuff and then turn on the DMAs
+	naneye_new_reg_val_received = 1;
+	
+	naneyec_reg_val[0] = NANEYE_REG0_DEFAULT_VALUE | 0b1100; // Sets offset ramp to recommended 2.2V value
+	naneyec_reg_val[0] = naneyec_reg_val[0] | 0b11; // Sets output current to max (might only effect LVDS mode)
+	// sets naneye register
+	// |= sets particular value to 1
+	// &= with a ~ means and not, sets value to 0
+	naneyec_reg_val[1] = NANEYE_REG1_DEFAULT_VALUE;
+	naneyec_reg_val[1] |= (1<<10); // Increase 2x bias current, reduces settling time for high speed apps (not sure what this does)
+	naneyec_reg_val[1] &= ~(1<<9); // Sets CDS gain to recommended value of 1.3 (turns a 1--> 0, which sets CDS gain to 1.3)
+	naneyec_reg_val[1] &= ~(1<<8); // Sets mode to SEIM
+	naneyec_reg_val[1] = (naneyec_reg_val[1] & (0b1111111111001111)) | (0b10 << 4); // Sets vref to recommended value of 2.1V
+	naneyec_reg_val[1] = (naneyec_reg_val[1] & (0b1111111111110011)) | (0b01 << 2); // Sets CVC current to recommended value
+	naneyec_reg_val[1] &= ~(1<<1); // Turns off idle mode
+	
+	interface_buffer_reg_set(naneyec_reg_val[0],naneyec_reg_val[1]);
+	
+	for (int i = 0; i<INTERFACE_MODE_SIZE; i++)
+	{
+		SERCOM4->SPI.DATA.reg = spi_interface_mode_tx_buffer[i];
+	}
+	//	SERCOM4->SPI.DATA.reg = naneyec_reg_val[1];
+}
+void startRecordingNE()
+{
+	writeFrameNum=0;
+	writeBufferCount=0;
+	droppedBufferCount= 0;
+	droppedFrameCount = 0;
+	framesToDrop = 0;
+	
+	deviceState &= ~(DEVICE_STATE_IDLE);
+	deviceState &= ~(DEVICE_STATE_START_RECORDING);
+	deviceState |= DEVICE_STATE_START_RECORDING_WAITING;
+	
+	
+}
+
+void stopRecordingNE()
+{
+	deviceState &= ~(DEVICE_STATE_STOP_RECORDING);
+	deviceState &= ~(DEVICE_STATE_RECORDING);
+	deviceState |= DEVICE_STATE_IDLE;
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, writeBufferCount);
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS, droppedBufferCount);
+}
 
