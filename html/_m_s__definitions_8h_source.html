@@ -262,132 +262,141 @@ $(function(){initNavTree('_m_s__definitions_8h_source.html',''); initResizable()
 <div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="keyword">extern</span> <span class="keyword">volatile</span> DmacDescriptor PCCLinkedList[];</div>
 <div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="keyword">extern</span> <span class="keyword">volatile</span> DmacDescriptor TXLinkedList[];</div>
 <div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t headerBlock[]; <span class="comment">// Will hold the 512 bytes from the header block of sd card</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t configBlock[]; <span class="comment">// Will hold the device config information to be written to the starting block</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t currentBlock;</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t initBlocksRemaining;</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t deviceState;</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t battVolt;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t wptVolt;</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t startTimeMS;</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t endTimeMS;</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t timeMS;</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameBufferCount;</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameNum;</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t bufferCount;</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameBufferCount;</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span> </div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="comment">// used for tracking recording and inc. DMA buffers</span></div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t writeFrameNum;</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t writeBufferCount;</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t droppedBufferCount;</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t droppedFrameCount;</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t framesToDrop;</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t *bufferToWrite;</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t numBlocks;</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t <a class="code hl_variable" href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a>;</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="comment">// Debugging and checking stuff</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t chip_id; <span class="comment">// Reads the chip id from Python480 to make sure we can talk to it</span></div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlvalue;</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t batteryvalue;</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ledvalue;</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameratevalue;</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t delayvalue;</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t reclengthvalue;</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t sdo_dma_cb_calls;</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t pcc_dma_cb_calls;</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlScanEnable;</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStart;</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStop;</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStep;</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStepTime;</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlCount;</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t regValue[];</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempPCC[];</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempHeader[][4];</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempCount;</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempTimestamp[];</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t timerIndex;</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t serialCommand;</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t uartBuffer;</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t headerBlock[]; <span class="comment">// Will hold the 512 bytes from the header block of sd card</span></div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t configBlock[]; <span class="comment">// Will hold the device config information to be written to the starting block</span></div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span> </div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span><span class="comment">// ----------- FUNCTIONS ----------------</span></div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span><span class="keywordtype">void</span> <a class="code hl_function" href="_m_s__definitions_8h.html#a68bac06268371c4514ae6c6888557fc1">getBuffersPerFrame</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="keywordtype">void</span> peripheralInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="keywordtype">void</span> timerInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="keywordtype">void</span> irqInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>uint8_t loadSDCardHeader(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>uint32_t getPropFromHeader(uint8_t headerPos);</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="keywordtype">void</span> setConfigBlockProp(uint8_t position, uint32_t value);</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="keywordtype">void</span> setBufferHeader(uint32_t dataWordLength);</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="keywordtype">void</span> setSDDescriptor(uint32_t *address, uint16_t length, uint8_t attribute);</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="keyword">volatile</span> uint64_t SDTransferDescriptor; <span class="comment">// I think we will only use 1 of these for now. Each descriptor is 64bits long</span></div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="keyword">extern</span> Sercom *<a class="code hl_variable" href="_m_s__definitions_8h.html#a586574923924671d68ae3fe3c5a97cc6">sercom_sdo</a>;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t <a class="code hl_variable" href="_m_s__definitions_8h.html#aa335ebfd68e38a6cb093238a036862ff">sdo_data_reg</a>;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t headerBlock[]; <span class="comment">// Will hold the 512 bytes from the header block of sd card</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t configBlock[]; <span class="comment">// Will hold the device config information to be written to the starting block</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t currentBlock;</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t initBlocksRemaining;</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t deviceState;</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t battVolt;</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t wptVolt;</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t startTimeMS;</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t endTimeMS;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t timeMS;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameBufferCount;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameNum;</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t bufferCount;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameBufferCount;</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="comment">// used for tracking recording and inc. DMA buffers</span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t writeFrameNum;</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t writeBufferCount;</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t droppedBufferCount;</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t droppedFrameCount;</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t framesToDrop;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t *bufferToWrite;</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t numBlocks;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span> </div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t <a class="code hl_variable" href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a>;</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span> </div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="comment">// Debugging and checking stuff</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t chip_id; <span class="comment">// Reads the chip id from Python480 to make sure we can talk to it</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlvalue;</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t batteryvalue;</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ledvalue;</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t frameratevalue;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t delayvalue;</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t reclengthvalue;</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t sdo_dma_cb_calls;</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t pcc_dma_cb_calls;</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlScanEnable;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStart;</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStop;</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStep;</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlStepTime;</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t ewlCount;</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t regValue[];</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempPCC[];</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempHeader[][4];</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempCount;</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint32_t tempTimestamp[];</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t timerIndex;</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint16_t serialCommand;</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t uartBuffer;</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t headerBlock[]; <span class="comment">// Will hold the 512 bytes from the header block of sd card</span></div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span><span class="keyword">extern</span> <span class="keyword">volatile</span> uint8_t configBlock[]; <span class="comment">// Will hold the device config information to be written to the starting block</span></div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="comment">// ----------- FUNCTIONS ----------------</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="keywordtype">void</span> <a class="code hl_function" href="_m_s__definitions_8h.html#a68bac06268371c4514ae6c6888557fc1">getBuffersPerFrame</a>(<span class="keywordtype">void</span>);</div>
 <div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="keywordtype">void</span> imageSensorInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="keywordtype">void</span> SDCardInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span><span class="keywordtype">void</span> dmaEnable(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="keywordtype">void</span> setPCCCurrentLinkedListPosition(uint8_t pos);</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="keywordtype">void</span> debugHeaderProp(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="keywordtype">void</span> setExcitationLED(uint32_t value, <span class="keywordtype">bool</span> enable);</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="keywordtype">void</span> setEWL(uint32_t value);</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="keywordtype">void</span> setStatusLED(<span class="keywordtype">bool</span> value);</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="keywordtype">void</span> startRecording(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="keywordtype">void</span> stopRecording(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="keywordtype">void</span> recording_cb(<span class="keyword">const</span> <span class="keyword">struct</span> timer_task *<span class="keyword">const</span> timer_task);</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>uint32_t getCurrentTimeMS(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keywordtype">void</span> resetGlobalVar(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span><span class="comment">// callbacks</span></div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="keywordtype">void</span> millisecondTimer_cb(<span class="keyword">const</span> <span class="keyword">struct</span> timer_task *<span class="keyword">const</span> timer_task);</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="keywordtype">void</span> checkBattVoltage_cb(<span class="keyword">const</span> <span class="keyword">struct</span> timer_task *<span class="keyword">const</span> timer_task);</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="keywordtype">void</span> sdo_dma_transfer_complete_cb(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span><span class="keywordtype">void</span> battCharging_cb(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="keywordtype">void</span> irReceive_cb(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="keywordtype">void</span> pushButton_cb(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span><span class="keywordtype">void</span> frameValid_cb(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span><span class="keywordtype">void</span> pcc_dma_cb(<span class="keyword">struct</span> camera_async_descriptor *<span class="keyword">const</span> descr, uint32_t ch);</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span><span class="keywordtype">void</span> usart_rx_cb(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span><span class="comment">// --------------------------------------</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="keywordtype">void</span> peripheralInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="keywordtype">void</span> <a class="code hl_function" href="_m_s__definitions_8h.html#acf5a4bebb502d8cd50b3c213bd80eefa">set_sdo_data_reg</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="keywordtype">void</span> timerInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="keywordtype">void</span> irqInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>uint8_t loadSDCardHeader(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>uint32_t getPropFromHeader(uint8_t headerPos);</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="keywordtype">void</span> setConfigBlockProp(uint8_t position, uint32_t value);</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="keywordtype">void</span> setBufferHeader(uint32_t dataWordLength);</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keywordtype">void</span> setSDDescriptor(uint32_t *address, uint16_t length, uint8_t attribute);</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span><span class="keyword">volatile</span> uint64_t SDTransferDescriptor; <span class="comment">// I think we will only use 1 of these for now. Each descriptor is 64bits long</span></div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="keywordtype">void</span> imageSensorInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="keywordtype">void</span> SDCardInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span><span class="keywordtype">void</span> dmaEnable(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="keywordtype">void</span> setPCCCurrentLinkedListPosition(uint8_t pos);</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="keywordtype">void</span> debugHeaderProp(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span><span class="keywordtype">void</span> setExcitationLED(uint32_t value, <span class="keywordtype">bool</span> enable);</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span><span class="keywordtype">void</span> setEWL(uint32_t value);</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span><span class="keywordtype">void</span> setStatusLED(<span class="keywordtype">bool</span> value);</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="comment">// DMA</span></div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span><span class="preprocessor">#define SDO_DMA_CHANNEL 0x1</span></div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="preprocessor">#define NE_DMA_CHANNEL 0x0 </span><span class="comment">// HS CHECK DMA Channel settings (ATMEL Start)</span></div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span> </div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="keyword">extern</span> <span class="keyword">volatile</span> DmacDescriptor PCCLinkedList[];</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span><span class="keyword">extern</span> <span class="keyword">volatile</span> DmacDescriptor TXLinkedList[];</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span> </div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_transfer_trigger(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_transfer_resume(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_transfer_suspend(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_irq_setup(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span><span class="keywordtype">void</span> setTXLinkedListPosition(uint8_t pos);</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span><span class="keywordtype">void</span> setPCCLinkedListPosition(uint8_t pos);</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span><span class="keywordtype">void</span> TXLinkedListInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="keywordtype">void</span> PCCLinkedListInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="keywordtype">void</span> sdo_dma_transfer_control(<span class="keywordtype">bool</span> callback_flag);</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="keywordtype">void</span> sdmmc_dma_transfer_control(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="keywordtype">void</span> sdo_dma_setup(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="keywordtype">void</span> DataBufferInit(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span> </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span><span class="preprocessor">#endif </span><span class="comment">/* MS_DEFINITIONS_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="keywordtype">void</span> startRecording(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span><span class="keywordtype">void</span> stopRecording(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="keywordtype">void</span> recording_cb(<span class="keyword">const</span> <span class="keyword">struct</span> timer_task *<span class="keyword">const</span> timer_task);</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>uint32_t getCurrentTimeMS(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="keywordtype">void</span> resetGlobalVar(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="comment">// callbacks</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="keywordtype">void</span> millisecondTimer_cb(<span class="keyword">const</span> <span class="keyword">struct</span> timer_task *<span class="keyword">const</span> timer_task);</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="keywordtype">void</span> checkBattVoltage_cb(<span class="keyword">const</span> <span class="keyword">struct</span> timer_task *<span class="keyword">const</span> timer_task);</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="keywordtype">void</span> sdo_dma_transfer_complete_cb(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="keywordtype">void</span> battCharging_cb(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span><span class="keywordtype">void</span> irReceive_cb(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span><span class="keywordtype">void</span> pushButton_cb(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span><span class="keywordtype">void</span> frameValid_cb(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="keywordtype">void</span> pcc_dma_cb(<span class="keyword">struct</span> camera_async_descriptor *<span class="keyword">const</span> descr, uint32_t ch);</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="keywordtype">void</span> usart_rx_cb(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="comment">// --------------------------------------</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span> </div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="comment">// DMA</span></div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span><span class="preprocessor">#define SDO_DMA_CHANNEL 0x1</span></div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span><span class="preprocessor">#define NE_DMA_CHANNEL 0x0 </span><span class="comment">// HS CHECK DMA Channel settings (ATMEL Start)</span></div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span><span class="keyword">extern</span> <span class="keyword">volatile</span> DmacDescriptor PCCLinkedList[];</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span><span class="keyword">extern</span> <span class="keyword">volatile</span> DmacDescriptor TXLinkedList[];</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span> </div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_transfer_trigger(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_transfer_resume(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_transfer_suspend(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sdo_dma_irq_setup(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="keywordtype">void</span> setTXLinkedListPosition(uint8_t pos);</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span><span class="keywordtype">void</span> setPCCLinkedListPosition(uint8_t pos);</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span><span class="keywordtype">void</span> TXLinkedListInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span><span class="keywordtype">void</span> PCCLinkedListInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span><span class="keywordtype">void</span> sdo_dma_transfer_control(<span class="keywordtype">bool</span> callback_flag);</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span><span class="keywordtype">void</span> sdmmc_dma_transfer_control(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span><span class="keywordtype">void</span> sdo_dma_setup(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span><span class="keywordtype">void</span> DataBufferInit(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="preprocessor">#endif </span><span class="comment">/* MS_DEFINITIONS_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="a_m_s__config_8h_html"><div class="ttname"><a href="_m_s__config_8h.html">MS_config.h</a></div><div class="ttdoc">Configuration files of the project. _MODE flags refer to the hardware configuration used....</div></div>
-<div class="ttc" id="a_m_s__definitions_8h_html_a654e7aa1d58acfb280a007c6de40dbce"><div class="ttname"><a href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a></div><div class="ttdeci">volatile uint32_t numBuffersPerFrame</div><div class="ttdoc">Not actual number of buffers per frame.</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:46</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a586574923924671d68ae3fe3c5a97cc6"><div class="ttname"><a href="_m_s__definitions_8h.html#a586574923924671d68ae3fe3c5a97cc6">sercom_sdo</a></div><div class="ttdeci">Sercom * sercom_sdo</div><div class="ttdoc">This stores SERCOM hardware pointer used for data transmission (memory -&gt; SERCOM)</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_a654e7aa1d58acfb280a007c6de40dbce"><div class="ttname"><a href="_m_s__definitions_8h.html#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a></div><div class="ttdeci">volatile uint32_t numBuffersPerFrame</div><div class="ttdoc">Not actual number of buffers per frame.</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:58</div></div>
 <div class="ttc" id="a_m_s__definitions_8h_html_a68bac06268371c4514ae6c6888557fc1"><div class="ttname"><a href="_m_s__definitions_8h.html#a68bac06268371c4514ae6c6888557fc1">getBuffersPerFrame</a></div><div class="ttdeci">void getBuffersPerFrame(void)</div><div class="ttdoc">Calculate the number of buffers needed to store one image frame and store it into numBuffersPerFrame ...</div><div class="ttdef"><b>Definition</b> MS_util.c:58</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_aa335ebfd68e38a6cb093238a036862ff"><div class="ttname"><a href="_m_s__definitions_8h.html#aa335ebfd68e38a6cb093238a036862ff">sdo_data_reg</a></div><div class="ttdeci">volatile uint32_t sdo_data_reg</div><div class="ttdoc">This stores SERCOM hardware data register address used for data transmission (memory -&gt; SERCOM)</div><div class="ttdef"><b>Definition</b> MS_global_variable.c:34</div></div>
+<div class="ttc" id="a_m_s__definitions_8h_html_acf5a4bebb502d8cd50b3c213bd80eefa"><div class="ttname"><a href="_m_s__definitions_8h.html#acf5a4bebb502d8cd50b3c213bd80eefa">set_sdo_data_reg</a></div><div class="ttdeci">void set_sdo_data_reg(void)</div><div class="ttdoc">Store SERCOM hardware data register in global variables.</div><div class="ttdef"><b>Definition</b> MS_util.c:68</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

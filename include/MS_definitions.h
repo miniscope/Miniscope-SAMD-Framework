@@ -126,18 +126,30 @@
 
 // ------- Image Sensor Definitions ----------
 // This should be defined from SD card header. Temporary
-#ifdef FRAMERATE_20FPS
+#ifdef defined(FRAMERATE_20FPS) && defined(PYTHON480_304PX) 
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_10FPS)
+#elif defined(FRAMERATE_10FPS) && defined(PYTHON480_304PX)
 #define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_5FPS)
+#elif defined(FRAMERATE_5FPS) && defined(PYTHON480_304PX)
 #define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_1FPS)
+#elif defined(FRAMERATE_1FPS) && defined(PYTHON480_304PX)
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					19//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_20FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					4 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_10FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					7 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_5FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					15 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_1FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					79//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
 #endif
 
 // SPI
@@ -169,6 +181,12 @@
 extern volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS]; //Allocate memory for DMA image buffers
 extern volatile DmacDescriptor PCCLinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
+
+/**
+@var sercom_sdo
+@brief This stores SERCOM hardware pointer used for data transmission (memory -> SERCOM)
+*/
+extern Sercom *sercom_sdo;
 
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
@@ -240,6 +258,12 @@ extern volatile uint8_t configBlock[]; // Will hold the device config informatio
 void getBuffersPerFrame(void);
 
 void peripheralInit(void);
+
+/**
+@brief Store SERCOM hardware data register in global variables
+@note This is a temporary turnaround for avoiding "initializer element is not constant" error.
+*/
+void set_sdo_data_reg(void);
 void timerInit(void);
 void irqInit(void);
 uint8_t loadSDCardHeader(void);
