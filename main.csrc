@@ -8,7 +8,7 @@ int main(void)
 	getBuffersPerFrame();
 	#endif
 	
-	/* Initializes MCU, drivers and middleware */
+	/* Initializes MCU, drivers and middle ware */
 	atmel_start_init();
 
 	//Note sure if this is needed. Takuya

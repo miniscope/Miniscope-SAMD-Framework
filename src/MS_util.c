@@ -148,6 +148,19 @@ void peripheralInit(void)
 	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
 	#endif
+
+	#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM5_ENABLE)
+	SERCOM5->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
+	while (SERCOM5->SPI.SYNCBUSY.bit.ENABLE)
+	;                                 // Wait for disable
+	hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM5, SPI_ICSPACE_MS);
+	hri_sercomspi_write_BAUD_reg(SERCOM5, SPI_BAUD_MS);
+	SERCOM5->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
+	SERCOM5->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
+	while (SERCOM5->SPI.SYNCBUSY.bit.ENABLE)
+	;                                 // Wait for disable
+	#endif
+
 // HS CHECK: MIght need to add something for the NE Camera here:
 // if peripheral is running, refuses to change - disables SPI and then waits until SPI gets disabled, and then changes
 // the parameters, and then restarts SPI, and restarts peripherals

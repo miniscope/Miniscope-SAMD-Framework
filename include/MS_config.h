@@ -47,7 +47,8 @@ The modes should be a set of peripherals used in the specified mode.
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
 #define IR_TRIGGER_ENABLE
-#define SPI_SERCOM0_ENABLE
+//#define SPI_SERCOM0_ENABLE
+#define SPI_SERCOM5_ENABLE
 #define SDO_32BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE

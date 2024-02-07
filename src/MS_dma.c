@@ -203,7 +203,6 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 		#endif
 	}
 
-
 	#ifndef PYTHON480_ENABLE //just send out
 	if(DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
