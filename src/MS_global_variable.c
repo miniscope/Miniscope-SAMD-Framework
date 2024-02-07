@@ -23,11 +23,11 @@ volatile uint32_t deviceState = DEVICE_STATE_IDLE;
 
 #ifdef SPI_SERCOM0_ENABLE
 Sercom *sercom_sdo = SERCOM0;
-#elif SPI_SERCOM5_ENABLE
+#elif defined(SPI_SERCOM5_ENABLE)
 Sercom *sercom_sdo = SERCOM5;
-#elif SPI_SERCOM7_ENABLE
+#elif defined(SPI_SERCOM7_ENABLE)
 Sercom *sercom_sdo = SERCOM7;
-#elif USART_SERCOM5_ENABLE
+#elif defined(USART_SERCOM5_ENABLE)
 Sercom *sercom_sdo = SERCOM5;
 #endif
 

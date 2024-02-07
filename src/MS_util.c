@@ -68,7 +68,7 @@ void getBuffersPerFrame(void)
 void set_sdo_data_reg(void){
 	#ifdef DMA_TO_SPI_ENABLE
 	volatile uint32_t sdo_data_reg = (uint32_t) sercom_sdo->SPI.DATA.reg;
-	#elif DMA_TO_USART_ENABLE
+	#elif defined(DMA_TO_USART_ENABLE)
 	volatile uint32_t sdo_data_reg = (uint32_t) sercom_sdo->USART.DATA.reg;
 	#endif
 }
