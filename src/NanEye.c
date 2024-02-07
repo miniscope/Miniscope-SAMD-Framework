@@ -30,7 +30,7 @@ volatile bool debug_mode = false;
 
 volatile uint32_t clk_freq;
 // ------------------------------------------
-
+void NanEyeRUN (void); // DANIEL Added the main loop function here
 
 // -------------- Functions -----------------
 void systick_init(void);
@@ -370,7 +370,8 @@ void uart_handle_input(void) {
 // - documentation for bit shift register changes
 // DANIEL main function for NE camera, Initial interface mode here as well
 // we should probably call this something different, or put this in the main loop
-int main (void)
+// int main (void)
+int NanEyeRUN (void)
 {
 
 	uint32_t lastToggleTime;
