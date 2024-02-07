@@ -126,18 +126,30 @@
 
 // ------- Image Sensor Definitions ----------
 // This should be defined from SD card header. Temporary
-#ifdef FRAMERATE_20FPS
+#ifdef defined(FRAMERATE_20FPS) && defined(PYTHON480_304PX) 
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_10FPS)
+#elif defined(FRAMERATE_10FPS) && defined(PYTHON480_304PX)
 #define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_5FPS)
+#elif defined(FRAMERATE_5FPS) && defined(PYTHON480_304PX)
 #define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_1FPS)
+#elif defined(FRAMERATE_1FPS) && defined(PYTHON480_304PX)
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					19//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_20FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					4 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_10FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					7 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_5FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					15 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_1FPS) && defined(PYTHON480_152PX)
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					79//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
 #endif
 
 // SPI
@@ -175,12 +187,6 @@ extern volatile DmacDescriptor TXLinkedList[];
 @brief This stores SERCOM hardware pointer used for data transmission (memory -> SERCOM)
 */
 extern Sercom *sercom_sdo;
-
-/**
-@var sdo_data_reg
-@brief This stores SERCOM hardware data register address used for data transmission (memory -> SERCOM)
-*/
-extern volatile uint32_t sdo_data_reg;
 
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
