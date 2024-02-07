@@ -4,7 +4,7 @@
 @author Daniel, Hemal
 @note this is where GS_Definitions.h will go
 */
-
+// DANIEL These are the GS definitions from the previous NE Code
 #ifndef DEFINITIONS_H_
 #define DEFINITIONS_H_
 
@@ -58,15 +58,15 @@
 #define SPI_DLYBCS			0x00 // Delay NPCS is held high before next transmit
 #define SPI_CLK_RATE		16000000 // 16000000 // 24000000 // MHz
 
-// pin defintions for first NE camera (RGB) sensor
-#define SPI_MISO_PIN		PIO_PD20_IDX
-#define SPI_MISO_MODE		IOPORT_MODE_MUX_B
-#define SPI_MOSI_PIN		PIO_PD21_IDX
-#define SPI_MOSI_MODE		IOPORT_MODE_MUX_B
-#define SPI_SPCK_PIN		PIO_PD22_IDX
-#define SPI_SPCK_MODE		IOPORT_MODE_MUX_B
-#define SPI_NPCS_PIN		PIO_PB2_IDX
-#define SPI_NPCS_MODE		IOPORT_MODE_MUX_D
+// pin defintions for first NE camera (MONO) sensor
+#define SPI_MISO_PIN		PB14
+#define SPI_MISO_MODE		IOPORT_MODE_MUX_B // DANIEL not sure if we need this?
+#define SPI_MOSI_PIN		PB15
+#define SPI_MOSI_MODE		IOPORT_MODE_MUX_B// DANIEL not sure if we need this?
+#define SPI_SPCK_PIN		PB13
+#define SPI_SPCK_MODE		IOPORT_MODE_MUX_B// DANIEL not sure if we need this?
+#define SPI_NPCS_PIN		PIO_PB2_IDX// DANIEL not sure if we need this?
+#define SPI_NPCS_MODE		IOPORT_MODE_MUX_D// DANIEL not sure if we need this?
 
 // SPI DMA
 #define SPI0_XDMAC_TX_CH_NUM	1 //XDMAC Channel HW Interface for SPI0

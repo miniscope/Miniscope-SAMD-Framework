@@ -2,7 +2,7 @@
 // and has not been properly ported from SAME70 to this SAMD framework
 #define GS_MODE
 
-
+// Daniel original NE code, and STATE MACHINE
 volatile uint32_t state = STATE_IDLE; // holds the current state of the SPI Naneye state machine
 
 volatile uint32_t ms_ticks = 0; // Should count up in 1 ms increments
@@ -81,6 +81,9 @@ void interface_buffer_reg_clear(void) {
 	spi_initial_interface_mode_tx_buffer[i] = 0xFF;
 }
 // instead of using atmel start, this is written from scratch
+// Daniel original NE code, configuration of MISO/MOSI pins, might be redundant
+// this might be included in atmel_start_pins.h
+
 void spi_init(void) {
 	// Initial setup of SPI peripheral. We will need to tristate MOSI during Interface Mode
 	ioport_set_pin_mode(SPI_MISO_PIN,SPI_MISO_MODE);
@@ -365,7 +368,8 @@ void uart_handle_input(void) {
 // - Make sure SPI config is correct
 // - Figure out tristating MOSI
 // - documentation for bit shift register changes
-
+// DANIEL main function for NE camera, Initial interface mode here as well
+// we should probably call this something different, or put this in the main loop
 int main (void)
 {
 
@@ -511,7 +515,7 @@ int main (void)
 }
 
 // ------------- Handlers -------------------------
-
+// DANIEL Handlers for State machine switching
 void XDMAC_Handler(void) {
 	// checks status of DMA
 	// overflow, everything is fine, no data etc--> dma handler checks, sets control for moving to delay/sync mode
