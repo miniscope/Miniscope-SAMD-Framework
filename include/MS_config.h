@@ -55,12 +55,12 @@ The modes should be a set of peripherals used in the specified mode.
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
 #define AUTOSTART_ENABLE
-#define FRAMERATE_1FPS
+//#define FRAMERATE_1FPS
 //#define FRAMERATE_5FPS
 //#define FRAMERATE_10FPS
-//#define FRAMERATE_20FPS
-#define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
-#define NUM_BUFFERS				8 // Assumes 1024 KB program memory
+#define FRAMERATE_20FPS
+#define BUFFER_BLOCK_LENGTH		10 // can be edited by user to optimize speed
+#define NUM_BUFFERS				32 // Assumes 1024 KB program memory
 #endif
 
 #ifdef WLMS_USART_MODE
