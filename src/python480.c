@@ -1,7 +1,8 @@
 /**
 @file
 @brief Functions for interfacing python 480 (image sensor)
-@author Daniel, Takuya
+@sa https://www.onsemi.jp/download/data-sheet/pdf/noip1sn0480a-d.pdf
+@author Daniel, Federico, Takuya
 */
 
 #include "MS_config.h"
@@ -19,7 +20,7 @@ void python480Init()
 	//Maybe a small pause here for things to stabilize
 	delay_ms(10);
 	EnableClockMngmnt2();
-	RequiredUploads();
+	RequiredUploads(WIDTH);
 	SoftPowerUp();
 }
 
@@ -211,8 +212,12 @@ void EnableClockMngmnt2() {// Enable internal clock distribution
 	spi_BB_Write(34, 0x0001);// Enable logic blocks
 }
 
-void RequiredUploads() {// Reserved register settings uploads
-
+void RequiredUploads(uint16_t image_width) {// Reserved register settings uploads
+	volatile uint8_t roi_x_start = (ROI_XREG_MAX - image_width/BINNING/2)/2 + 1;
+	volatile uint8_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
+	volatile uint8_t roi_y_start = (ROI_YREG_MAX - image_width/BINNING/2)/2;
+	volatile uint8_t roi_y_stop = roi_y_start + image_width/BINNING/2 - 1;
+	
 	spi_BB_Write(2, 0x0000);
 	spi_BB_Write(8, 0x0000);
 	spi_BB_Write(9, 0x0000);
@@ -288,8 +293,12 @@ void RequiredUploads() {// Reserved register settings uploads
 	spi_BB_Write(235, 0x00E1);
 
 	// Set ROI Size
-	spi_BB_Write(256, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI0
-	spi_BB_Write(258, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI1
+	spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+	spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+	spi_BB_Write(257, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
+	spi_BB_Write(259, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
+	//spi_BB_Write(256, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI0
+	//spi_BB_Write(258, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI1
 
 	//////////////////////////////////////////
 	////// PROGRAM SPACE //////

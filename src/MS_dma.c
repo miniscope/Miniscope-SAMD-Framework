@@ -18,7 +18,7 @@ COMPILER_ALIGNED(16)
 volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
 
 #ifdef NANEYE_ENABLE
-COMPILER_ALIGNED(16) // not sure if necesary
+COMPILER_ALIGNED(16) // not sure if necessary
 volatile DmacDescriptor NE_LinkedList[NUM_BUFFERS];// naneye linked list
 #endif
 
