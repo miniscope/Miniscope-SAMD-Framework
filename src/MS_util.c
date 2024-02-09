@@ -67,7 +67,6 @@ void getBuffersPerFrame(void)
 
 void peripheralInit(void)
 {
-	
 	#ifdef EXLED_PWM_ENABLE
 	// We need to change the PWM mode from MPWM to NPWM because we are using WO[0] as waveform output
 	hri_tc_write_WAVE_reg(TC0, TC_WAVE_WAVEGEN_NPWM_Val);
@@ -126,28 +125,29 @@ void peripheralInit(void)
 	//setExcitationLED(getPropFromHeader(HEADER_LED_POS), 1);
 	#endif
 	
-	#if defined(DMA_TO_USART_ENABLE) && defined(USART_SERCOM5_ENABLE)
-	SERCOM5->USART.CTRLA.bit.ENABLE = 0; // Disable UART
-	while (SERCOM5->USART.SYNCBUSY.bit.ENABLE)
+	#ifdef DMA_TO_USART_ENABLE
+	sercom_sdo->USART.CTRLA.bit.ENABLE = 0; // Disable UART
+	while (sercom_sdo->USART.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
-	//hri_sercomusart_write_BAUD_reg(SERCOM5, USART_BAUD_MS);
-	//SERCOM5->USART.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode. Still packet structure is 8-bit
-	SERCOM5->USART.CTRLA.bit.ENABLE = 1;  // Re-enable USART
-	while (SERCOM5->USART.SYNCBUSY.bit.ENABLE)
+	//hri_sercomusart_write_BAUD_reg(sercom_sdo, USART_BAUD_MS);
+	//sercom_sdo->USART.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode. Still packet structure is 8-bit
+	sercom_sdo->USART.CTRLA.bit.ENABLE = 1;  // Re-enable USART
+	while (sercom_sdo->USART.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
 	#endif
 
-	#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
-	SERCOM0->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
-	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
+	#ifdef DMA_TO_SPI_ENABLE
+	sercom_sdo->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
+	while (sercom_sdo->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
-	hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM0, SPI_ICSPACE_MS);
-	hri_sercomspi_write_BAUD_reg(SERCOM0, SPI_BAUD_MS);
-	SERCOM0->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
-	SERCOM0->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
-	while (SERCOM0->SPI.SYNCBUSY.bit.ENABLE)
+	hri_sercomspi_set_CTRLC_ICSPACE_bf(sercom_sdo, SPI_ICSPACE_MS);
+	hri_sercomspi_write_BAUD_reg(sercom_sdo, SPI_BAUD_MS);
+	sercom_sdo->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
+	sercom_sdo->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
+	while (sercom_sdo->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
 	#endif
+
 // HS CHECK: MIght need to add something for the NE Camera here:
 // if peripheral is running, refuses to change - disables SPI and then waits until SPI gets disabled, and then changes
 // the parameters, and then restarts SPI, and restarts peripherals
@@ -164,6 +164,8 @@ void peripheralInit(void)
 	;                                 // Wait for disable
 	#endif
 */
+	
+	//Following are codes for preliminary tests. Might not be needed anymore
 	#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
 	hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM7, SPI_ICSPACE_MS);
 	hri_sercomspi_write_BAUD_reg(SERCOM7, SPI_BAUD_MS);

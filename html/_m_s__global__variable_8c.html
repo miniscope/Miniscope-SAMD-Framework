@@ -105,11 +105,14 @@ $(function(){initNavTree('_m_s__global__variable_8c.html',''); initResizable(); 
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a85bf923be3950d2f88756ff7347a8c5e" id="r_a85bf923be3950d2f88756ff7347a8c5e"><td class="memItemLeft" align="right" valign="top">volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a85bf923be3950d2f88756ff7347a8c5e">dataBuffer</a> [NUM_BUFFERS][BUFFER_BLOCK_LENGTH *PCC_BLOCK_SIZE_IN_WORDS] = {((unsigned char)0)}</td></tr>
+<tr class="memitem:a85bf923be3950d2f88756ff7347a8c5e" id="r_a85bf923be3950d2f88756ff7347a8c5e"><td class="memItemLeft" align="right" valign="top"><a id="a85bf923be3950d2f88756ff7347a8c5e" name="a85bf923be3950d2f88756ff7347a8c5e"></a>
+volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>dataBuffer</b> [NUM_BUFFERS][BUFFER_BLOCK_LENGTH *PCC_BLOCK_SIZE_IN_WORDS] = {((unsigned char)0)}</td></tr>
 <tr class="separator:a85bf923be3950d2f88756ff7347a8c5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf38cb5972b8b11a4227f86eb83d42de" id="r_abf38cb5972b8b11a4227f86eb83d42de"><td class="memItemLeft" align="right" valign="top">volatile uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf38cb5972b8b11a4227f86eb83d42de">headerBlock</a> [SD_BLOCK_SIZE] = {0}</td></tr>
+<tr class="memitem:abf38cb5972b8b11a4227f86eb83d42de" id="r_abf38cb5972b8b11a4227f86eb83d42de"><td class="memItemLeft" align="right" valign="top"><a id="abf38cb5972b8b11a4227f86eb83d42de" name="abf38cb5972b8b11a4227f86eb83d42de"></a>
+volatile uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>headerBlock</b> [SD_BLOCK_SIZE] = {0}</td></tr>
 <tr class="separator:abf38cb5972b8b11a4227f86eb83d42de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7393965e2dd9473fcac414e5cfc81675" id="r_a7393965e2dd9473fcac414e5cfc81675"><td class="memItemLeft" align="right" valign="top">volatile uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7393965e2dd9473fcac414e5cfc81675">configBlock</a> [SD_BLOCK_SIZE] = {0}</td></tr>
+<tr class="memitem:a7393965e2dd9473fcac414e5cfc81675" id="r_a7393965e2dd9473fcac414e5cfc81675"><td class="memItemLeft" align="right" valign="top"><a id="a7393965e2dd9473fcac414e5cfc81675" name="a7393965e2dd9473fcac414e5cfc81675"></a>
+volatile uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>configBlock</b> [SD_BLOCK_SIZE] = {0}</td></tr>
 <tr class="separator:a7393965e2dd9473fcac414e5cfc81675"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a373593f1bbc1c7f48ccf1b17c0062c58" id="r_a373593f1bbc1c7f48ccf1b17c0062c58"><td class="memItemLeft" align="right" valign="top"><a id="a373593f1bbc1c7f48ccf1b17c0062c58" name="a373593f1bbc1c7f48ccf1b17c0062c58"></a>
 volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>currentBlock</b> = STARTING_BLOCK</td></tr>
@@ -120,6 +123,8 @@ volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>initBloc
 <tr class="memitem:a1f5daf9790f84c07ebc5d904a256c84c" id="r_a1f5daf9790f84c07ebc5d904a256c84c"><td class="memItemLeft" align="right" valign="top"><a id="a1f5daf9790f84c07ebc5d904a256c84c" name="a1f5daf9790f84c07ebc5d904a256c84c"></a>
 volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>deviceState</b> = DEVICE_STATE_IDLE</td></tr>
 <tr class="separator:a1f5daf9790f84c07ebc5d904a256c84c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cfa545dfee269f6f38b00f0b8054375" id="r_a1cfa545dfee269f6f38b00f0b8054375"><td class="memItemLeft" align="right" valign="top">volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1cfa545dfee269f6f38b00f0b8054375">sdo_data_reg</a></td></tr>
+<tr class="separator:a1cfa545dfee269f6f38b00f0b8054375"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a8fd70307e3c98c93c6621abf951aab" id="r_a4a8fd70307e3c98c93c6621abf951aab"><td class="memItemLeft" align="right" valign="top"><a id="a4a8fd70307e3c98c93c6621abf951aab" name="a4a8fd70307e3c98c93c6621abf951aab"></a>
 volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>SDTransferDescriptor</b></td></tr>
 <tr class="separator:a4a8fd70307e3c98c93c6621abf951aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -168,8 +173,7 @@ volatile uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><b>buffer
 <tr class="memitem:a9bc5e7b26a132ff1bda68686076f82ed" id="r_a9bc5e7b26a132ff1bda68686076f82ed"><td class="memItemLeft" align="right" valign="top"><a id="a9bc5e7b26a132ff1bda68686076f82ed" name="a9bc5e7b26a132ff1bda68686076f82ed"></a>
 volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>numBlocks</b> = BUFFER_BLOCK_LENGTH</td></tr>
 <tr class="separator:a9bc5e7b26a132ff1bda68686076f82ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a654e7aa1d58acfb280a007c6de40dbce" id="r_a654e7aa1d58acfb280a007c6de40dbce"><td class="memItemLeft" align="right" valign="top"><a id="a654e7aa1d58acfb280a007c6de40dbce" name="a654e7aa1d58acfb280a007c6de40dbce"></a>
-volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>numBuffersPerFrame</b> = 0</td></tr>
+<tr class="memitem:a654e7aa1d58acfb280a007c6de40dbce" id="r_a654e7aa1d58acfb280a007c6de40dbce"><td class="memItemLeft" align="right" valign="top">volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a654e7aa1d58acfb280a007c6de40dbce">numBuffersPerFrame</a> = 0</td></tr>
 <tr class="separator:a654e7aa1d58acfb280a007c6de40dbce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd440682dc695d5516da152fdfac8bd5" id="r_acd440682dc695d5516da152fdfac8bd5"><td class="memItemLeft" align="right" valign="top"><a id="acd440682dc695d5516da152fdfac8bd5" name="acd440682dc695d5516da152fdfac8bd5"></a>
 volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>sdo_dma_cb_calls</b> = 0</td></tr>
@@ -242,49 +246,37 @@ volatile uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>timerInde
 <tr class="separator:ad59a6f82596a2660406938d2e9d455f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a7393965e2dd9473fcac414e5cfc81675" name="a7393965e2dd9473fcac414e5cfc81675"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7393965e2dd9473fcac414e5cfc81675">&#9670;&#160;</a></span>configBlock</h2>
+<a id="a654e7aa1d58acfb280a007c6de40dbce" name="a654e7aa1d58acfb280a007c6de40dbce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a654e7aa1d58acfb280a007c6de40dbce">&#9670;&#160;</a></span>numBuffersPerFrame</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">volatile uint8_t configBlock[SD_BLOCK_SIZE] = {0}</td>
+          <td class="memname">volatile uint32_t numBuffersPerFrame = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   14</span>{0}; <span class="comment">// Will hold the device config information to be written to the starting block</span></div>
-</div><!-- fragment -->
+
+<p>Not actual number of buffers per frame. </p>
+<dl class="section note"><dt>Note</dt><dd>It's confusing so it might be better to change name </dd></dl>
+
 </div>
 </div>
-<a id="a85bf923be3950d2f88756ff7347a8c5e" name="a85bf923be3950d2f88756ff7347a8c5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85bf923be3950d2f88756ff7347a8c5e">&#9670;&#160;</a></span>dataBuffer</h2>
+<a id="a1cfa545dfee269f6f38b00f0b8054375" name="a1cfa545dfee269f6f38b00f0b8054375"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cfa545dfee269f6f38b00f0b8054375">&#9670;&#160;</a></span>sdo_data_reg</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">volatile uint32_t dataBuffer[NUM_BUFFERS][BUFFER_BLOCK_LENGTH *PCC_BLOCK_SIZE_IN_WORDS] = {((unsigned char)0)}</td>
+          <td class="memname">volatile uint32_t sdo_data_reg</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   11</span>{((<span class="keywordtype">unsigned</span> char)0)};; <span class="comment">//Allocate memory for DMA image buffers</span></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="abf38cb5972b8b11a4227f86eb83d42de" name="abf38cb5972b8b11a4227f86eb83d42de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf38cb5972b8b11a4227f86eb83d42de">&#9670;&#160;</a></span>headerBlock</h2>
 
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">volatile uint8_t headerBlock[SD_BLOCK_SIZE] = {0}</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   13</span>{0}; <span class="comment">// Will hold the 512 bytes from the header block of sd card</span></div>
-</div><!-- fragment -->
+<p>This stores SERCOM hardware data register address used for data transmission (memory -&gt; SERCOM) </p>
+
 </div>
 </div>
 </div><!-- contents -->
