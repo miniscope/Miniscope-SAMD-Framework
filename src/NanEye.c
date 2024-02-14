@@ -1,5 +1,7 @@
 // Daniel NanEye.c code is copied from the NanEye SAME70 code
 // and has not been properly ported from SAME70 to this SAMD framework
+
+
 #define GS_MODE
 
 // Daniel original NE code, and STATE MACHINE

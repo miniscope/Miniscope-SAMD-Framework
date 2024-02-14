@@ -60,7 +60,7 @@
 
 // pin defintions for first NE camera (MONO) sensor
 #define SPI_MISO_PIN		PB14
-#define SPI_MISO_MODE		IOPORT_MODE_MUX_B // DANIEL not sure if we need this?
+#define SPI_MISO_MODE		IOPORT_MODE_MUX_B // DANIEL not sure if we need this? Located in driver_init.c
 #define SPI_MOSI_PIN		PB15
 #define SPI_MOSI_MODE		IOPORT_MODE_MUX_B// DANIEL not sure if we need this?
 #define SPI_SPCK_PIN		PB13
