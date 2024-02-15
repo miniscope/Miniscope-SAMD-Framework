@@ -1,11 +1,12 @@
 // Daniel NanEye.c code is copied from the NanEye SAME70 code
 // and has not been properly ported from SAME70 to this SAMD framework
+// these dependencies are important to include GS_MODE
 
 #include "MS_config.h"
 #include "MS_definitions.h"
 
 
-#ifdef NANEYE_ENABLE
+#ifdef NANEYE_ENABLE // define GS_Mode here
 #include "NanEye.h"
 // send data
 void NanEyeInit(void)
@@ -62,7 +63,7 @@ void stopRecordingNE()
 
 
 // Below is Daniel's original NE code for SAME70 
-#if 0
+#if 0 // not going to be compiled, this is Daniels code
 volatile uint32_t state = STATE_IDLE; // holds the current state of the SPI Naneye state machine
 
 volatile uint32_t ms_ticks = 0; // Should count up in 1 ms increments

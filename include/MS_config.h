@@ -23,8 +23,8 @@ The modes should be a set of peripherals used in the specified mode.
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
-#define WLMS_SPI_MODE
-//#define GS_MODE
+// #define WLMS_SPI_MODE
+#define GS_MODE
 //#define WLMS_USART_MODE
 //#define WLMS_SD_MODE
 //#define DMA_TO_SPI_TESTMODE
@@ -89,7 +89,7 @@ The modes should be a set of peripherals used in the specified mode.
 
 
 #ifdef GS_MODE
-#define NANEYE_ENABLE
+#define NANEYE_ENABLE 
 // #define DMA_TO_SD_ENABLE
 //#define EXLED_PWM_ENABLE // RE-ENABLE WITH PROPER PIN NAME
 // #define BATTERY_ENABLE

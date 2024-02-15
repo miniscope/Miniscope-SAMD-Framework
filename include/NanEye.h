@@ -58,7 +58,9 @@
 #define SPI_DLYBCS			0x00 // Delay NPCS is held high before next transmit
 #define SPI_CLK_RATE		16000000 // 16000000 // 24000000 // MHz
 
-// pin defintions for first NE camera (MONO) sensor
+// pin definitions for first NE camera (MONO) sensor,
+// Possibly delete these in order to run properly
+#if 0
 #define SPI_MISO_PIN		PB14
 #define SPI_MISO_MODE		IOPORT_MODE_MUX_B // DANIEL not sure if we need this? Located in driver_init.c
 #define SPI_MOSI_PIN		PB15
@@ -67,6 +69,7 @@
 #define SPI_SPCK_MODE		IOPORT_MODE_MUX_B// DANIEL not sure if we need this?
 #define SPI_NPCS_PIN		PIO_PB2_IDX// DANIEL not sure if we need this?
 #define SPI_NPCS_MODE		IOPORT_MODE_MUX_D// DANIEL not sure if we need this?
+#endif
 
 // SPI DMA
 #define SPI0_XDMAC_TX_CH_NUM	1 //XDMAC Channel HW Interface for SPI0
