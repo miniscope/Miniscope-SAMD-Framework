@@ -86,4 +86,10 @@
 // #define SPI_NPCS_MODE		IOPORT_MODE_MUX_D
 
 
+// Variables
+volatile uint16_t naneyec_reg_val[2];
+volatile uint8_t naneye_new_reg_val_received = 0;
+volatile uint8_t spi_interface_mode_tx_buffer[INTERFACE_MODE_SIZE]; // Used to tx during interface mode
+
+
 #endif /* DEFINITIONS_H_ */
