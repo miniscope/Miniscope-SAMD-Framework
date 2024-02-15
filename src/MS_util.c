@@ -140,9 +140,18 @@ void peripheralInit(void)
 	sercom_sdo->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
 	while (sercom_sdo->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
+	#ifdef SPI_ICSPACE_MS
 	hri_sercomspi_set_CTRLC_ICSPACE_bf(sercom_sdo, SPI_ICSPACE_MS);
+	#endif
+
+	#ifdef SPI_BAUD_MS
 	hri_sercomspi_write_BAUD_reg(sercom_sdo, SPI_BAUD_MS);
+	#endif
+
+	#ifdef SDO_32BIT_ENABLE
 	sercom_sdo->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
+	#endif
+	
 	sercom_sdo->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
 	while (sercom_sdo->SPI.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
