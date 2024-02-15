@@ -95,7 +95,7 @@ The modes should be a set of peripherals used in the specified mode.
 // #define BATTERY_ENABLE
 // #define PUSH_BUT_ENABLE
 //#define STATUS_LED_ENABLE // RE-ENABLE WITH PROPER PIN NAME
-#define SERCOM5_ENABLE // LED
+#define SPI_SERCOM5_ENABLE // LED
 #define SERCOM4_ENABLE // Naneye
 #define DMA_TO_SPI_ENABLE
  
