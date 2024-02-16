@@ -95,7 +95,7 @@ void TXLinkedListInit(void)
 	setTXLinkedListPosition(0);
 }
 
-void LinkedListInit(void)
+void RXLinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
 		if (i == (NUM_BUFFERS - 1))

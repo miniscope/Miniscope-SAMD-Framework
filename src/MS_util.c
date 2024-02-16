@@ -103,7 +103,7 @@ void peripheralInit(void)
 	irqInit();
 	#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
 
-	LinkedListInit(); // Connects to MS_dma.c
+	RXLinkedListInit(); // Connects to MS_dma.c
 	#endif
 
 	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
