@@ -51,7 +51,6 @@ The modes should be a set of peripherals used in the specified mode.
 #define IR_TRIGGER_ENABLE
 //#define SPI_SERCOM0_ENABLE
 #define SPI_SERCOM5_ENABLE
-#define SDO_32BIT_ENABLE
 #define PREAMBLE_ENABLE
 #define PRESET_HEADER_ENABLE
 #define AUTOSTART_ENABLE
@@ -90,21 +89,21 @@ The modes should be a set of peripherals used in the specified mode.
 
 #ifdef GS_MODE
 #define NANEYE_ENABLE 
+#define NANEYE_320PX
 // #define DMA_TO_SD_ENABLE
 //#define EXLED_PWM_ENABLE // RE-ENABLE WITH PROPER PIN NAME
 // #define BATTERY_ENABLE
 // #define PUSH_BUT_ENABLE
 //#define STATUS_LED_ENABLE // RE-ENABLE WITH PROPER PIN NAME
 #define SPI_SERCOM5_ENABLE // LED
-#define SERCOM4_ENABLE // Naneye
 #define DMA_TO_SPI_ENABLE
- 
+#define SERCOM4_ENABLE_SDI // wondering where sercom 4 went, takuya?
+
 #define STOP_ENABLE
 #define FRAMERATE_20FPS
 #define PRESET_HEADER_ENABLE
 #define DEBUGLED_ENABLE
 #define SPI_LUT_ENABLE
-#define SDO_32BIT_ENABLE
 #define AUTOSTART_ENABLE
 //#define RECORDTIME_DISABLE
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed

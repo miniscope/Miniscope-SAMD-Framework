@@ -57,12 +57,12 @@ void debugHeaderProp(void){
 
 void getBuffersPerFrame(void)
 {
-	#ifdef PYTHON480_ENABLE
-	numBuffersPerFrame = (WIDTH * HEIGHT) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
-	if((WIDTH * HEIGHT) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0)
-	numBuffersPerFrame += 1;
+	#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
+	numBuffersPerFrame = (NUM_PIXELS) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
+	if((NUM_PIXELS) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0)
+		numBuffersPerFrame += 1;
 	// Need to add 1 to account for partially filled buffer
-	#endif
+	#endif // defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
 }
 
 void peripheralInit(void)
@@ -91,6 +91,9 @@ void peripheralInit(void)
 	usart_async_register_callback(&USART_0, USART_ASYNC_RXC_CB, usart_rx_cb);
 	#endif
 	
+	
+	
+	
 	#ifdef EWL_ENABLE
 	I2C_BB_init();
 	#endif
@@ -98,13 +101,9 @@ void peripheralInit(void)
 	timerInit();
 	
 	irqInit();
-	
-	#ifdef PYTHON480_ENABLE
-	PCCLinkedListInit();
-	#endif
+	#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
 
-	#ifdef NANEYE_ENABLE
-	NELinkedListInit(); // Connects to MS_dma.c
+	LinkedListInit(); // Connects to MS_dma.c
 	#endif
 
 	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)

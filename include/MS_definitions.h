@@ -35,14 +35,10 @@
 #define DEVICE_STATE_SDCARD_INIT_WRITE_ERROR	1<<11
 // -------------------------------------------
 
+
 // ----------- Buffer Definitions ------------
-#define PCC_BLOCK_SIZE_IN_WORDS		128
-#ifdef SDO_32BIT_ENABLE
-#define SDO_BLOCK_SIZE_IN_WORDS		128 // (512 bytes) / (4 byte word size)
-#endif
-#ifdef SDO_8BIT_ENABLE
-#define SDO_BLOCK_SIZE_IN_WORDS		512 // (512 bytes) / (1 byte word size)
-#endif
+#define BLOCK_SIZE_IN_WORDS		128
+
 
 // Buffer Header position definitions
 #define BUFFER_HEADER_LENGTH					12
@@ -171,15 +167,22 @@
 #define BINNING						2
 #endif
 
-#define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
+#ifdef NANEYE_320PX
+#define WIDTH						320
+#define HEIGHT						320
+#define BINNING						1 // subsampling not needed for 
+#endif
 
+#define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
+// TODO: Handle 12 bit/pixel naneye data
+// #define bits per pixel somewhere here
 // -------------------------------------------
 
 
 // ----------- GLOBAL VARIABLES -----------
 
-extern volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS]; //Allocate memory for DMA image buffers
-extern volatile DmacDescriptor PCCLinkedList[];
+extern volatile uint32_t dataBuffer[][BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS]; //Allocate memory for DMA image buffers
+extern volatile DmacDescriptor LinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 
 /**
@@ -305,9 +308,9 @@ void usart_rx_cb(void);
 
 // DMA
 #define SDO_DMA_CHANNEL 0x1
-#define NE_DMA_CHANNEL 0x0 // HS CHECK DMA Channel settings (ATMEL Start)
+#define INPUT_DATA_DMA_CHANNEL 0x0 // HS CHECK DMA Channel settings (ATMEL Start)
 
-extern volatile DmacDescriptor PCCLinkedList[];
+extern volatile DmacDescriptor LinkedList[];
 extern volatile DmacDescriptor TXLinkedList[];
 
 extern void sdo_dma_transfer_trigger(void);
@@ -315,7 +318,7 @@ extern void sdo_dma_transfer_resume(void);
 extern void sdo_dma_transfer_suspend(void);
 extern void sdo_dma_irq_setup(void);
 void setTXLinkedListPosition(uint8_t pos);
-void setPCCLinkedListPosition(uint8_t pos);
+void setRXLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
 void sdo_dma_transfer_control(bool callback_flag);

@@ -14,7 +14,7 @@ static struct timer_task TIMER_0_task1, TIMER_0_task2, TIMER_0_task3, TIMER_0_ta
 
 void timerInit(void)
 {
-	#if defined(PYTHON480_ENABLE)
+	#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
 	// Setup a timer to count in milliseconds
 	TIMER_0_task1.interval	= 1; // Need to check this value
 	TIMER_0_task1.cb		= millisecondTimer_cb;

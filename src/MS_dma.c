@@ -17,14 +17,10 @@
 COMPILER_ALIGNED(16)
 volatile DmacDescriptor TXLinkedList[NUM_BUFFERS];
 
-#ifdef NANEYE_ENABLE
-COMPILER_ALIGNED(16) // not sure if necessary
-volatile DmacDescriptor NE_LinkedList[NUM_BUFFERS];// naneye linked list
-#endif
 
-#ifdef PYTHON480_ENABLE
+#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
 COMPILER_ALIGNED(16)
-volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
+volatile DmacDescriptor LinkedList[NUM_BUFFERS];
 #endif
 
 void dmaEnable(void){
@@ -70,7 +66,7 @@ void TXLinkedListInit(void)
 		else TXLinkedList[i].DESCADDR.reg = (uint32_t)&TXLinkedList[i + 1];
 		
 		
-		TXLinkedList[i].BTCNT.reg = BUFFER_BLOCK_LENGTH * SDO_BLOCK_SIZE_IN_WORDS;
+		TXLinkedList[i].BTCNT.reg = BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS;
 
 		// We aren't actually using the STEPSIZE part of incrementing the source address.
 		TXLinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
@@ -99,51 +95,49 @@ void TXLinkedListInit(void)
 	setTXLinkedListPosition(0);
 }
 
-#ifdef NANEYE_ENABLE
-
-void NELinkedListInit(void)
+void LinkedListInit(void)
 {
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
-		if (i == (NUM_BUFFERS - 1)) NE_LinkedList[i].DESCADDR.reg = (uint32_t)&TXLinkedList[0];
+		if (i == (NUM_BUFFERS - 1))
 		// Last buffer in list. Need to loop back
-		else NE_LinkedList[i].DESCADDR.reg = (uint32_t)&NE_LinkedList[i + 1];
+			LinkedList[i].DESCADDR.reg = (uint32_t)&LinkedList[0];
+		else
+			LinkedList[i].DESCADDR.reg = (uint32_t)&LinkedList[i + 1];
 		
-		// Daniel definition of linked list
-		NE_LinkedList[i].BTCNT.reg = BUFFER_BLOCK_LENGTH * SDO_BLOCK_SIZE_IN_WORDS;
-
-		// We aren't actually using the STEPSIZE part of incrementing the source address.
-		NE_LinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
+		LinkedList[i].BTCNT.reg = (BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
+		// We aren't actually using the STEPSIZE part of incrementing the destination address.
+		#ifdef PYTHON480_ENABLE
+		LinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_0 << DMAC_BTCTRL_STEPSEL_Pos)\
+		| (CONF_DMAC_DSTINC_0 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_0 << DMAC_BTCTRL_SRCINC_Pos)\
+		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_0) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_0 | 0x01)\
+		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_0) | DMAC_BTCTRL_VALID;
+		#elif defined(NANEYE_ENABLE)
+		LinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_1 << DMAC_BTCTRL_STEPSEL_Pos)\
 		| (CONF_DMAC_DSTINC_1 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_1 << DMAC_BTCTRL_SRCINC_Pos)\
 		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_1) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_1 | 0x01)\
 		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_1) | DMAC_BTCTRL_VALID;
+		#endif // NANEYE_ENABLE or PYTHON_ENABLE
 		
-		// For sending out data
-		// DANIEL I think this is where the linked list get sent to a particular address
-		#ifdef SDO_32BIT_ENABLE
-		NE_LinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][0]) + NE_LinkedList[i].BTCNT.reg * 4;
-		#endif
-		#ifdef SDO_8BIT_ENABLE
-		NE_LinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][0]) + NE_LinkedList[i].BTCNT.reg;
-		#endif
+		#ifdef PYTHON480_ENABLE
+		LinkedList[i].SRCADDR.reg = (uint32_t)(&PCC->RHR.reg); //(void *)&(((Pcc *)device->hw)->RHR.reg)
+		#elif defined(NANEYE_ENABLE)
+		LinkedList[i].SRCADDR.reg = (uint32_t) &SERCOM4->SPI.DATA.reg; // SERCOM for NE Camera HS CHECK (from global)
+		#endif // NANEYE_ENABLE or PYTHON_ENABLE
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
-		
-		NE_LinkedList[i].SRCADDR.reg = (uint32_t) &SERCOM4->SPI.DATA.reg; // SERCOM for NE Camera HS CHECK
-// make sure to associate this SERCOM number in ATMEL Start
+		LinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][BUFFER_HEADER_LENGTH]) + LinkedList[i].BTCNT.reg * 4;
 	}
-	setNELinkedListPosition(0);
+	setRXLinkedListPosition(0);
 }
-
-void setNELinkedListPosition(uint8_t pos)
+void setRXLinkedListPosition(uint8_t pos)
 {
-	_dma_set_destination_address(NE_DMA_CHANNEL, (void *)NE_LinkedList[pos].DSTADDR.reg);
-	_dma_set_data_amount(NE_DMA_CHANNEL, NE_LinkedList[pos].BTCNT.reg);
-	_dma_set_BTCTRL(NE_DMA_CHANNEL, (void *)NE_LinkedList[pos].BTCTRL.reg); //block transfer control
-	_dma_set_DESCADDR(NE_DMA_CHANNEL, NE_LinkedList[pos].DESCADDR.reg);
-	_dma_set_source_address(NE_DMA_CHANNEL, (void *)NE_LinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
-}
 
-#endif
+	_dma_set_source_address(INPUT_DATA_DMA_CHANNEL, (void *)LinkedList[pos].SRCADDR.reg);
+	_dma_set_data_amount(INPUT_DATA_DMA_CHANNEL, (void *)LinkedList[pos].BTCNT.reg);
+	_dma_set_BTCTRL(INPUT_DATA_DMA_CHANNEL, (void *)LinkedList[pos].BTCTRL.reg);
+	_dma_set_destination_address(INPUT_DATA_DMA_CHANNEL, (void *)LinkedList[pos].DSTADDR.reg); // Overwrite destination address since set_data_amount function modifies this
+	_dma_set_DESCADDR(INPUT_DATA_DMA_CHANNEL, LinkedList[pos].DESCADDR.reg);
+}
 
 void setTXLinkedListPosition(uint8_t pos)
 {
@@ -154,7 +148,7 @@ void setTXLinkedListPosition(uint8_t pos)
 	_dma_set_source_address(SDO_DMA_CHANNEL, (void *)TXLinkedList[pos].SRCADDR.reg); // Overwrite source address since set_data_amount function modifies this
 }
 
-
+/// this is where we ended up !
 void sdo_dma_transfer_trigger(void)
 {
 	DMAC->SWTRIGCTRL.reg = 0x2;
@@ -226,7 +220,7 @@ void DataBufferInit(void)
 	for (uint32_t i = 0; i<NUM_BUFFERS; i++)
 	{
 		dataBuffer[i][0] = 0x12345678;
-		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
+		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS; j++)
 		{
 			#ifdef TEST_BUFFER_ENABLE // hard coding test buffers for 304 * 304 px. Should be a defined better.
 			dataBuffer[i][BUFFER_HEADER_LINKED_LIST_POS] = i;
@@ -245,41 +239,3 @@ void DataBufferInit(void)
 		}
 	}
 }
-#ifdef PYTHON480_ENABLE
-void PCCLinkedListInit(void)
-{
-	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
-		if (i == (NUM_BUFFERS - 1))
-		// Last buffer in list. Need to loop back
-		PCCLinkedList[i].DESCADDR.reg = (uint32_t)&PCCLinkedList[0];
-		else
-		PCCLinkedList[i].DESCADDR.reg = (uint32_t)&PCCLinkedList[i + 1];
-		
-		PCCLinkedList[i].BTCNT.reg = (BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
-		// We aren't actually using the STEPSIZE part of incrementing the destination address.
-		PCCLinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_0 << DMAC_BTCTRL_STEPSEL_Pos)\
-		| (CONF_DMAC_DSTINC_0 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_0 << DMAC_BTCTRL_SRCINC_Pos)\
-		| DMAC_BTCTRL_BEATSIZE(CONF_DMAC_BEATSIZE_0) | DMAC_BTCTRL_BLOCKACT(CONF_DMAC_BLOCKACT_0 | 0x01)\
-		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_0) | DMAC_BTCTRL_VALID;
-		
-		PCCLinkedList[i].SRCADDR.reg = (uint32_t)(&PCC->RHR.reg); //(void *)&(((Pcc *)device->hw)->RHR.reg)
-		
-		// Destination address when incrementing address needs to be the end address and not the start address.
-		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
-		PCCLinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][BUFFER_HEADER_LENGTH]) + PCCLinkedList[i].BTCNT.reg * 4;
-	}
-	setPCCLinkedListPosition(0);
-}
-
-void setPCCLinkedListPosition(uint8_t pos)
-{
-	// Set up initial DMA descriptor for DMA channel handling PCC. BTCNT is already setup in DMA init step
-	_dma_set_source_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].SRCADDR.reg);
-	//_dma_set_destination_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].DSTADDR.reg);
-	_dma_set_data_amount(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].BTCNT.reg);
-	_dma_set_BTCTRL(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].BTCTRL.reg);
-	_dma_set_destination_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].DSTADDR.reg); // Overwrite destination address since set_data_amount function modifies this
-
-	_dma_set_DESCADDR(CONF_PCC_DMA_CHANNEL, PCCLinkedList[pos].DESCADDR.reg);
-}
-#endif

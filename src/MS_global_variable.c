@@ -8,7 +8,7 @@
 
 // ------------ GLOBAL VARIABLES --------
 COMPILER_ALIGNED(16)
-volatile uint32_t dataBuffer[NUM_BUFFERS][BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS] = {((unsigned char)0)};; //Allocate memory for DMA image buffers
+volatile uint32_t dataBuffer[NUM_BUFFERS][BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS] = {((unsigned char)0)};; //Allocate memory for DMA image buffers
 
 volatile uint8_t headerBlock[SD_BLOCK_SIZE] = {0}; // Will hold the 512 bytes from the header block of sd card
 volatile uint8_t configBlock[SD_BLOCK_SIZE] = {0}; // Will hold the device config information to be written to the starting block
@@ -21,6 +21,7 @@ volatile uint32_t deviceState = DEVICE_STATE_IDLE;
 //COMPILER_ALIGNED(16) // Taken from hpl_dmac.c but I think this could be '8' since descriptors need to be 64bit aligned from data sheet
 //volatile DmacDescriptor linkedList[NUM_BUFFERS];
 
+// for Serial Data Out (SDO)
 #ifdef SPI_SERCOM0_ENABLE
 Sercom *sercom_sdo = SERCOM0;
 #elif defined(SPI_SERCOM5_ENABLE)
@@ -29,6 +30,11 @@ Sercom *sercom_sdo = SERCOM5;
 Sercom *sercom_sdo = SERCOM7;
 #elif defined(USART_SERCOM5_ENABLE)
 Sercom *sercom_sdo = SERCOM5;
+#endif
+
+// for Serial Data Out (SDI)
+#ifdef SERCOM4_ENABLE_SDI
+Sercom *sercom_sdi = SERCOM4;
 #endif
 
 // Probably should turn this into a struct to be more easily understandable

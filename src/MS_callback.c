@@ -13,12 +13,11 @@
 #endif 
 #include <hpl_dma.h>
 
-#ifdef PYTHON480_ENABLE
 void millisecondTimer_cb(const struct timer_task *const timer_task)
 {
 	timeMS++;
 }
-#endif
+
 
 #ifdef BATTERY_ENABLE
 void checkBattVoltage_cb(const struct timer_task *const timer_task)
@@ -202,7 +201,7 @@ void frameValid_cb(void)
 			//tempCount++;
 			
 			//I think this line sometimes doesn't catch up with the SD card transfer trigger (Takuya)
-			setBufferHeader((BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH) - _dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
+			setBufferHeader((BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH) - _dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
 			
 			frameBufferCount = 0;
 			bufferCount++; // A buffer has been filled (likely partially) and is ready for writing to SD card
@@ -210,7 +209,7 @@ void frameValid_cb(void)
 			
 			if (deviceState & DEVICE_STATE_RECORDING) { // Keep recording
 				// Update Linked List
-				setPCCLinkedListPosition(bufferCount % NUM_BUFFERS); // Moves to next buffer/linked list element
+				setRXLinkedListPosition(bufferCount % NUM_BUFFERS); // Moves to next buffer/linked list element
 				#if 0 // this part is probably not needed because the SDO linked list is independent of end of frame
 				if (bufferCount % NUM_BUFFERS == 0)
 				{
@@ -255,7 +254,7 @@ void frameValid_cb(void)
 			TXLinkedListInit();
 			#endif
 			PCCLinkedListInit();
-			setPCCLinkedListPosition(0); // Moves to next buffer/linked list element
+			setRXLinkedListPosition(0); // Moves to next buffer/linked list element
 			_dma_enable_transaction(CONF_PCC_DMA_CHANNEL, false); // Should enable DMA transfer
 			
 			PCC->MR.reg |= PCC_MR_PCEN; // Enables PCC
@@ -287,7 +286,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		//if (tempCount < 99)
 		//tempCount++;
 		
-		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
+		setBufferHeader(BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
 		bufferCount++;// increment counters
 		frameBufferCount++;
 		

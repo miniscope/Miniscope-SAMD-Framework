@@ -59,7 +59,62 @@ void stopRecordingNE()
 	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS, droppedBufferCount);
 }
 
+void Initial_Interface_Mode()
+{
+	deviceState &= ~(DEVICE_STATE_STOP_RECORDING);
+	deviceState &= ~(DEVICE_STATE_RECORDING);
+	deviceState |= DEVICE_STATE_IDLE;
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, writeBufferCount);
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS, droppedBufferCount);
+}
+void Interface_Sync_Delay_Mode()
+{
+		// need to make this as input-y as possible 
+		// Let's start naneye communication. To do this we will finish setting up the interface mode stuff and then turn on the DMAs
+		// Change pin to Output
+		// MOSI
+		naneye_new_reg_val_received = 1;
+		
+		naneyec_reg_val[0] = NANEYE_REG0_DEFAULT_VALUE | 0b1100; // Sets offset ramp to recommended 2.2V value
+		naneyec_reg_val[0] = naneyec_reg_val[0] | 0b11; // Sets output current to max (might only effect LVDS mode)
+		// sets naneye register
+		// |= sets particular value to 1
+		// &= with a ~ means and not, sets value to 0
+		naneyec_reg_val[1] = NANEYE_REG1_DEFAULT_VALUE;
+		naneyec_reg_val[1] |= (1<<10); // Increase 2x bias current, reduces settling time for high speed apps (not sure what this does)
+		naneyec_reg_val[1] &= ~(1<<9); // Sets CDS gain to recommended value of 1.3 (turns a 1--> 0, which sets CDS gain to 1.3)
+		naneyec_reg_val[1] &= ~(1<<8); // Sets mode to SEIM
+		naneyec_reg_val[1] = (naneyec_reg_val[1] & (0b1111111111001111)) | (0b10 << 4); // Sets vref to recommended value of 2.1V
+		naneyec_reg_val[1] = (naneyec_reg_val[1] & (0b1111111111110011)) | (0b01 << 2); // Sets CVC current to recommended value
+		naneyec_reg_val[1] &= ~(1<<1); // Turns off idle mode
+		
+		interface_buffer_reg_set(naneyec_reg_val[0],naneyec_reg_val[1]);
+		
+		for (int i = 0; i<INTERFACE_MODE_SIZE; i++)
+		{
+			SERCOM4->SPI.DATA.reg = spi_interface_mode_tx_buffer[i];
+		}
+}
+
+void Readout_Mode()
+{
+	// Change pin to input
+	// MISO
+	deviceState &= ~(DEVICE_STATE_STOP_RECORDING);
+	deviceState &= ~(DEVICE_STATE_RECORDING);
+	deviceState |= DEVICE_STATE_IDLE;
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, writeBufferCount);
+	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS, droppedBufferCount);
+}
+
+
 #endif // NANEYE_ENABLE
+
+
+
+
+
+
 
 
 // Below is Daniel's original NE code for SAME70 
