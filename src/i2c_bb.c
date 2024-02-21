@@ -127,3 +127,10 @@ uint8_t I2C_BB_write(uint8_t addr, uint8_t value)
 }
 
 #endif //EWL_ENABLE
+
+// this is where I am including the drivers for the tunable lens on the MS-US
+#ifdef NANEYE_ENABLE
+
+
+
+#endif
