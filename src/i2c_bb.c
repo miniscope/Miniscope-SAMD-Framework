@@ -162,6 +162,7 @@ void T_LENS_I2C(void)
 
 
 }
+
 // We can add initialization functions for the t-lens here
 // and controls for the T-lens
 #endif // NANEYE_ENABLE
