@@ -91,7 +91,9 @@ void peripheralInit(void)
 	usart_async_register_callback(&USART_0, USART_ASYNC_RXC_CB, usart_rx_cb);
 	#endif
 	
-	
+	#ifdef NANEYE_ENABLE
+	T_LENS_I2C();
+	#endif
 	
 	
 	#ifdef EWL_ENABLE

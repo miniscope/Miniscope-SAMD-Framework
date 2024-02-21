@@ -1,7 +1,7 @@
 /**
 @file
 @brief Functions for bitbang I2C interface
-@author Daniel, Takuya
+@author Daniel, Takuya, Hemal
 */
 
 #ifndef I2C_BB_H_
@@ -37,7 +37,7 @@ void T_LENS_I2C(void);
 
 
 #endif /* I2C_BB_H_ */
-
+// Adding t-lens calls here
 #ifdef NANEYE_ENABLE
 void T_LENS_I2C(void);
 #endif

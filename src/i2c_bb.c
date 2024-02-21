@@ -1,11 +1,17 @@
 /**
 @file
 @brief Functions for bitbang I2C interface
-@author Daniel, Takuya
+@author Daniel, Takuya, Hemal 
 */
 
 #include "MS_config.h"
 #include "MS_definitions.h"
+
+
+// HS added these, not sure what is important for the t-lens
+#include "driver_examples.h"
+#include "driver_init.h"
+#include "utils.h"
 
 #ifdef EWL_ENABLE
 #include "i2c_bb.h"
@@ -132,29 +138,23 @@ uint8_t I2C_BB_write(uint8_t addr, uint8_t value)
 #ifdef NANEYE_ENABLE
 //This portion of the I2C drivers is written for the Polight Tunable Lens  
 // Initialization on SERCOM0, PB13-15
-#include "driver_init.h"
-#include <peripheral_clk_config.h>
-#include <utils.h>
-#include <hal_init.h>
-
-#include <hpl_rtc_base.h>
 
 static uint8_t I2C_0_write_seq[5] = {0x0,0b00000001,0x2,0b10000000, 0b11001000}; // Set 10V HS 0x0 bit written to 0x0 to turn on
 // static uint8_t I2C_0_write_seq[5] = {0x0,0b00000001,0x2,0b10000000, 0b11111111}; // Set 13.84V HS 0x0 bit written to 0x0 to turn on
 // static uint8_t I2C_0_write_seq[5] = {0x0,0b00000001,0x2,0b10001010, 0b11111111}; // Set 42.55V HS 0x0 bit written to 0x0 to turn on
 
-
-void I2C_0_tx_complete_HS(struct i2c_m_async_desc *const i2c)
+void I2C_0_tx_complete_T(struct i2c_m_async_desc *const i2c)
 {
 }
 
+// this function just checks to make sure everything is working
 void T_LENS_I2C(void)
 {
 	struct io_descriptor *I2C_0_io;
 
 	i2c_m_async_get_io_descriptor(&I2C_0, &I2C_0_io);
 	i2c_m_async_enable(&I2C_0);
-	i2c_m_async_register_callback(&I2C_0, I2C_M_ASYNC_TX_COMPLETE, (FUNC_PTR)I2C_0_tx_complete_HS);
+	i2c_m_async_register_callback(&I2C_0, I2C_M_ASYNC_TX_COMPLETE, (FUNC_PTR)I2C_0_tx_complete_T);
 	i2c_m_async_set_slaveaddr(&I2C_0, 0xC, I2C_M_SEVEN);
 	
 
@@ -162,5 +162,6 @@ void T_LENS_I2C(void)
 
 
 }
-
+// We can add initialization functions for the t-lens here
+// and controls for the T-lens
 #endif // NANEYE_ENABLE
