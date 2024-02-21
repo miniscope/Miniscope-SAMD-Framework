@@ -130,7 +130,36 @@ uint8_t I2C_BB_write(uint8_t addr, uint8_t value)
 
 // this is where I am including the drivers for the tunable lens on the MS-US
 #ifdef NANEYE_ENABLE
+//This portion of the I2C drivers is written for the Polight Tunable Lens  
+// Initialization on SERCOM0, PB13-15
+static uint8_t I2C_0_read_str[1] ; //
+static uint8_t I2C_0_write_str[1] = {0b00000111}; // HS 0x7
+
+static uint8_t I2C_0_write_seq[5] = {0x0,0b00000001,0x2,0b10000000, 0b11001000}; // Set 10V HS 0x0 bit written to 0x0 to turn on
+// static uint8_t I2C_0_write_seq[5] = {0x0,0b00000001,0x2,0b10000000, 0b11111111}; // Set 13.84V HS 0x0 bit written to 0x0 to turn on
+// static uint8_t I2C_0_write_seq[5] = {0x0,0b00000001,0x2,0b10001010, 0b11111111}; // Set 42.55V HS 0x0 bit written to 0x0 to turn on
 
 
+static uint8_t I2C_0_write_active_address[1] = {0x0}; //HS 0x0 bit written to 0x0 to turn on
+static uint8_t I2C_0_write_active[1] = {0b00000001}; // HS 0x0 bit written to 0x0 to turn on
+
+void I2C_0_tx_complete_HS(struct i2c_m_async_desc *const i2c)
+{
+}
+
+void T_LENS_I2C(void)
+{
+	struct io_descriptor *I2C_0_io;
+
+	i2c_m_async_get_io_descriptor(&I2C_0, &I2C_0_io);
+	i2c_m_async_enable(&I2C_0);
+	i2c_m_async_register_callback(&I2C_0, I2C_M_ASYNC_TX_COMPLETE, (FUNC_PTR)I2C_0_tx_complete_HS);
+	i2c_m_async_set_slaveaddr(&I2C_0, 0xC, I2C_M_SEVEN);
+	
+
+	io_write(I2C_0_io, I2C_0_write_seq, 5); // write sequence to i2c address (fake way of getting sub address)
+
+
+}
 
 #endif

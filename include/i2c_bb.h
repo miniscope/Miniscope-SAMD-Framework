@@ -31,11 +31,14 @@ void SCL_low(void);
 void SCL_high(void);
 void I2C_BB_sleep(void);
 
+
+// Adding t-lens calls here
+void I2C_0_tx_complete_HS(struct i2c_m_async_desc *const i2c);
+void T_LENS_I2C(void);
+
+
 #endif /* I2C_BB_H_ */
 
 
-#ifndef
-
-#endif
 
 
