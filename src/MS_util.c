@@ -58,8 +58,8 @@ void debugHeaderProp(void){
 void getBuffersPerFrame(void)
 {
 	#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
-	numBuffersPerFrame = (NUM_PIXELS) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
-	if((NUM_PIXELS) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0)
+	numBuffersPerFrame = (NUM_PIXELS * PIXEL_DEPTH/8.0) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
+	if((NUM_PIXELS*PIXEL_DEPTH/8.0) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0)
 		numBuffersPerFrame += 1;
 	// Need to add 1 to account for partially filled buffer
 	#endif // defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)

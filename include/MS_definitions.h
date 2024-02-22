@@ -159,18 +159,22 @@
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
+#define PIXEL_DEPTH					8
+
 #endif
 
 #ifdef PYTHON480_152PX
 #define WIDTH						304
 #define HEIGHT						304
 #define BINNING						2
+#define PIXEL_DEPTH					8
 #endif
 
 #ifdef NANEYE_320PX
 #define WIDTH						320
 #define HEIGHT						320
 #define BINNING						1 // subsampling not needed for 
+#define PIXEL_DEPTH					10
 #endif
 
 #define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
