@@ -270,6 +270,7 @@ void frameValid_cb(void)
 // flexibility to add segments of code that only compiles with the presence of specific image sensors
 // THIS IS THE XDMA handler (when DMA is filled, then callback)
 // this is the core difference
+
 void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 {
 	if (ch == CONF_PCC_DMA_CHANNEL) {
@@ -323,6 +324,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		#endif
 	}
 }
+
 #ifdef PYTHON480_ENABLE
 void recording_cb(const struct timer_task *const timer_task)
 {
