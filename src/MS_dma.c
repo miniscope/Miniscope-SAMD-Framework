@@ -63,6 +63,7 @@ void dmaEnable(void){
 #if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
 void TXLinkedListInit(void)
 {
+	// transfer linked list
 	for (uint8_t i = 0; i < NUM_BUFFERS; i++) {
 		if (i == (NUM_BUFFERS - 1)) TXLinkedList[i].DESCADDR.reg = (uint32_t)&TXLinkedList[0];
 		// Last buffer in list. Need to loop back
@@ -107,7 +108,7 @@ void NELinkedListInit(void)
 		// Last buffer in list. Need to loop back
 		else NE_LinkedList[i].DESCADDR.reg = (uint32_t)&NE_LinkedList[i + 1];
 		
-		
+		// Daniel definition of linked list
 		NE_LinkedList[i].BTCNT.reg = BUFFER_BLOCK_LENGTH * SDO_BLOCK_SIZE_IN_WORDS;
 
 		// We aren't actually using the STEPSIZE part of incrementing the source address.
@@ -117,6 +118,7 @@ void NELinkedListInit(void)
 		| DMAC_BTCTRL_EVOSEL(CONF_DMAC_EVOSEL_1) | DMAC_BTCTRL_VALID;
 		
 		// For sending out data
+		// DANIEL I think this is where the linked list get sent to a particular address
 		#ifdef SDO_32BIT_ENABLE
 		NE_LinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][0]) + NE_LinkedList[i].BTCNT.reg * 4;
 		#endif
@@ -126,8 +128,7 @@ void NELinkedListInit(void)
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
 		
-		// To do (low priority): make sercom hw a variable
-		NE_LinkedList[i].SRCADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg; // SERCOM for NE Camera HS CHECK
+		NE_LinkedList[i].SRCADDR.reg = (uint32_t) &SERCOM4->SPI.DATA.reg; // SERCOM for NE Camera HS CHECK
 // make sure to associate this SERCOM number in ATMEL Start
 	}
 	setNELinkedListPosition(0);

@@ -165,7 +165,9 @@ void pushButton_cb(void)
 }
 #endif
 
-
+// HS CHECK, this function is called when there is data still remaining to be filled into a buffer,
+// so if the camera i
+// handle frame when buffer is not full
 
 #ifdef PYTHON480_ENABLE
 void frameValid_cb(void)
@@ -264,7 +266,11 @@ void frameValid_cb(void)
 	}
 }
 #endif
-
+// HS Check image_sensor_dma_cb
+// then place the ifdef inside the function
+// flexibility to add segments of code that only compiles with the presence of specific image sensors
+// THIS IS THE XDMA handler (when DMA is filled, then callback)
+// this is the core difference
 #ifdef PYTHON480_ENABLE
 void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 {
