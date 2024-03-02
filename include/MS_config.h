@@ -44,7 +44,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
-#define EWL_ENABLE
+#define BATTERY_CB_DISABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
