@@ -145,7 +145,7 @@ void peripheralInit(void)
 	sercom_sdo->SPI.CTRLC.bit.DATA32B = 1; // Enable 32-bit mode
 	sercom_sdo->SPI.CTRLA.bit.ENABLE = 1;  // Re-enable SPI
 	while (sercom_sdo->SPI.SYNCBUSY.bit.ENABLE)
-	;                                 // Wait for disable
+	;                                 // Wait for enable
 	#endif
 
 // HS CHECK: MIght need to add something for the NE Camera here:
@@ -236,7 +236,9 @@ void irqInit(void){
 	#endif
 	
 	#ifdef BATTERY_ENABLE
+	#ifndef BATTERY_CB_DISABLE
 	ext_irq_register(PIN_PB23, battCharging_cb);
+	#endif
 	#endif
 	
 	#ifdef PYTHON480_ENABLE
