@@ -40,6 +40,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define TEST_PATTERN_ENABLE // For dev
 #define PYTHON480_ENABLE
 //#define PYTHON480_304PX
+#define EWL_ENABLE
 #define PYTHON480_152PX
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
