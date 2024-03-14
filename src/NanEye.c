@@ -747,4 +747,4 @@ void interface_buffer_reg_set(uint32_t reg0, uint32_t reg1) {
 	spi_interface_mode_tx_buffer[9] = ((reg1 << 1) & 0xFF);
 }
 
-#endif
+#endif //0
