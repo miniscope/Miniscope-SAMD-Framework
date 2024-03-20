@@ -122,6 +122,8 @@ void update_recording()
 		return;
 	}
 }
+// callback for when NE ios done
+// linked list 
 
 void usart_rx_cb(void)
 {
@@ -271,6 +273,7 @@ void frameValid_cb(void)
 // THIS IS THE XDMA handler (when DMA is filled, then callback)
 // this is the core difference
 
+// rename this eventually
 void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 {
 	if (ch == CONF_PCC_DMA_CHANNEL) {
