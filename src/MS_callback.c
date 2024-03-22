@@ -274,6 +274,7 @@ void frameValid_cb(void)
 // this is the core difference
 
 // rename this eventually
+/*
 void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 {
 	if (ch == CONF_PCC_DMA_CHANNEL) {
@@ -327,6 +328,63 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		#endif
 	}
 }
+*/
+
+void rx_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
+{
+	if (ch == CONF_RX_DMA_CHANNEL) {
+		rx_dma_cb_calls++;
+		
+		// add header to current buffer
+		
+		// Some debugging stuff here
+		//tempHeader[tempCount][0] = frameNum;
+		//tempHeader[tempCount][1] = bufferCount;
+		//tempHeader[tempCount][2] = 4 * dma_get_WRB_data(CONF_RX_DMA_CHANNEL);
+		//tempHeader[tempCount][3] = PCC->ISR.reg;
+		//if (tempCount < 99)
+		//tempCount++;
+		#ifdef PYTHON480_ENABLE
+		setBufferHeader(BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
+		#endif //PYTHON480_ENABLE
+		
+		// check numbers here, simulate with matlab
+		#ifdef NANEYE_ENABLE
+		uint8_t num_buffers_remaining = (numBuffersPerFrame-bufferCount % (numBuffersPerFrame));
+		uint32_t num_bytes_remaining = (NUM_PIXELS*PIXEL_DEPTH/8.0) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
+
+		if (num_buffers_remaining == 0)
+		{// possibly interface mode
+			setBufferHeader(num_bytes_remaining);
+		}
+		else
+		{
+			setBufferHeader(BUFFER_BLOCK_LENGTH * BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
+		}
+		#endif //NANEYE_ENABLE
+		
+		bufferCount++;// increment counters
+		frameBufferCount++;
+		// write out the numbers for all the buffer length, etc
+		#ifdef NANEYE_ENABLE
+		if (num_buffers_remaining == NUM_BUFFERS-1) // tells us which buffer we are in
+		{
+			uint8_t last_buffer_to_fill = (bufferCount + num_buffers_remaining)%NUM_BUFFERS; // check here possibly off by 1
+			LinkedList[last_buffer_to_fill].BTCNT.reg = ( num_bytes_remaining );
+			LinkedList[last_buffer_to_fill].DSTADDR.reg = (uint32_t)(&dataBuffer[last_buffer_to_fill][BUFFER_HEADER_LENGTH]) + LinkedList[last_buffer_to_fill].BTCNT.reg * 4;
+
+		}
+		#endif
+		#if 0
+		sdmmc_dma_transfer_control();
+		#endif
+		#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+		sdo_dma_transfer_control(false);
+		#endif
+	}
+}
+
+
 
 #ifdef PYTHON480_ENABLE
 void recording_cb(const struct timer_task *const timer_task)

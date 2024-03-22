@@ -306,7 +306,9 @@ void battCharging_cb(void);
 void irReceive_cb(void);
 void pushButton_cb(void);
 void frameValid_cb(void);
-void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
+// void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);//HS
+void rx_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch);
+
 void usart_rx_cb(void);
 // --------------------------------------
 

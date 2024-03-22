@@ -61,7 +61,9 @@ volatile uint32_t *bufferToWrite;
 volatile uint32_t numBlocks = BUFFER_BLOCK_LENGTH;
 volatile uint32_t numBuffersPerFrame = 0; 
 volatile uint32_t sdo_dma_cb_calls = 0;
-volatile uint32_t pcc_dma_cb_calls = 0;
+// volatile uint32_t pcc_dma_cb_calls = 0; // HS
+
+volatile uint32_t rx_dma_cb_calls = 0; //HS
 
 // Debugging and checking stuff
 volatile uint16_t chip_id; // Reads the chip id from Python480 to make sure we can talk to it
