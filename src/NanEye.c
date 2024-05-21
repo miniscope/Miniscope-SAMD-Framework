@@ -95,7 +95,20 @@ void Interface_Sync_Delay_Mode()
 			SERCOM4->SPI.DATA.reg = spi_interface_mode_tx_buffer[i];
 		}
 }
-
+void interface_buffer_reg_set(uint32_t reg0, uint32_t reg1) {
+	// Cannot update regs in the first SPI clock of interface mode so we will start in the second byte location
+	
+	// For reg0
+	spi_interface_mode_tx_buffer[1] = 0b10010000 | ((reg0 >> 15) & 0x01);
+	spi_interface_mode_tx_buffer[2] = ((reg0 >> 7) & 0xFF);
+	spi_interface_mode_tx_buffer[3] = ((reg0 << 1) & 0xFF);
+	
+	// For reg1
+	// Lets give a 3 byte gap between writing the 2 registers
+	spi_interface_mode_tx_buffer[7] = 0b10010010 | ((reg1 >> 15) & 0x01);
+	spi_interface_mode_tx_buffer[8] = ((reg1 >> 7) & 0xFF);
+	spi_interface_mode_tx_buffer[9] = ((reg1 << 1) & 0xFF);
+}
 void Readout_Mode()
 {
 	// Change pin to input
