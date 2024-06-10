@@ -32,7 +32,7 @@ Sercom *sercom_sdo = SERCOM7;
 Sercom *sercom_sdo = SERCOM5;
 #endif
 
-// for Serial Data Out (SDI)
+// for Serial Data IN (SDI)
 #ifdef SERCOM4_ENABLE_SDI
 Sercom *sercom_sdi = SERCOM4;
 #endif
