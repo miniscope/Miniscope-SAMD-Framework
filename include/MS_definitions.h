@@ -327,6 +327,8 @@ void setTXLinkedListPosition(uint8_t pos);
 void setRXLinkedListPosition(uint8_t pos);
 void TXLinkedListInit(void);
 void PCCLinkedListInit(void);
+void RXLinkedListInit(void)
+
 void sdo_dma_transfer_control(bool callback_flag);
 void sdmmc_dma_transfer_control(void);
 void sdo_dma_setup(void);
