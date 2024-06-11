@@ -140,7 +140,10 @@
 #define SPI_BAUD_MS					19//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
 #elif defined(FRAMERATE_20FPS) && defined(PYTHON480_152PX)
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					4 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1))
+#elif defined(FRAMERATE_20FPS) && defined(PYTHON480_200PX)
+#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
 #elif defined(FRAMERATE_10FPS) && defined(PYTHON480_152PX)
 #define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					7 // f_baud = f_ref / (2*(BAUD + 1))
@@ -168,6 +171,12 @@
 #ifdef PYTHON480_152PX
 #define WIDTH						304
 #define HEIGHT						304
+#define BINNING						2
+#endif
+
+#ifdef PYTHON480_200PX
+#define WIDTH						400
+#define HEIGHT						400
 #define BINNING						2
 #endif
 

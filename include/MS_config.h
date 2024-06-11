@@ -37,11 +37,12 @@ The modes should be a set of peripherals used in the specified mode.
 
 // ------ HARDWARE PERIPHERAL ENABLE ------------------------
 #ifdef WLMS_SPI_MODE
-#define TEST_PATTERN_ENABLE // For dev
+//#define TEST_PATTERN_ENABLE // For dev
 #define PYTHON480_ENABLE
 //#define PYTHON480_304PX
+#define PYTHON480_200PX
+//#define PYTHON480_152PX
 #define EWL_ENABLE
-#define PYTHON480_152PX
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
@@ -62,6 +63,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define FRAMERATE_20FPS
 #define BUFFER_BLOCK_LENGTH		10 // can be edited by user to optimize speed
 #define NUM_BUFFERS				32 // Assumes 1024 KB program memory
+#define ROI_XSHIFT_PX			0 // x shift
 #endif
 
 #ifdef WLMS_USART_MODE
