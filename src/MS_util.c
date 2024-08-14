@@ -296,12 +296,12 @@ void setExcitationLED(uint32_t value, bool enable)
 	if (value > 100)
 	value = 100;
 	
-	value = (0xFFFF * value ) /100;
-	
-	pwm_set_parameters(&PWM_0, value, 0); // value sets duty cycle out of 2^16. We aren't using CC1 so just send it 0
-	pwm_enable(&PWM_0); //Only actually needs to be done once. Consider moving to init stuff at top of main()
-	
-	gpio_set_pin_level(ENT_LED, enable);
+	if (value != 0){
+		value = (0xFFFF * value ) /100;
+		pwm_set_parameters(&PWM_0, value, 0); // value sets duty cycle out of 2^16. We aren't using CC1 so just send it 0
+		pwm_enable(&PWM_0); //Only actually needs to be done once. Consider moving to init stuff at top of main()
+		gpio_set_pin_level(ENT_LED, enable);		
+	}
 }
 #endif
 
