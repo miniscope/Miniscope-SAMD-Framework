@@ -225,7 +225,7 @@ void DataBufferInit(void)
 {
 	for (uint32_t i = 0; i<NUM_BUFFERS; i++)
 	{
-		dataBuffer[i][0] = 0x12345678;
+		dataBuffer[i][0] = PREAMBLE_WORD;
 		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
 		{
 			#ifdef TEST_BUFFER_ENABLE // hard coding test buffers for 304 * 304 px. Should be a defined better.
@@ -255,7 +255,7 @@ void PCCLinkedListInit(void)
 		else
 		PCCLinkedList[i].DESCADDR.reg = (uint32_t)&PCCLinkedList[i + 1];
 		
-		PCCLinkedList[i].BTCNT.reg = (BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
+		PCCLinkedList[i].BTCNT.reg = (BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - (BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH));
 		// We aren't actually using the STEPSIZE part of incrementing the destination address.
 		PCCLinkedList[i].BTCTRL.reg = DMAC_BTCTRL_STEPSIZE(0) | (CONF_DMAC_STEPSEL_0 << DMAC_BTCTRL_STEPSEL_Pos)\
 		| (CONF_DMAC_DSTINC_0 << DMAC_BTCTRL_DSTINC_Pos) | (CONF_DMAC_SRCINC_0 << DMAC_BTCTRL_SRCINC_Pos)\
@@ -266,7 +266,7 @@ void PCCLinkedListInit(void)
 		
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
-		PCCLinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][BUFFER_HEADER_LENGTH]) + PCCLinkedList[i].BTCNT.reg * 4;
+		PCCLinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH]) + PCCLinkedList[i].BTCNT.reg * 4;
 	}
 	setPCCLinkedListPosition(0);
 }

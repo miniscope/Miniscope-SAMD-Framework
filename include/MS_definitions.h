@@ -46,7 +46,6 @@
 
 // Buffer Header position definitions
 #define BUFFER_HEADER_LENGTH					12
-
 #define BUFFER_HEADER_HEADER_LENGTH_POS			0
 #define BUFFER_HEADER_LINKED_LIST_POS			1
 #define BUFFER_HEADER_FRAME_NUM_POS				2

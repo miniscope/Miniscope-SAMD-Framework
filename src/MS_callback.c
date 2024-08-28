@@ -202,7 +202,7 @@ void frameValid_cb(void)
 			//tempCount++;
 			
 			//I think this line sometimes doesn't catch up with the SD card transfer trigger (Takuya)
-			setBufferHeader((BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH) - _dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
+			setBufferHeader((BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - (BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH)) - _dma_get_WRB_data(CONF_PCC_DMA_CHANNEL)); // This should get total beats transferred through DMA
 			
 			frameBufferCount = 0;
 			bufferCount++; // A buffer has been filled (likely partially) and is ready for writing to SD card
@@ -287,7 +287,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		//if (tempCount < 99)
 		//tempCount++;
 		
-		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - BUFFER_HEADER_LENGTH);
+		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - (BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH));
 		bufferCount++;// increment counters
 		frameBufferCount++;
 		
@@ -329,7 +329,7 @@ void sdmmc_dma_transfer_control(void)
 		else { // Actual writing of good buffers
 			
 			bufferToWrite = (uint32_t)(&dataBuffer[(writeBufferCount + droppedBufferCount) % NUM_BUFFERS]);
-			numBlocks = (bufferToWrite[BUFFER_HEADER_DATA_LENGTH_POS] + (BUFFER_HEADER_LENGTH * 4) + (SD_BLOCK_SIZE - 1)) / SD_BLOCK_SIZE;
+			numBlocks = (bufferToWrite[BUFFER_HEADER_DATA_LENGTH_POS] + ((BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH) * 4) + (SD_BLOCK_SIZE - 1)) / SD_BLOCK_SIZE;
 			
 			// This if statement shouldn't be needed
 			//if (numBlocks > BUFFER_BLOCK_LENGTH)

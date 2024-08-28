@@ -65,6 +65,9 @@ The modes should be a set of peripherals used in the specified mode.
 #define NUM_BUFFERS				32 // Assumes 1024 KB program memory
 #define ROI_XSHIFT_PX			150 // x shift
 #define EXCITATION_LED_VALUE	1// Brightness value of excitation LED: from 0 to 100.
+#define DUMMY_WORD_LENGTH				10
+#define DUMMY_WORD				0xff00cccc
+#define PREAMBLE_WORD			0x12345678
 #endif
 
 #ifdef WLMS_USART_MODE

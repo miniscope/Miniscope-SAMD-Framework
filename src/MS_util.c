@@ -58,8 +58,8 @@ void debugHeaderProp(void){
 void getBuffersPerFrame(void)
 {
 	#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
-	numBuffersPerFrame = (NUM_PIXELS) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4));
-	if((NUM_PIXELS) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - (BUFFER_HEADER_LENGTH * 4)) != 0) {
+	numBuffersPerFrame = (NUM_PIXELS) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - ((BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH) * 4));
+	if((NUM_PIXELS) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - ((BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH) * 4)) != 0) {
 		// Need to add 1 to account for partially filled buffer
 		numBuffersPerFrame += 1;
 	}	
@@ -269,22 +269,28 @@ void setConfigBlockProp(uint8_t position, uint32_t value) {
 #if defined(PYTHON480_ENABLE)
 void setBufferHeader(uint32_t dataWordLength) {
 	uint32_t numBuffer = bufferCount % NUM_BUFFERS;
+	
+	for (uint32_t i = 0; i<DUMMY_WORD_LENGTH; i++)
+	{
+		dataBuffer[numBuffer][i] = DUMMY_WORD; // Some dummy number that won't come out from the sensor.
+	}
+	
 	#ifdef PREAMBLE_ENABLE
-	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = 0x12345678;
+	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS + DUMMY_WORD_LENGTH] = PREAMBLE_WORD;
 	#else
-	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS] = BUFFER_HEADER_LENGTH;
+	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS + DUMMY_WORD_LENGTH] = BUFFER_HEADER_LENGTH;
 	#endif
-	dataBuffer[numBuffer][BUFFER_HEADER_LINKED_LIST_POS] = bufferCount % NUM_BUFFERS;
-	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_NUM_POS] = frameNum;
-	dataBuffer[numBuffer][BUFFER_HEADER_BUFFER_COUNT_POS] = bufferCount;
-	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS] = frameBufferCount;
-	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_BUFFER_COUNT_POS] = writeBufferCount;
-	dataBuffer[numBuffer][BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS] = droppedBufferCount;
-	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS] = getCurrentTimeMS() - startTimeMS;
+	dataBuffer[numBuffer][BUFFER_HEADER_LINKED_LIST_POS + DUMMY_WORD_LENGTH] = bufferCount % NUM_BUFFERS;
+	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_NUM_POS + DUMMY_WORD_LENGTH] = frameNum;
+	dataBuffer[numBuffer][BUFFER_HEADER_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = bufferCount;
+	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = frameBufferCount;
+	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = writeBufferCount;
+	dataBuffer[numBuffer][BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = droppedBufferCount;
+	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
 	
 	// TODO: Put the correct value for data length. This will change if it is a partially filled buffer
 	// UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer. We can calculate from this
-	dataBuffer[numBuffer][BUFFER_HEADER_DATA_LENGTH_POS] = dataWordLength * 4; // In bytes
+	dataBuffer[numBuffer][BUFFER_HEADER_DATA_LENGTH_POS + DUMMY_WORD_LENGTH] = dataWordLength * 4; // In bytes
 }
 #endif
 
