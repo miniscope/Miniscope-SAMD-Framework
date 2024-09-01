@@ -339,7 +339,8 @@ void sdmmc_dma_transfer_control(void)
 			bufferToWrite[BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS] = droppedBufferCount;
 			bufferToWrite[BUFFER_HEADER_WRITE_TIMESTAMP_POS] = getCurrentTimeMS() - startTimeMS;
 			bufferToWrite[BUFFER_HEADER_BATTERY_VOLTAGE_POS] = battVolt;
-			bufferToWrite[BUFFER_HEADER_EWL_POS] = ewlvalue;
+			bufferToWrite[BUFFER_HEADER_WPT_VOLTAGE_POS] = wptVolt;
+			//bufferToWrite[BUFFER_HEADER_EWL_POS] = ewlvalue;
 			
 			tempTimestamp[(writeBufferCount + droppedBufferCount) % 100] = getCurrentTimeMS() - startTimeMS;
 			

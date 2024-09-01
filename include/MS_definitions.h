@@ -57,7 +57,7 @@
 #define BUFFER_HEADER_DATA_LENGTH_POS			8
 #define BUFFER_HEADER_WRITE_TIMESTAMP_POS		9
 #define BUFFER_HEADER_BATTERY_VOLTAGE_POS		10
-#define BUFFER_HEADER_EWL_POS					11
+#define BUFFER_HEADER_WPT_VOLTAGE_POS			11
 
 // -------------------------------------------
 
@@ -113,7 +113,7 @@
 #define HEADER_EWL_START_POS 		12
 #define HEADER_EWL_STOP_POS 		13
 #define HEADER_EWL_STEP_POS 		14
-#define HEADER_EWL_STEP_TIME_POS 		15
+#define HEADER_EWL_STEP_TIME_POS 	15
 // -------------------------------------------
 
 // ADC Level Definition
