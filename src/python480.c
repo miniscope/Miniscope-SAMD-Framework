@@ -217,7 +217,7 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	//volatile uint8_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
 	volatile uint8_t roi_x_start = ROI_XREG_MAX/2 - image_width/BINNING/2/2 + ROI_XSHIFT_PX/BINNING/2 + 1;
 	volatile uint8_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
-	volatile uint8_t roi_y_start = (ROI_YREG_MAX - image_width/BINNING/2)/2;
+	volatile uint8_t roi_y_start = ROI_YREG_MAX/2 - image_width/BINNING/2/2 + ROI_YSHIFT_PX/BINNING/2 + 1;
 	volatile uint8_t roi_y_stop = roi_y_start + image_width/BINNING/2 - 1;
 	
 	spi_BB_Write(2, 0x0000);
