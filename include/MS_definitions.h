@@ -125,33 +125,36 @@
 
 // ------- Image Sensor Definitions ----------
 // This should be defined from SD card header. Temporary
-#ifdef defined(FRAMERATE_20FPS) && defined(PYTHON480_304PX) 
+// for ROI with subsampling
+#ifdef defined(FRAMERATE_20FPS) && (defined(PYTHON480_608PX_SUBSAMPLE) || defined(PYTHON480_304PX_NOSUBSAMPLE)) 
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_10FPS) && defined(PYTHON480_304PX)
+#elif defined(FRAMERATE_10FPS) && (defined(PYTHON480_608PX_SUBSAMPLE) || defined(PYTHON480_304PX_NOSUBSAMPLE))
 #define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_5FPS) && defined(PYTHON480_304PX)
+#define SPI_BAUD_MS					1 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 12 MHz
+#elif defined(FRAMERATE_5FPS) && (defined(PYTHON480_608PX_SUBSAMPLE) || defined(PYTHON480_304PX_NOSUBSAMPLE))
 #define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_1FPS) && defined(PYTHON480_304PX)
+#define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 6 MHz
+#elif defined(FRAMERATE_1FPS) && (defined(PYTHON480_608PX_SUBSAMPLE) || defined(PYTHON480_304PX_NOSUBSAMPLE))
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					19//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_20FPS) && defined(PYTHON480_152PX)
+#define SPI_BAUD_MS					19//inital value 19 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 1.2 MHz
+#elif defined(FRAMERATE_20FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_20FPS) && defined(PYTHON480_200PX)
+#define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 6 MHz
+#elif defined(FRAMERATE_20FPS) && (defined(PYTHON480_200PX_NOSUBSAMPLE) || defined(PYTHON480_400PX_SUBSAMPLE))
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_10FPS) && defined(PYTHON480_152PX)
+#define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 8 MHz
+#elif defined(FRAMERATE_10FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
 #define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					7 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_5FPS) && defined(PYTHON480_152PX)
+#define SPI_BAUD_MS					7 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 3 MHz
+#elif defined(FRAMERATE_5FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
 #define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					15 // f_baud = f_ref / (2*(BAUD + 1))
-#elif defined(FRAMERATE_1FPS) && defined(PYTHON480_152PX)
+#define SPI_BAUD_MS					15 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 1.5 MHz
+#elif defined(FRAMERATE_1FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
-#define SPI_BAUD_MS					79//inital value 19 // f_baud = f_ref / (2*(BAUD + 1))
+#define SPI_BAUD_MS					79//inital value 19 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 0.3 MHz
+
+
 #endif
 
 // SPI
@@ -161,23 +164,46 @@
 #define USART_ICSPACE_MS				1 // Clock cycle between word
 #define USART_BAUD_MS					23 // f_baud = f_ref / (2*(BAUD + 1))
 
-#ifdef PYTHON480_304PX
+//read 1 pixel, skip 1 pixel in both x and y axis
+#ifdef PYTHON480_608PX_SUBSAMPLE
 #define WIDTH						608
 #define HEIGHT						608
 #define BINNING						2
 #endif
 
-#ifdef PYTHON480_152PX
-#define WIDTH						304
-#define HEIGHT						304
-#define BINNING						2
-#endif
-
-#ifdef PYTHON480_200PX
+#ifdef PYTHON480_400PX_SUBSAMPLE
 #define WIDTH						400
 #define HEIGHT						400
 #define BINNING						2
 #endif
+
+#ifdef PYTHON480_304PX_SUBSAMPLE
+#define WIDTH						304
+#define HEIGHT						304
+#define BINNING						2
+#endif
+// red all pixels
+#ifdef PYTHON480_304PX_NOSUBSAMPLE
+#define WIDTH						304
+#define HEIGHT						304
+#define BINNING						1
+#endif
+
+#ifdef PYTHON480_200PX_NOSUBSAMPLE
+#define WIDTH						200
+#define HEIGHT						200
+#define BINNING						1
+#endif
+
+#ifdef PYTHON480_152PX_NOSUBSAMPLE
+#define WIDTH						152
+#define HEIGHT						152
+#define BINNING						1
+#endif
+
+
+
+
 
 #define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
 
