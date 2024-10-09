@@ -39,9 +39,12 @@ The modes should be a set of peripherals used in the specified mode.
 #ifdef WLMS_SPI_MODE
 //#define TEST_PATTERN_ENABLE // For dev
 #define PYTHON480_ENABLE
-//#define PYTHON480_304PX
-#define PYTHON480_200PX
-//#define PYTHON480_152PX
+//#define PYTHON480_608PX_SUBSAMPLE
+//#define PYTHON480_400PX_SUBSAMPLE
+//#define PYTHON480_304PX_SUBSAMPLE
+//#define PYTHON480_152PX_NOSUBSAMPLE
+#define PYTHON480_200PX_NOSUBSAMPLE
+//#define PYTHON480_304PX_NOSUBSAMPLE
 #define EWL_ENABLE
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
@@ -59,12 +62,12 @@ The modes should be a set of peripherals used in the specified mode.
 #define AUTOSTART_ENABLE
 //#define FRAMERATE_1FPS
 //#define FRAMERATE_5FPS
-//#define FRAMERATE_10FPS
+#define FRAMERATE_10FPS
 #define FRAMERATE_20FPS
 #define BUFFER_BLOCK_LENGTH		10 // can be edited by user to optimize speed
 #define NUM_BUFFERS				32 // Assumes 1024 KB program memory
-#define ROI_XSHIFT_PX			150 // x shift
-#define ROI_YSHIFT_PX			100 // y shift
+#define ROI_XSHIFT_PX			0 // x shift
+#define ROI_YSHIFT_PX			0 // y shift
 #define EXCITATION_LED_VALUE	1// Brightness value of excitation LED: from 0 to 100.
 #define DUMMY_WORD_LENGTH				10
 #define DUMMY_WORD				0xff00cccc
@@ -108,7 +111,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define DMA_TO_SPI_ENABLE
  
 #define STOP_ENABLE
-#define FRAMERATE_20FPS
+//#define FRAMERATE_20FPS
 #define PRESET_HEADER_ENABLE
 #define DEBUGLED_ENABLE
 #define SPI_LUT_ENABLE
@@ -136,7 +139,7 @@ The modes should be a set of peripherals used in the specified mode.
 //#define IR_TRIGGER_ENABLE
 #define ADMA_ENABLE
 #define STOP_ENABLE
-#define FRAMERATE_20FPS
+//#define FRAMERATE_20FPS
 //#define PRESET_HEADER_ENABLE
 //#define DEBUGLED_ENABLE
 #define AUTOSTART_ENABLE
