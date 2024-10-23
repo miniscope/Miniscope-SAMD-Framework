@@ -31,6 +31,10 @@ Sercom *sercom_sdo = SERCOM7;
 Sercom *sercom_sdo = SERCOM5;
 #endif
 
+#ifdef IR_UART_ENABLE
+Sercom *sercom_ir = SERCOM1;
+#endif
+
 // Probably should turn this into a struct to be more easily understandable
 volatile uint64_t SDTransferDescriptor; // I think we will only use 1 of these for now. Each descriptor is 64bits long 
 
@@ -72,9 +76,6 @@ volatile uint32_t ewlStop;
 volatile uint32_t ewlStep;
 volatile uint32_t ewlStepTime;
 volatile uint32_t ewlCount = 0;
-
-volatile uint16_t serialCommand;
-volatile uint8_t uartBuffer;
 
 volatile uint16_t regValue[2]; 
 volatile uint32_t tempPCC[4];

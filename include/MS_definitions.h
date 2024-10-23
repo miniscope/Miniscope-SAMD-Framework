@@ -195,6 +195,7 @@ extern volatile DmacDescriptor TXLinkedList[];
 @brief This stores SERCOM hardware pointer used for data transmission (memory -> SERCOM)
 */
 extern Sercom *sercom_sdo;
+extern Sercom *sercom_ir;
 
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
@@ -251,9 +252,6 @@ extern volatile uint32_t tempHeader[][4];
 extern volatile uint32_t tempCount;
 extern volatile uint32_t tempTimestamp[];
 extern volatile uint8_t timerIndex;
-
-extern volatile uint16_t serialCommand;
-extern volatile uint8_t uartBuffer;
 
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block

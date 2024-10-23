@@ -91,63 +91,47 @@ void irReceive_cb(void)
 #endif
 
 #ifdef IR_UART_ENABLE
-#define CMD_USART_PREAMBLE_MASK 0b11000000
-#define CMD_USART_PERIPHERAL_MASK 0b00110000
-#define CMD_USART_VALUE_MASK 0b00001111
-#define CMD_USART_PREAMBLE_1 0b10000000
-#define CMD_USART_PREAMBLE_2 0b01000000
-#define CMD_USART_PERIPHERAL_POS 4
-#define CMD_USART_PAYLOAD 4
+#define CMD_USART_TARGET_HEADER_MASK	0b01110000
+#define CMD_USART_TARGET_MASK			0b00001111
+#define CMD_USART_VALUE_HEADER_MASK		0b10000000
+#define CMD_USART_VALUE_MASK			0b01111111
+#define CMD_TARGET_EXLED				0
+#define CMD_TARGET_GAIN					1
 
-#define CMD_FULL_VALUE_MASK 0x00FF
-#define CMD_FULL_PERIPHERAL_MASK 0x0F00
-#define CMD_FULL_PERIPHERAL_POS 8
-#define CMD_FULL_VALUE_POS 0
+#define CMD_UNDEFINED					0b11111111
 
-#define CMD_TARGET_EXLED 0
-#define CMD_TARGET_EWL 1
-
-void update_recording()
-{
-	uint8_t targetPeripheral = (uint8_t)((serialCommand & CMD_FULL_PERIPHERAL_MASK) >> CMD_FULL_PERIPHERAL_POS);
-	uint8_t targetValue = (uint8_t)((serialCommand & CMD_FULL_VALUE_MASK) >> CMD_FULL_VALUE_POS);
-	
-	switch (targetPeripheral) {
-		case CMD_TARGET_EXLED: // LED
-		setExcitationLED((uint32_t) targetValue, 1);
-		break;
-		case CMD_TARGET_EWL: // EWL
-		setEWL((uint32_t) targetValue);
-		break;
-		default:
-		return;
-	}
-}
+uint8_t updateTarget	= CMD_UNDEFINED; // Initialize with something unlikely
+uint8_t updateValue		= CMD_UNDEFINED;
 
 void usart_rx_cb(void)
 {
-	uint8_t tempUartBuffer = SERCOM5->USART.DATA.reg;
+	volatile uint8_t uartBuffer = sercom_ir->USART.DATA.reg;
 	
-	//Very hard coded so must change.
-	//Ignore if the previous packet is same. This is because the packet needs to be sent several times to prevent dropping.
-	if (tempUartBuffer != uartBuffer){
-		uartBuffer = tempUartBuffer;
-		if ((uartBuffer & CMD_USART_PREAMBLE_MASK) == CMD_USART_PREAMBLE_1) { // first half of command
-			// Initiate command
-			serialCommand = 0;
-			serialCommand |= (uint16_t)((uartBuffer & CMD_USART_PERIPHERAL_MASK) << (CMD_FULL_PERIPHERAL_POS-CMD_USART_PERIPHERAL_POS)); // Store peripheral ID
-			serialCommand |= (uint16_t)((uartBuffer & CMD_USART_VALUE_MASK) << CMD_USART_PAYLOAD); // Store MSB for value
-		}
-		else if ((uartBuffer & CMD_USART_PREAMBLE_MASK) == CMD_USART_PREAMBLE_2){ //Second half of command
-			if ((uint8_t)((serialCommand & CMD_FULL_PERIPHERAL_MASK) >> CMD_FULL_PERIPHERAL_POS) == (uartBuffer & CMD_USART_PERIPHERAL_MASK) >> CMD_USART_PERIPHERAL_POS) { // Validate peripheral ID
-				serialCommand |= (uint16_t)(uartBuffer & CMD_USART_VALUE_MASK); // Store MSB for value
-				update_recording();
-			}
-			else{
-				// For safety, reset the command if validation fails.
-				serialCommand = 0x0000;
-			}
-		}
+	if (((uartBuffer & CMD_USART_TARGET_HEADER_MASK) == CMD_USART_TARGET_HEADER_MASK) && updateTarget == CMD_UNDEFINED && updateValue == CMD_UNDEFINED) {
+		updateTarget = uartBuffer & CMD_USART_TARGET_MASK;
+	}
+	else if (((uartBuffer & CMD_USART_VALUE_HEADER_MASK) == CMD_USART_VALUE_HEADER_MASK) && updateTarget != CMD_UNDEFINED && updateValue == CMD_UNDEFINED) {
+		updateValue = uartBuffer & CMD_USART_VALUE_MASK;
+		update_recording(updateTarget, updateValue);
+		updateTarget = CMD_UNDEFINED;
+		updateValue = CMD_UNDEFINED;
+	}
+	else {
+		updateTarget = CMD_UNDEFINED;
+		updateValue = CMD_UNDEFINED;
+	}
+}
+
+void update_recording(uint8_t updateTarget, uint8_t updateValue)
+{
+	switch (updateTarget) {
+		case CMD_TARGET_EXLED: // EXLED
+		setExcitationLED((uint32_t) updateValue, 1);
+		break;
+		case CMD_TARGET_GAIN: // GAIN
+		break;
+		default:
+		return;
 	}
 }
 #endif

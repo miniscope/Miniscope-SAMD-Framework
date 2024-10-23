@@ -136,7 +136,16 @@ void peripheralInit(void)
 	while (sercom_sdo->USART.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
 	#endif
-
+	
+	#ifdef IR_UART_ENABLE
+	sercom_ir->USART.CTRLA.bit.ENABLE = 0;
+	while (sercom_ir->USART.SYNCBUSY.bit.ENABLE)
+	;
+	sercom_ir->USART.CTRLA.bit.ENABLE = 1;
+	while (sercom_ir->USART.SYNCBUSY.bit.ENABLE)
+	;
+	#endif
+	
 	#ifdef DMA_TO_SPI_ENABLE
 	sercom_sdo->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
 	while (sercom_sdo->SPI.SYNCBUSY.bit.ENABLE)
