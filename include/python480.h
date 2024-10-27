@@ -54,7 +54,7 @@ void python480SetGain(uint32_t value);
 @param yshift yshift from default
 @note Adding validation might be nice though I'm not sure what's the best way to feedback to users
 */
-void setROI(uint16_t image_width, uint8_t xshift, uint8_t yshift);
+void setROI(uint16_t image_width, uint16_t xshift, uint16_t yshift);
 
 /**
 @brief Sets FPS of image sensor

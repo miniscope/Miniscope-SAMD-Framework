@@ -93,10 +93,12 @@ void irReceive_cb(void)
 #endif
 
 #ifdef IR_UART_ENABLE
-#define CMD_USART_TARGET_HEADER_MASK	0b01110000
-#define CMD_USART_TARGET_MASK			0b00001111
-#define CMD_USART_VALUE_HEADER_MASK		0b00000000 // MASK based assert disabled
-#define CMD_USART_VALUE_MASK			0b01111111
+#define CMD_USART_TARGET_HEADER_MASK	0b11000000
+#define CMD_USART_TARGET_MASK			0b00111111
+#define CMD_USART_VALUE_LSB_HEADER		0b01000000
+#define CMD_USART_VALUE_MSB_HEADER		0b10000000
+#define CMD_USART_VALUE_MASK			0b00111111
+
 #define CMD_TARGET_EXLED				0
 #define CMD_TARGET_GAIN					1
 #define CMD_TARGET_ROI_X				2
@@ -106,29 +108,37 @@ void irReceive_cb(void)
 
 #define CMD_UNDEFINED					0b11111111
 
-uint8_t updateTarget	= CMD_UNDEFINED; // Initialize with something unlikely
-uint8_t updateValue		= CMD_UNDEFINED;
+uint8_t updateTarget	= CMD_UNDEFINED;
+uint8_t updateValueLSB	= CMD_UNDEFINED;
+uint8_t updateValueMSB	= CMD_UNDEFINED;
 
 void usart_rx_cb(void)
 {
 	volatile uint8_t uartBuffer = sercom_ir->USART.DATA.reg;
 	
-	if (((uartBuffer & CMD_USART_TARGET_HEADER_MASK) == CMD_USART_TARGET_HEADER_MASK) && updateTarget == CMD_UNDEFINED && updateValue == CMD_UNDEFINED) {
+	if (((uartBuffer & CMD_USART_TARGET_HEADER_MASK) == CMD_USART_TARGET_HEADER_MASK) && updateTarget == CMD_UNDEFINED && updateValueLSB == CMD_UNDEFINED && updateValueMSB == CMD_UNDEFINED) {
 		updateTarget = uartBuffer & CMD_USART_TARGET_MASK;
 	}
-	else if (((uartBuffer & CMD_USART_VALUE_HEADER_MASK) == CMD_USART_VALUE_HEADER_MASK) && updateTarget != CMD_UNDEFINED && updateValue == CMD_UNDEFINED) {
-		updateValue = uartBuffer & CMD_USART_VALUE_MASK;
+	else if (((uartBuffer & CMD_USART_VALUE_LSB_HEADER) == CMD_USART_VALUE_LSB_HEADER) && updateTarget != CMD_UNDEFINED && updateValueLSB == CMD_UNDEFINED && updateValueMSB == CMD_UNDEFINED) {
+		updateValueLSB = uartBuffer & CMD_USART_VALUE_MASK;
+	}
+	else if (((uartBuffer & CMD_USART_VALUE_MSB_HEADER) == CMD_USART_VALUE_MSB_HEADER) && updateTarget != CMD_UNDEFINED && updateValueLSB != CMD_UNDEFINED && updateValueMSB == CMD_UNDEFINED) {
+		updateValueMSB = uartBuffer & CMD_USART_VALUE_MASK;
+		uint16_t updateValue = (updateValueMSB << 6) + updateValueLSB;
+	
 		update_recording(updateTarget, updateValue);
 		updateTarget = CMD_UNDEFINED;
-		updateValue = CMD_UNDEFINED;
+		updateValueLSB = CMD_UNDEFINED;
+		updateValueMSB = CMD_UNDEFINED;
 	}
 	else {
 		updateTarget = CMD_UNDEFINED;
-		updateValue = CMD_UNDEFINED;
+		updateValueLSB = CMD_UNDEFINED;
+		updateValueMSB = CMD_UNDEFINED;
 	}
 }
 
-void update_recording(uint8_t updateTarget, uint8_t updateValue)
+void update_recording(uint8_t updateTarget, uint16_t updateValue)
 {
 	switch (updateTarget) {
 		case CMD_TARGET_EXLED:

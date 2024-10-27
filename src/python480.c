@@ -212,11 +212,11 @@ void EnableClockMngmnt2() {// Enable internal clock distribution
 	spi_BB_Write(34, 0x0001);// Enable logic blocks
 }
 
-void setROI(uint16_t image_width, uint8_t xshift, uint8_t yshift){
-	volatile uint8_t roi_x_start = ROI_XREG_MAX/2 - image_width/BINNING/2/2 + xshift/BINNING/2 + 1;
-	volatile uint8_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
-	volatile uint8_t roi_y_start = ROI_YREG_MAX/2 - image_width/BINNING/2/2 + yshift/BINNING/2 + 1;
-	volatile uint8_t roi_y_stop = roi_y_start + image_width/BINNING/2 - 1;
+void setROI(uint16_t image_width, uint16_t xshift, uint16_t yshift){
+	volatile uint16_t roi_x_start = ROI_XREG_MAX/2 - image_width/BINNING/2/2 + xshift/BINNING/2 + 1;
+	volatile uint16_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
+	volatile uint16_t roi_y_start = ROI_YREG_MAX/2 - image_width/BINNING/2/2 + yshift/BINNING/2 + 1;
+	volatile uint16_t roi_y_stop = roi_y_start + image_width/BINNING/2 - 1;
 	
 	spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
 	spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
