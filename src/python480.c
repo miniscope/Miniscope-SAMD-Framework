@@ -212,14 +212,18 @@ void EnableClockMngmnt2() {// Enable internal clock distribution
 	spi_BB_Write(34, 0x0001);// Enable logic blocks
 }
 
-void RequiredUploads(uint16_t image_width) {// Reserved register settings uploads
-	//volatile uint8_t roi_x_start = ROI_XREG_MAX/2 - image_width/BINNING/2 + 1;
-	//volatile uint8_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
-	volatile uint8_t roi_x_start = ROI_XREG_MAX/2 - image_width/BINNING/2/2 + ROI_XSHIFT_PX/BINNING/2 + 1;
+void setROI(uint16_t image_width, uint8_t xshift, uint8_t yshift){
+	volatile uint8_t roi_x_start = ROI_XREG_MAX/2 - image_width/BINNING/2/2 + xshift/BINNING/2 + 1;
 	volatile uint8_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
-	volatile uint8_t roi_y_start = ROI_YREG_MAX/2 - image_width/BINNING/2/2 + ROI_YSHIFT_PX/BINNING/2 + 1;
+	volatile uint8_t roi_y_start = ROI_YREG_MAX/2 - image_width/BINNING/2/2 + yshift/BINNING/2 + 1;
 	volatile uint8_t roi_y_stop = roi_y_start + image_width/BINNING/2 - 1;
 	
+	spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+	spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+	spi_BB_Write(257, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
+	spi_BB_Write(259, (uint16_t) ((roi_y_stop<<8) + roi_y_start));	
+}
+void RequiredUploads(uint16_t image_width) {// Reserved register settings uploads	
 	spi_BB_Write(2, 0x0000);
 	spi_BB_Write(8, 0x0000);
 	spi_BB_Write(9, 0x0000);
@@ -295,10 +299,7 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	spi_BB_Write(235, 0x00E1);
 
 	// Set ROI Size
-	spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
-	spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
-	spi_BB_Write(257, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
-	spi_BB_Write(259, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
+	setROI(image_width, roi_x_shift, roi_y_shift);
 	//spi_BB_Write(256, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI0
 	//spi_BB_Write(258, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI1
 

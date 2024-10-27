@@ -83,4 +83,7 @@ volatile uint32_t tempHeader[100][4];
 volatile uint32_t tempCount = 0;
 volatile uint32_t tempTimestamp[100];
 volatile uint8_t timerIndex = 0;
+
+volatile uint16_t roi_x_shift = ROI_XSHIFT_PX;
+volatile uint16_t roi_y_shift = ROI_YSHIFT_PX;
 // --------------------------------------

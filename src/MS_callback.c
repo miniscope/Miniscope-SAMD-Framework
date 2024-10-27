@@ -7,6 +7,8 @@
 #include "MS_config.h"
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
+#include "python480.h"
+
 
 #ifdef PYTHON480_ENABLE
 #include <hpl_pcc_config.h>
@@ -93,10 +95,14 @@ void irReceive_cb(void)
 #ifdef IR_UART_ENABLE
 #define CMD_USART_TARGET_HEADER_MASK	0b01110000
 #define CMD_USART_TARGET_MASK			0b00001111
-#define CMD_USART_VALUE_HEADER_MASK		0b10000000
+#define CMD_USART_VALUE_HEADER_MASK		0b00000000 // MASK based assert disabled
 #define CMD_USART_VALUE_MASK			0b01111111
 #define CMD_TARGET_EXLED				0
 #define CMD_TARGET_GAIN					1
+#define CMD_TARGET_ROI_X				2
+#define CMD_TARGET_ROI_Y				3
+#define CMD_TARGET_ROI_WIDTH			4
+#define CMD_TARGET_EWL					5
 
 #define CMD_UNDEFINED					0b11111111
 
@@ -125,10 +131,19 @@ void usart_rx_cb(void)
 void update_recording(uint8_t updateTarget, uint8_t updateValue)
 {
 	switch (updateTarget) {
-		case CMD_TARGET_EXLED: // EXLED
+		case CMD_TARGET_EXLED:
 		setExcitationLED((uint32_t) updateValue, 1);
 		break;
-		case CMD_TARGET_GAIN: // GAIN
+		case CMD_TARGET_GAIN:
+		python480SetGain((uint32_t) updateValue);
+		break;
+		case CMD_TARGET_ROI_X:
+		roi_x_shift = updateValue;
+		setROI(WIDTH, roi_x_shift, roi_y_shift);
+		break;
+		case CMD_TARGET_ROI_Y:
+		roi_y_shift = updateValue;
+		setROI(WIDTH, roi_x_shift, roi_y_shift);
 		break;
 		default:
 		return;

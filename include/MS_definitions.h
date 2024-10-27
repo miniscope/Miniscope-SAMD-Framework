@@ -256,6 +256,8 @@ extern volatile uint8_t timerIndex;
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
 
+volatile volatile uint16_t roi_x_shift;
+volatile volatile uint16_t roi_y_shift;
 // ----------- FUNCTIONS ----------------
 
 /**
