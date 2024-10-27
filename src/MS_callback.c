@@ -93,11 +93,13 @@ void irReceive_cb(void)
 #endif
 
 #ifdef IR_UART_ENABLE
-#define CMD_USART_TARGET_HEADER_MASK	0b11000000
-#define CMD_USART_TARGET_MASK			0b00111111
+#define CMD_HEADER_MASK					0b11000000
+#define CMD_USART_PAYLOAD_MASK			0b00111111
+
+#define CMD_USART_ID_HEADER				0b00000000
+#define CMD_USART_TARGET_HEADER			0b11000000
 #define CMD_USART_VALUE_LSB_HEADER		0b01000000
 #define CMD_USART_VALUE_MSB_HEADER		0b10000000
-#define CMD_USART_VALUE_MASK			0b00111111
 
 #define CMD_TARGET_EXLED				0
 #define CMD_TARGET_GAIN					1
@@ -108,6 +110,7 @@ void irReceive_cb(void)
 
 #define CMD_UNDEFINED					0b11111111
 
+uint8_t updateDevice	= CMD_UNDEFINED;
 uint8_t updateTarget	= CMD_UNDEFINED;
 uint8_t updateValueLSB	= CMD_UNDEFINED;
 uint8_t updateValueMSB	= CMD_UNDEFINED;
@@ -116,22 +119,48 @@ void usart_rx_cb(void)
 {
 	volatile uint8_t uartBuffer = sercom_ir->USART.DATA.reg;
 	
-	if (((uartBuffer & CMD_USART_TARGET_HEADER_MASK) == CMD_USART_TARGET_HEADER_MASK) && updateTarget == CMD_UNDEFINED && updateValueLSB == CMD_UNDEFINED && updateValueMSB == CMD_UNDEFINED) {
-		updateTarget = uartBuffer & CMD_USART_TARGET_MASK;
+	if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_ID_HEADER) &&
+		(((uartBuffer & CMD_USART_PAYLOAD_MASK) == DEVICE_ID) || ((uartBuffer & CMD_USART_PAYLOAD_MASK) == 0)) &&
+		updateDevice == CMD_UNDEFINED &&
+		updateTarget == CMD_UNDEFINED &&
+		updateValueLSB == CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+			updateDevice = uartBuffer & CMD_USART_PAYLOAD_MASK;
 	}
-	else if (((uartBuffer & CMD_USART_VALUE_LSB_HEADER) == CMD_USART_VALUE_LSB_HEADER) && updateTarget != CMD_UNDEFINED && updateValueLSB == CMD_UNDEFINED && updateValueMSB == CMD_UNDEFINED) {
-		updateValueLSB = uartBuffer & CMD_USART_VALUE_MASK;
+	else if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_TARGET_HEADER) &&
+		updateDevice != CMD_UNDEFINED &&
+		updateTarget == CMD_UNDEFINED &&
+		updateValueLSB == CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+			updateTarget = uartBuffer & CMD_USART_PAYLOAD_MASK;
 	}
-	else if (((uartBuffer & CMD_USART_VALUE_MSB_HEADER) == CMD_USART_VALUE_MSB_HEADER) && updateTarget != CMD_UNDEFINED && updateValueLSB != CMD_UNDEFINED && updateValueMSB == CMD_UNDEFINED) {
-		updateValueMSB = uartBuffer & CMD_USART_VALUE_MASK;
-		uint16_t updateValue = (updateValueMSB << 6) + updateValueLSB;
+	else if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_VALUE_LSB_HEADER) &&
+		updateDevice != CMD_UNDEFINED &&
+		updateTarget != CMD_UNDEFINED &&
+		updateValueLSB == CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+		updateValueLSB = uartBuffer & CMD_USART_PAYLOAD_MASK;
+	}
+	else if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_VALUE_MSB_HEADER) &&
+		updateDevice != CMD_UNDEFINED &&
+		updateTarget != CMD_UNDEFINED &&
+		updateValueLSB != CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+			updateValueMSB = uartBuffer & CMD_USART_PAYLOAD_MASK;
+			uint16_t updateValue = (updateValueMSB << 6) + updateValueLSB;
 	
-		update_recording(updateTarget, updateValue);
-		updateTarget = CMD_UNDEFINED;
-		updateValueLSB = CMD_UNDEFINED;
-		updateValueMSB = CMD_UNDEFINED;
+			update_recording(updateTarget, updateValue);
+			updateDevice = CMD_UNDEFINED;
+			updateTarget = CMD_UNDEFINED;
+			updateValueLSB = CMD_UNDEFINED;
+			updateValueMSB = CMD_UNDEFINED;
 	}
 	else {
+		updateDevice = CMD_UNDEFINED;
 		updateTarget = CMD_UNDEFINED;
 		updateValueLSB = CMD_UNDEFINED;
 		updateValueMSB = CMD_UNDEFINED;

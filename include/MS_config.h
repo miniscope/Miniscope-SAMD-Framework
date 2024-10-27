@@ -69,6 +69,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define DUMMY_WORD_LENGTH		10
 #define DUMMY_WORD				0xff00cccc
 #define PREAMBLE_WORD			0x12345678
+#define DEVICE_ID				0x00000005
 #endif
 
 #ifdef WLMS_USART_MODE
