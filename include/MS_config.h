@@ -62,6 +62,7 @@ The modes should be a set of peripherals used in the specified mode.
 //#define FRAMERATE_5FPS
 //#define FRAMERATE_10FPS
 #define FRAMERATE_20FPS
+#define RESTART_KEY				200
 #define BUFFER_BLOCK_LENGTH		10			// can be edited by user to optimize speed
 #define NUM_BUFFERS				32			// Assumes 1024 KB program memory
 #define ROI_XSHIFT_PX			150			// x shift

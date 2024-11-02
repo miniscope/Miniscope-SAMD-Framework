@@ -107,6 +107,7 @@ void irReceive_cb(void)
 #define CMD_TARGET_ROI_Y				3
 #define CMD_TARGET_ROI_WIDTH			4
 #define CMD_TARGET_EWL					5
+#define CMD_TARGET_DEVICE				50
 
 #define CMD_UNDEFINED					0b11111111
 
@@ -184,6 +185,10 @@ void update_recording(uint8_t updateTarget, uint16_t updateValue)
 		roi_y_shift = updateValue;
 		setROI(WIDTH, roi_x_shift, roi_y_shift);
 		break;
+		case CMD_TARGET_DEVICE:
+		if (updateValue == RESTART_KEY){
+			NVIC_SystemReset();
+		}
 		default:
 		return;
 	}
