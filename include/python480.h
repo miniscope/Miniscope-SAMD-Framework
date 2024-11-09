@@ -92,7 +92,7 @@ void NoTransfer(void);
 void Transfer(void);
 void Eblack(void);
 void Egray(void);
-void Enable_Subsample(void);
+void python480sequenceInit(void);
 void DisableE(void);
 void EnableSeq (void);
 void DisableSeq (void);

@@ -213,10 +213,11 @@ void EnableClockMngmnt2() {// Enable internal clock distribution
 }
 
 void setROI(uint16_t image_width, uint16_t xshift, uint16_t yshift){
-	volatile uint16_t roi_x_start = ROI_XREG_MAX/2 - image_width/BINNING/2/2 + xshift/BINNING/2 + 1;
-	volatile uint16_t roi_x_stop = roi_x_start + image_width/BINNING/2 - 1;
-	volatile uint16_t roi_y_start = ROI_YREG_MAX/2 - image_width/BINNING/2/2 + yshift/BINNING/2 + 1;
-	volatile uint16_t roi_y_stop = roi_y_start + image_width/BINNING/2 - 1;
+	uint16_t sensorReadoutUnit = 2;
+	volatile uint16_t roi_x_start = ROI_XREG_MAX/2 - image_width/sensorReadoutUnit/2/2 + xshift/sensorReadoutUnit/2 + 1;
+	volatile uint16_t roi_x_stop = roi_x_start + image_width/sensorReadoutUnit/2 - 1;
+	volatile uint16_t roi_y_start = ROI_YREG_MAX/2 - image_width/sensorReadoutUnit/2/2 + yshift/sensorReadoutUnit/2 + 1;
+	volatile uint16_t roi_y_stop = roi_y_start + image_width/sensorReadoutUnit/2 - 1;
 	
 	spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
 	spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
@@ -438,11 +439,17 @@ void Egray(){				// enables electrical gray image
 	spi_BB_Write(220, 0x3C4D);
 }
 
-void Enable_Subsample()
+void python480sequenceInit()
 // Taken from Raymonds wirefree code. Need to make sure it fit correctly here
 {
-	spi_BB_Write(192, 0x0803 | 0x0080);	// Subsampling
-	spi_BB_Write(194, 0x03E4 | 0x0C00);	// Subsampling mode in both x and y (Check VITA-compatibility)
+	if (BINNING == 2){
+		spi_BB_Write(192, 0x0803 | 0x0080);	// Subsampling
+		spi_BB_Write(194, 0x03E4 | 0x0C00);	// Subsampling mode in both x and y (Check VITA-compatibility)
+	}
+	else{
+		spi_BB_Write(192, 0x0803);	// No subsampling
+		spi_BB_Write(194, 0x03E4);	// No subsampling
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 // function to (re)enable normal image mode

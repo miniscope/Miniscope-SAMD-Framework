@@ -153,8 +153,6 @@
 #elif defined(FRAMERATE_1FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					79//inital value 19 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 0.3 MHz
-
-
 #endif
 
 // SPI

@@ -22,7 +22,7 @@ void imageSensorInit(void){
 	python480Init();
 	chip_id = spi_BB_Read(0x00); // can use this to make sure MCU can talk to Python480
 
-	Enable_Subsample();
+	python480sequenceInit();		
 	
 	#ifndef PRESET_HEADER_ENABLE
 	python480SetGain(getPropFromHeader(HEADER_GAIN_POS));
