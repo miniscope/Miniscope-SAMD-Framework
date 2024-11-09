@@ -162,51 +162,6 @@
 #define USART_ICSPACE_MS				1 // Clock cycle between word
 #define USART_BAUD_MS					23 // f_baud = f_ref / (2*(BAUD + 1))
 
-//read 1 pixel, skip 1 pixel in both x and y axis
-#ifdef PYTHON480_608PX_SUBSAMPLE
-#define WIDTH						608
-#define HEIGHT						608
-#define BINNING						2
-#endif
-
-#ifdef PYTHON480_400PX_SUBSAMPLE
-#define WIDTH						400
-#define HEIGHT						400
-#define BINNING						2
-#endif
-
-#ifdef PYTHON480_304PX_SUBSAMPLE
-#define WIDTH						304
-#define HEIGHT						304
-#define BINNING						2
-#endif
-// red all pixels
-#ifdef PYTHON480_304PX_NOSUBSAMPLE
-#define WIDTH						304
-#define HEIGHT						304
-#define BINNING						1
-#endif
-
-#ifdef PYTHON480_200PX_NOSUBSAMPLE
-#define WIDTH						200
-#define HEIGHT						200
-#define BINNING						1
-#endif
-
-#ifdef PYTHON480_152PX_NOSUBSAMPLE
-#define WIDTH						152
-#define HEIGHT						152
-#define BINNING						1
-#endif
-
-
-
-
-
-#define NUM_PIXELS					((WIDTH * HEIGHT) / (BINNING * BINNING))
-
-// -------------------------------------------
-
 
 // ----------- GLOBAL VARIABLES -----------
 
@@ -280,8 +235,12 @@ extern volatile uint8_t timerIndex;
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
 
-volatile volatile uint16_t roi_x_shift;
-volatile volatile uint16_t roi_y_shift;
+extern volatile uint16_t roi_x_shift;
+extern volatile uint16_t roi_y_shift;
+extern volatile uint8_t	subsampleEnable;
+extern volatile uint16_t image_width;
+extern volatile uint16_t image_height;
+extern volatile uint32_t num_pixels;
 // ----------- FUNCTIONS ----------------
 
 /**

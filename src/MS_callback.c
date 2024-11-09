@@ -105,8 +105,9 @@ void irReceive_cb(void)
 #define CMD_TARGET_GAIN					1
 #define CMD_TARGET_ROI_X				2
 #define CMD_TARGET_ROI_Y				3
-#define CMD_TARGET_ROI_WIDTH			4
-#define CMD_TARGET_EWL					5
+#define CMD_TARGET_SUBSAMPLE			4
+//#define CMD_TARGET_ROI_WIDTH			4
+//#define CMD_TARGET_EWL				5
 #define CMD_TARGET_DEVICE				50
 
 #define CMD_UNDEFINED					0b11111111
@@ -179,11 +180,28 @@ void update_recording(uint8_t updateTarget, uint16_t updateValue)
 		break;
 		case CMD_TARGET_ROI_X:
 		roi_x_shift = updateValue;
-		setROI(WIDTH, roi_x_shift, roi_y_shift);
+		setROI(image_width, roi_x_shift, roi_y_shift);
 		break;
 		case CMD_TARGET_ROI_Y:
 		roi_y_shift = updateValue;
-		setROI(WIDTH, roi_x_shift, roi_y_shift);
+		setROI(image_width, roi_x_shift, roi_y_shift);
+		break;
+		case CMD_TARGET_SUBSAMPLE:
+		if (subsampleEnable == 0 & updateValue == 1){
+			image_width = image_width * 2;
+			image_height = image_height * 2;
+			subsampleEnable = updateValue;
+			calcImaceSize();
+			imageSensorInit();
+		}
+		else if (subsampleEnable == 1 & updateValue == 0)
+		{
+			image_width = image_width / 2;
+			image_height = image_height / 2;
+			subsampleEnable = updateValue;
+			calcImaceSize();
+			imageSensorInit();
+		}
 		break;
 		case CMD_TARGET_DEVICE:
 		if (updateValue == RESTART_KEY){

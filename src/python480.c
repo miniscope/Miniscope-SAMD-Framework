@@ -20,7 +20,7 @@ void python480Init()
 	//Maybe a small pause here for things to stabilize
 	delay_ms(10);
 	EnableClockMngmnt2();
-	RequiredUploads(WIDTH);
+	RequiredUploads(image_width);
 	SoftPowerUp();
 }
 
@@ -442,7 +442,7 @@ void Egray(){				// enables electrical gray image
 void python480sequenceInit()
 // Taken from Raymonds wirefree code. Need to make sure it fit correctly here
 {
-	if (BINNING == 2){
+	if (subsampleEnable == 1){
 		spi_BB_Write(192, 0x0803 | 0x0080);	// Subsampling
 		spi_BB_Write(194, 0x03E4 | 0x0C00);	// Subsampling mode in both x and y (Check VITA-compatibility)
 	}

@@ -58,16 +58,61 @@ void debugHeaderProp(void){
 void getBuffersPerFrame(void)
 {
 	#if defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
-	numBuffersPerFrame = (NUM_PIXELS) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - ((BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH) * 4));
-	if((NUM_PIXELS) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - ((BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH) * 4)) != 0) {
+	numBuffersPerFrame = (num_pixels) / (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - ((BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH) * 4));
+	if((num_pixels) % (BUFFER_BLOCK_LENGTH * SD_BLOCK_SIZE - ((BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH) * 4)) != 0) {
 		// Need to add 1 to account for partially filled buffer
 		numBuffersPerFrame += 1;
 	}	
 	#endif // defined(PYTHON480_ENABLE) || defined(NANEYE_ENABLE)
 }
 
+void initImageSize(void){
+	//read 1 pixel, skip 1 pixel in both x and y axis
+	#ifdef PYTHON480_608PX_SUBSAMPLE
+	image_width = 608;
+	image_height = 608;
+	subsampleEnable = 1;
+	#endif
+
+	#ifdef PYTHON480_400PX_SUBSAMPLE
+	image_width = 400;
+	image_height = 400;
+	subsampleEnable = 1;
+	#endif
+
+	#ifdef PYTHON480_304PX_SUBSAMPLE
+	image_width = 304;
+	image_height = 304;
+	subsampleEnable = 1;
+	#endif
+	// red all pixels
+	#ifdef PYTHON480_304PX_NOSUBSAMPLE
+	image_width = 304;
+	image_height = 304;
+	subsampleEnable = 0;
+	#endif
+
+	#ifdef PYTHON480_200PX_NOSUBSAMPLE
+	image_width = 200;
+	image_height = 200;
+	subsampleEnable = 0;
+	#endif
+
+	#ifdef PYTHON480_152PX_NOSUBSAMPLE
+	image_width = 152;
+	image_height = 152;
+	subsampleEnable = 0;
+	#endif
+}
+
+void calcImaceSize(void){
+	num_pixels = ((image_width * image_height) / (subsampleEnable + 1) ^ 2);
+}
 void peripheralInit(void)
 {
+	initImageSize();
+	calcImaceSize();
+	
 	#ifdef EXLED_PWM_ENABLE
 	// We need to change the PWM mode from MPWM to NPWM because we are using WO[0] as waveform output
 	hri_tc_write_WAVE_reg(TC0, TC_WAVE_WAVEGEN_NPWM_Val);
