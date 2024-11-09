@@ -63,7 +63,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define AUTOSTART_ENABLE
 //#define FRAMERATE_1FPS
 //#define FRAMERATE_5FPS
-#define FRAMERATE_10FPS
+//#define FRAMERATE_10FPS
 #define FRAMERATE_20FPS
 #define RESTART_KEY				200
 #define BUFFER_BLOCK_LENGTH		10			// can be edited by user to optimize speed
