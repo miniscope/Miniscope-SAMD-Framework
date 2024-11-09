@@ -57,7 +57,7 @@
 #define BUFFER_HEADER_DATA_LENGTH_POS			8
 #define BUFFER_HEADER_WRITE_TIMESTAMP_POS		9
 #define BUFFER_HEADER_BATTERY_VOLTAGE_POS		10
-#define BUFFER_HEADER_EWL_POS					11
+#define BUFFER_HEADER_WPT_VOLTAGE_POS			11
 
 // -------------------------------------------
 
@@ -113,7 +113,7 @@
 #define HEADER_EWL_START_POS 		12
 #define HEADER_EWL_STOP_POS 		13
 #define HEADER_EWL_STEP_POS 		14
-#define HEADER_EWL_STEP_TIME_POS 		15
+#define HEADER_EWL_STEP_TIME_POS 	15
 // -------------------------------------------
 
 // ADC Level Definition
@@ -221,6 +221,7 @@ extern volatile DmacDescriptor TXLinkedList[];
 @brief This stores SERCOM hardware pointer used for data transmission (memory -> SERCOM)
 */
 extern Sercom *sercom_sdo;
+extern Sercom *sercom_ir;
 
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
@@ -278,12 +279,11 @@ extern volatile uint32_t tempCount;
 extern volatile uint32_t tempTimestamp[];
 extern volatile uint8_t timerIndex;
 
-extern volatile uint16_t serialCommand;
-extern volatile uint8_t uartBuffer;
-
 extern volatile uint8_t headerBlock[]; // Will hold the 512 bytes from the header block of sd card
 extern volatile uint8_t configBlock[]; // Will hold the device config information to be written to the starting block
 
+volatile volatile uint16_t roi_x_shift;
+volatile volatile uint16_t roi_y_shift;
 // ----------- FUNCTIONS ----------------
 
 /**

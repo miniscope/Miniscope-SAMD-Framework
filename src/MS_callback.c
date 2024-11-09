@@ -7,6 +7,8 @@
 #include "MS_config.h"
 #include "MS_definitions.h"
 #include "dma_custom_driver.h"
+#include "python480.h"
+
 
 #ifdef PYTHON480_ENABLE
 #include <hpl_pcc_config.h>
@@ -91,63 +93,104 @@ void irReceive_cb(void)
 #endif
 
 #ifdef IR_UART_ENABLE
-#define CMD_USART_PREAMBLE_MASK 0b11000000
-#define CMD_USART_PERIPHERAL_MASK 0b00110000
-#define CMD_USART_VALUE_MASK 0b00001111
-#define CMD_USART_PREAMBLE_1 0b10000000
-#define CMD_USART_PREAMBLE_2 0b01000000
-#define CMD_USART_PERIPHERAL_POS 4
-#define CMD_USART_PAYLOAD 4
+#define CMD_HEADER_MASK					0b11000000
+#define CMD_USART_PAYLOAD_MASK			0b00111111
 
-#define CMD_FULL_VALUE_MASK 0x00FF
-#define CMD_FULL_PERIPHERAL_MASK 0x0F00
-#define CMD_FULL_PERIPHERAL_POS 8
-#define CMD_FULL_VALUE_POS 0
+#define CMD_USART_ID_HEADER				0b00000000
+#define CMD_USART_TARGET_HEADER			0b11000000
+#define CMD_USART_VALUE_LSB_HEADER		0b01000000
+#define CMD_USART_VALUE_MSB_HEADER		0b10000000
 
-#define CMD_TARGET_EXLED 0
-#define CMD_TARGET_EWL 1
+#define CMD_TARGET_EXLED				0
+#define CMD_TARGET_GAIN					1
+#define CMD_TARGET_ROI_X				2
+#define CMD_TARGET_ROI_Y				3
+#define CMD_TARGET_ROI_WIDTH			4
+#define CMD_TARGET_EWL					5
+#define CMD_TARGET_DEVICE				50
 
-void update_recording()
-{
-	uint8_t targetPeripheral = (uint8_t)((serialCommand & CMD_FULL_PERIPHERAL_MASK) >> CMD_FULL_PERIPHERAL_POS);
-	uint8_t targetValue = (uint8_t)((serialCommand & CMD_FULL_VALUE_MASK) >> CMD_FULL_VALUE_POS);
-	
-	switch (targetPeripheral) {
-		case CMD_TARGET_EXLED: // LED
-		setExcitationLED((uint32_t) targetValue, 1);
-		break;
-		case CMD_TARGET_EWL: // EWL
-		setEWL((uint32_t) targetValue);
-		break;
-		default:
-		return;
-	}
-}
+#define CMD_UNDEFINED					0b11111111
+
+uint8_t updateDevice	= CMD_UNDEFINED;
+uint8_t updateTarget	= CMD_UNDEFINED;
+uint8_t updateValueLSB	= CMD_UNDEFINED;
+uint8_t updateValueMSB	= CMD_UNDEFINED;
 
 void usart_rx_cb(void)
 {
-	uint8_t tempUartBuffer = SERCOM5->USART.DATA.reg;
+	volatile uint8_t uartBuffer = sercom_ir->USART.DATA.reg;
 	
-	//Very hard coded so must change.
-	//Ignore if the previous packet is same. This is because the packet needs to be sent several times to prevent dropping.
-	if (tempUartBuffer != uartBuffer){
-		uartBuffer = tempUartBuffer;
-		if ((uartBuffer & CMD_USART_PREAMBLE_MASK) == CMD_USART_PREAMBLE_1) { // first half of command
-			// Initiate command
-			serialCommand = 0;
-			serialCommand |= (uint16_t)((uartBuffer & CMD_USART_PERIPHERAL_MASK) << (CMD_FULL_PERIPHERAL_POS-CMD_USART_PERIPHERAL_POS)); // Store peripheral ID
-			serialCommand |= (uint16_t)((uartBuffer & CMD_USART_VALUE_MASK) << CMD_USART_PAYLOAD); // Store MSB for value
+	if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_ID_HEADER) &&
+		(((uartBuffer & CMD_USART_PAYLOAD_MASK) == DEVICE_ID) || ((uartBuffer & CMD_USART_PAYLOAD_MASK) == 0)) &&
+		updateDevice == CMD_UNDEFINED &&
+		updateTarget == CMD_UNDEFINED &&
+		updateValueLSB == CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+			updateDevice = uartBuffer & CMD_USART_PAYLOAD_MASK;
+	}
+	else if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_TARGET_HEADER) &&
+		updateDevice != CMD_UNDEFINED &&
+		updateTarget == CMD_UNDEFINED &&
+		updateValueLSB == CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+			updateTarget = uartBuffer & CMD_USART_PAYLOAD_MASK;
+	}
+	else if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_VALUE_LSB_HEADER) &&
+		updateDevice != CMD_UNDEFINED &&
+		updateTarget != CMD_UNDEFINED &&
+		updateValueLSB == CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+		updateValueLSB = uartBuffer & CMD_USART_PAYLOAD_MASK;
+	}
+	else if (((uartBuffer & CMD_HEADER_MASK) == CMD_USART_VALUE_MSB_HEADER) &&
+		updateDevice != CMD_UNDEFINED &&
+		updateTarget != CMD_UNDEFINED &&
+		updateValueLSB != CMD_UNDEFINED &&
+		updateValueMSB == CMD_UNDEFINED)
+		{
+			updateValueMSB = uartBuffer & CMD_USART_PAYLOAD_MASK;
+			uint16_t updateValue = (updateValueMSB << 6) + updateValueLSB;
+	
+			update_recording(updateTarget, updateValue);
+			updateDevice = CMD_UNDEFINED;
+			updateTarget = CMD_UNDEFINED;
+			updateValueLSB = CMD_UNDEFINED;
+			updateValueMSB = CMD_UNDEFINED;
+	}
+	else {
+		updateDevice = CMD_UNDEFINED;
+		updateTarget = CMD_UNDEFINED;
+		updateValueLSB = CMD_UNDEFINED;
+		updateValueMSB = CMD_UNDEFINED;
+	}
+}
+
+void update_recording(uint8_t updateTarget, uint16_t updateValue)
+{
+	switch (updateTarget) {
+		case CMD_TARGET_EXLED:
+		setExcitationLED((uint32_t) updateValue, 1);
+		break;
+		case CMD_TARGET_GAIN:
+		python480SetGain((uint32_t) updateValue);
+		break;
+		case CMD_TARGET_ROI_X:
+		roi_x_shift = updateValue;
+		setROI(WIDTH, roi_x_shift, roi_y_shift);
+		break;
+		case CMD_TARGET_ROI_Y:
+		roi_y_shift = updateValue;
+		setROI(WIDTH, roi_x_shift, roi_y_shift);
+		break;
+		case CMD_TARGET_DEVICE:
+		if (updateValue == RESTART_KEY){
+			NVIC_SystemReset();
 		}
-		else if ((uartBuffer & CMD_USART_PREAMBLE_MASK) == CMD_USART_PREAMBLE_2){ //Second half of command
-			if ((uint8_t)((serialCommand & CMD_FULL_PERIPHERAL_MASK) >> CMD_FULL_PERIPHERAL_POS) == (uartBuffer & CMD_USART_PERIPHERAL_MASK) >> CMD_USART_PERIPHERAL_POS) { // Validate peripheral ID
-				serialCommand |= (uint16_t)(uartBuffer & CMD_USART_VALUE_MASK); // Store MSB for value
-				update_recording();
-			}
-			else{
-				// For safety, reset the command if validation fails.
-				serialCommand = 0x0000;
-			}
-		}
+		default:
+		return;
 	}
 }
 #endif
@@ -339,7 +382,8 @@ void sdmmc_dma_transfer_control(void)
 			bufferToWrite[BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS] = droppedBufferCount;
 			bufferToWrite[BUFFER_HEADER_WRITE_TIMESTAMP_POS] = getCurrentTimeMS() - startTimeMS;
 			bufferToWrite[BUFFER_HEADER_BATTERY_VOLTAGE_POS] = battVolt;
-			bufferToWrite[BUFFER_HEADER_EWL_POS] = ewlvalue;
+			bufferToWrite[BUFFER_HEADER_WPT_VOLTAGE_POS] = wptVolt;
+			//bufferToWrite[BUFFER_HEADER_EWL_POS] = ewlvalue;
 			
 			tempTimestamp[(writeBufferCount + droppedBufferCount) % 100] = getCurrentTimeMS() - startTimeMS;
 			

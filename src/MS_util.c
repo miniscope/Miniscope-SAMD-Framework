@@ -84,7 +84,7 @@ void peripheralInit(void)
 	#endif
 	
 	#ifdef WPT_ADC_ENABLE
-	// Enable ADC for checking battery voltage
+	// Enable ADC for checking voltage bus voltage
 	adc_sync_enable_channel(&ADC_1, 0);
 	#endif
 	
@@ -136,7 +136,16 @@ void peripheralInit(void)
 	while (sercom_sdo->USART.SYNCBUSY.bit.ENABLE)
 	;                                 // Wait for disable
 	#endif
-
+	
+	#ifdef IR_UART_ENABLE
+	sercom_ir->USART.CTRLA.bit.ENABLE = 0;
+	while (sercom_ir->USART.SYNCBUSY.bit.ENABLE)
+	;
+	sercom_ir->USART.CTRLA.bit.ENABLE = 1;
+	while (sercom_ir->USART.SYNCBUSY.bit.ENABLE)
+	;
+	#endif
+	
 	#ifdef DMA_TO_SPI_ENABLE
 	sercom_sdo->SPI.CTRLA.bit.ENABLE = 0; // Disable SPI
 	while (sercom_sdo->SPI.SYNCBUSY.bit.ENABLE)
@@ -287,6 +296,8 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = writeBufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = droppedBufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
+	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
+	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt;
 	
 	// TODO: Put the correct value for data length. This will change if it is a partially filled buffer
 	// UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer. We can calculate from this

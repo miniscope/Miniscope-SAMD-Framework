@@ -48,6 +48,15 @@ void python480Init(void);
 void python480SetGain(uint32_t value);
 
 /**
+@brief Sets ROI of image sensor
+@param image_width image width
+@param xshift xshift from default
+@param yshift yshift from default
+@note Adding validation might be nice though I'm not sure what's the best way to feedback to users
+*/
+void setROI(uint16_t image_width, uint16_t xshift, uint16_t yshift);
+
+/**
 @brief Sets FPS of image sensor
 @param value Value of FPS. For value = 1, 5, 10, 15, 20, FPS = value; for value = 0: FPS = 0.5; default: undefined
 @note Need to check what's default value of the image sensor.
