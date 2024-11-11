@@ -80,6 +80,12 @@ void initImageSize(void){
 	subsampleEnable = 1;
 	#endif
 
+	#ifdef PYTHON480_320PX_SUBSAMPLE
+	image_width = 320;
+	image_height = 320;
+	subsampleEnable = 1;
+	#endif
+
 	#ifdef PYTHON480_304PX_SUBSAMPLE
 	image_width = 304;
 	image_height = 304;
@@ -95,6 +101,12 @@ void initImageSize(void){
 	#ifdef PYTHON480_200PX_NOSUBSAMPLE
 	image_width = 200;
 	image_height = 200;
+	subsampleEnable = 0;
+	#endif
+
+	#ifdef PYTHON480_160PX_NOSUBSAMPLE
+	image_width = 160;
+	image_height = 160;
 	subsampleEnable = 0;
 	#endif
 

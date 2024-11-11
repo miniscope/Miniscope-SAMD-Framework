@@ -144,13 +144,16 @@
 #elif defined(FRAMERATE_20FPS) && (defined(PYTHON480_200PX_NOSUBSAMPLE) || defined(PYTHON480_400PX_SUBSAMPLE))
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					2 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 8 MHz
+#elif defined(FRAMERATE_20FPS) && (defined(PYTHON480_160PX_NOSUBSAMPLE) || defined(PYTHON480_320PX_SUBSAMPLE))
+#define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
+#define SPI_BAUD_MS					3 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 8 MHz
 #elif defined(FRAMERATE_10FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
 #define FRAME_RATE					10 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					7 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 3 MHz
 #elif defined(FRAMERATE_5FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
 #define FRAME_RATE					5 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					15 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 1.5 MHz
-#elif defined(FRAMERATE_1FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE)) 
+#elif defined(FRAMERATE_1FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE))
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					79//inital value 19 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 0.3 MHz
 #endif
