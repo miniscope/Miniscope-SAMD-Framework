@@ -214,16 +214,19 @@ void EnableClockMngmnt2() {// Enable internal clock distribution
 
 void setROI(uint16_t image_width, uint16_t xshift, uint16_t yshift){
 	uint16_t sensorReadoutUnit = 2;
-	volatile uint16_t roi_x_start = ROI_XREG_MAX/2 - image_width/sensorReadoutUnit/2/2 + xshift/sensorReadoutUnit/2 + 1;
-	volatile uint16_t roi_x_stop = roi_x_start + image_width/sensorReadoutUnit/2 - 1;
-	volatile uint16_t roi_y_start = ROI_YREG_MAX/2 - image_width/sensorReadoutUnit/2/2 + yshift/sensorReadoutUnit/2 + 1;
-	volatile uint16_t roi_y_stop = roi_y_start + image_width/sensorReadoutUnit/2 - 1;
+	if (xshift <= (ROI_XREG_MAX - image_width/sensorReadoutUnit/2) && yshift <= (ROI_YREG_MAX - image_width/sensorReadoutUnit/2)){
+		volatile uint16_t roi_x_start = xshift;
+		volatile uint16_t roi_x_stop = roi_x_start + image_width/sensorReadoutUnit/2 - 1;
+		volatile uint16_t roi_y_start = yshift;
+		volatile uint16_t roi_y_stop = roi_y_start + image_width/sensorReadoutUnit/2 - 1;
 	
-	spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
-	spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
-	spi_BB_Write(257, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
-	spi_BB_Write(259, (uint16_t) ((roi_y_stop<<8) + roi_y_start));	
+		spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+		spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
+		spi_BB_Write(257, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
+		spi_BB_Write(259, (uint16_t) ((roi_y_stop<<8) + roi_y_start));
+	}
 }
+
 void RequiredUploads(uint16_t image_width) {// Reserved register settings uploads	
 	spi_BB_Write(2, 0x0000);
 	spi_BB_Write(8, 0x0000);
@@ -300,7 +303,7 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	spi_BB_Write(235, 0x00E1);
 
 	// Set ROI Size
-	setROI(image_width, roi_x_shift, roi_y_shift);
+	setROI(image_width, ROI_XSTART_REG, ROI_YSTART_REG);
 	//spi_BB_Write(256, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI0
 	//spi_BB_Write(258, 0xB019); // Horizontal pixel range times 4 plus 4 for ROI1
 

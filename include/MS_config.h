@@ -40,8 +40,8 @@ The modes should be a set of peripherals used in the specified mode.
 //#define TEST_PATTERN_ENABLE // For dev
 #define PYTHON480_ENABLE
 //#define PYTHON480_608PX_SUBSAMPLE
-//#define PYTHON480_400PX_SUBSAMPLE
-#define PYTHON480_320PX_SUBSAMPLE
+#define PYTHON480_400PX_SUBSAMPLE
+//#define PYTHON480_320PX_SUBSAMPLE
 //#define PYTHON480_304PX_SUBSAMPLE
 //#define PYTHON480_152PX_NOSUBSAMPLE
 //#define PYTHON480_200PX_NOSUBSAMPLE
@@ -70,8 +70,8 @@ The modes should be a set of peripherals used in the specified mode.
 #define RESTART_KEY				200
 #define BUFFER_BLOCK_LENGTH		10			// can be edited by user to optimize speed
 #define NUM_BUFFERS				32			// Assumes 1024 KB program memory
-#define ROI_XSHIFT_PX			0			// x shift
-#define ROI_YSHIFT_PX			0			// y shift
+#define ROI_XSTART_REG			51			// x shift
+#define ROI_YSTART_REG			26			// y shift
 #define EXCITATION_LED_VALUE	1			// Brightness value of excitation LED: from 0 to 100.
 #define DUMMY_WORD_LENGTH		10
 #define DUMMY_WORD				0xff00cccc
