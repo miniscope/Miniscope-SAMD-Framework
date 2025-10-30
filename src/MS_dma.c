@@ -258,11 +258,15 @@ void DataBufferInit(void)
 		#endif
 		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
 		{
-			#ifdef TEST_PRBS_BUFFER_ENABLE
-			dataBuffer[i][j] = prbs15_next_word();
-			#else
-			dataBuffer[i][j] = 0;
-			#endif
+            #ifdef TEST_PRBS_BUFFER_ENABLE
+            if (j >= (BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH)) {
+	            dataBuffer[i][j] = prbs15_next_word();
+	            } else {
+	            dataBuffer[i][j] = 0;
+            }
+            #else
+            dataBuffer[i][j] = 0;
+            #endif
 		}
 	}
 }
