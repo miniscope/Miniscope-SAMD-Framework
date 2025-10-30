@@ -17,7 +17,7 @@ The modes should be a set of peripherals used in the specified mode.
 
 #ifdef DEV_MODE
 #define TEST_PATTERN_ENABLE // For dev
-#define TEST_BUFFER_ENABLE
+#define TEST_PRBS_BUFFER_ENABLE
 #endif
 
 
@@ -77,6 +77,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define DUMMY_WORD				0xff00cccc
 #define PREAMBLE_WORD			0x12345678
 #define DEVICE_ID				0x00000005
+#define TEST_PRBS_BUFFER_ENABLE
 #endif
 
 #ifdef WLMS_USART_MODE
@@ -176,7 +177,7 @@ The modes should be a set of peripherals used in the specified mode.
 #ifdef DMA_TO_SPI_METRO_TESTMODE
 #define DMA_TO_SPI_ENABLE
 #define HEADER_DISABLE
-#define	TEST_BUFFER_ENABLE
+#define	TEST_PRBS_BUFFER_ENABLE
 #define SPI_SERCOM0_ENABLE
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
 #define NUM_BUFFERS				8 // Assumes 1024 KB program memory
