@@ -126,6 +126,7 @@
 // ------- Image Sensor Definitions ----------
 // This should be defined from SD card header. Temporary
 // for ROI with subsampling
+#ifndef TEST_PRBS_BUFFER_ENABLE
 #ifdef defined(FRAMERATE_20FPS) && (defined(PYTHON480_608PX_SUBSAMPLE) || defined(PYTHON480_304PX_NOSUBSAMPLE)) 
 #define FRAME_RATE					20 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					0 // f_baud = f_ref / (2*(BAUD + 1))
@@ -156,6 +157,12 @@
 #elif defined(FRAMERATE_1FPS) && (defined(PYTHON480_152PX_NOSUBSAMPLE) || defined(PYTHON480_304PX_SUBSAMPLE))
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
 #define SPI_BAUD_MS					79//inital value 19 // f_baud = f_ref / (2*(BAUD + 1)) @48MHz MCU = 0.3 MHz
+#endif
+#else
+#define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
+#ifdef BERT_8MBPS
+#define SPI_BAUD_MS					2 //@48MHz
+#endif
 #endif
 
 // SPI
