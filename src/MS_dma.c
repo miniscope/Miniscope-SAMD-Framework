@@ -27,6 +27,32 @@ COMPILER_ALIGNED(16)
 volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
 #endif
 
+#ifdef TEST_PRBS_BUFFER_ENABLE
+// PRBS-15 generator (x^15 + x^14 + 1), period 32767
+static uint16_t prbs15_state;
+
+#define DMAC_SINK_MAX_BEATS (BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - (BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH))
+static uint32_t dmac_sink_buf[DMAC_SINK_MAX_BEATS];
+
+
+// Reset to a fixed test seed. Using 0 here is fine; we map to 1.
+static inline void prbs15_reset_default(void) {
+	prbs15_state = 1u;  // change here if you want a different phase
+}
+
+// Return 32 PRBS bits packed MSB-first into a 32-bit word.
+static inline uint32_t prbs15_next_word(void) {
+	uint32_t w = 0;
+	for (int k = 0; k < 32; ++k) {
+		uint16_t newbit = ((prbs15_state >> 14) ^ (prbs15_state >> 13)) & 1u; // taps 15,14
+		prbs15_state = (uint16_t)(((prbs15_state << 1) | newbit) & 0x7FFFu);  // keep 15 bits
+		if (prbs15_state == 0) prbs15_state = 1u;                              // avoid all-zero lockup
+		w = (w << 1) | (prbs15_state & 1u);
+	}
+	return w;
+}
+#endif
+
 void dmaEnable(void){
 	#ifdef PYTHON480_ENABLE
 	// Enables DMA Transfer complete interrupt. Should be put in better place
@@ -226,22 +252,21 @@ void DataBufferInit(void)
 	for (uint32_t i = 0; i<NUM_BUFFERS; i++)
 	{
 		dataBuffer[i][0] = PREAMBLE_WORD;
+		#ifdef TEST_PRBS_BUFFER_ENABLE
+		// Restart PRBS each buffer. this is for making all buffers same
+		prbs15_reset_default();
+		#endif
 		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
 		{
-			#ifdef TEST_BUFFER_ENABLE // hard coding test buffers for 304 * 304 px. Should be a defined better.
-			dataBuffer[i][BUFFER_HEADER_LINKED_LIST_POS] = i;
-			dataBuffer[i][BUFFER_HEADER_FRAME_NUM_POS] = 1;
-			if (i < 5){
-				dataBuffer[i][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS] = i;
-			}
-			if (i < 4) dataBuffer[i][BUFFER_HEADER_DATA_LENGTH_POS] = 20480;
-			if (i == 4) dataBuffer[i][BUFFER_HEADER_DATA_LENGTH_POS] = 10496;
-			if (j >= 9){
-			dataBuffer[i][j] = ((i+1) * (j-9)*4) % 0x100 * 0x01000000 + ((i+1) * ((j-9)*4+1)) % 0x100 * 0x00010000 + ((i+1) * ((j-9)*4+2)) % 0x100 * 0x00000100 + ((i+1) * ((j-9)*4+3)) % 0x100 * 0x00000001;
-			}
-			#else
-			dataBuffer[i][j] = 0;
-			#endif
+            #ifdef TEST_PRBS_BUFFER_ENABLE
+            if (j >= (BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH)) {
+	            dataBuffer[i][j] = prbs15_next_word();
+	            } else {
+	            dataBuffer[i][j] = 0;
+            }
+            #else
+            dataBuffer[i][j] = 0;
+            #endif
 		}
 	}
 }
@@ -264,9 +289,15 @@ void PCCLinkedListInit(void)
 		
 		PCCLinkedList[i].SRCADDR.reg = (uint32_t)(&PCC->RHR.reg); //(void *)&(((Pcc *)device->hw)->RHR.reg)
 		
+		
+		#ifdef TEST_PRBS_BUFFER_ENABLE
+		uint32_t beats = PCCLinkedList[i].BTCNT.reg;   // number of 32-bit words
+		PCCLinkedList[i].DSTADDR.reg = (uint32_t)(dmac_sink_buf + beats);
+		#else
 		// Destination address when incrementing address needs to be the end address and not the start address.
 		// I think the last scale multiplication needs to be either 3 or 5 but _dma_set_data_amount() uses a 4.
 		PCCLinkedList[i].DSTADDR.reg = (uint32_t)(&dataBuffer[i][BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH]) + PCCLinkedList[i].BTCNT.reg * 4;
+		#endif
 	}
 	setPCCLinkedListPosition(0);
 }

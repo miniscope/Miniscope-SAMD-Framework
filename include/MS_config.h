@@ -17,13 +17,14 @@ The modes should be a set of peripherals used in the specified mode.
 
 #ifdef DEV_MODE
 #define TEST_PATTERN_ENABLE // For dev
-#define TEST_BUFFER_ENABLE
+#define TEST_PRBS_BUFFER_ENABLE
 #endif
 
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
 #define WLMS_SPI_MODE
+//#define BERT_MODE
 //#define GS_MODE
 //#define WLMS_USART_MODE
 //#define WLMS_SD_MODE
@@ -40,11 +41,11 @@ The modes should be a set of peripherals used in the specified mode.
 //#define TEST_PATTERN_ENABLE // For dev
 #define PYTHON480_ENABLE
 //#define PYTHON480_608PX_SUBSAMPLE
-#define PYTHON480_400PX_SUBSAMPLE
+//#define PYTHON480_400PX_SUBSAMPLE
 //#define PYTHON480_320PX_SUBSAMPLE
 //#define PYTHON480_304PX_SUBSAMPLE
 //#define PYTHON480_152PX_NOSUBSAMPLE
-//#define PYTHON480_200PX_NOSUBSAMPLE
+#define PYTHON480_200PX_NOSUBSAMPLE
 //#define PYTHON480_160PX_NOSUBSAMPLE
 //#define PYTHON480_304PX_NOSUBSAMPLE
 #define EWL_ENABLE
@@ -70,9 +71,42 @@ The modes should be a set of peripherals used in the specified mode.
 #define RESTART_KEY				200
 #define BUFFER_BLOCK_LENGTH		10			// can be edited by user to optimize speed
 #define NUM_BUFFERS				32			// Assumes 1024 KB program memory
-#define ROI_XSTART_REG			51			// x shift
-#define ROI_YSTART_REG			26			// y shift
+#define ROI_XSTART_REG			76			// x shift
+#define ROI_YSTART_REG			51			// y shift
 #define EXCITATION_LED_VALUE	1			// Brightness value of excitation LED: from 0 to 100.
+#define DUMMY_WORD_LENGTH		10
+#define DUMMY_WORD				0xff00cccc
+#define PREAMBLE_WORD			0x12345678
+#define DEVICE_ID				0x00000005
+//#define TEST_PRBS_BUFFER_ENABLE
+#endif
+
+#ifdef BERT_MODE
+#define PYTHON480_ENABLE
+#define PYTHON480_304PX_NOSUBSAMPLE
+#define BERT_8MBPS
+#define TEST_PRBS_BUFFER_ENABLE
+#define FRAMERATE_1FPS
+#define EWL_ENABLE
+#define DMA_TO_SPI_ENABLE
+#define EXLED_PWM_ENABLE
+#define BATTERY_ENABLE
+#define BATTERY_CB_DISABLE
+#define WPT_ADC_ENABLE
+#define PUSH_BUT_ENABLE
+#define STATUS_LED_ENABLE
+#define IR_UART_ENABLE
+#define SPI_SERCOM5_ENABLE
+#define SDO_32BIT_ENABLE
+#define PREAMBLE_ENABLE
+#define PRESET_HEADER_ENABLE
+#define AUTOSTART_ENABLE
+#define RESTART_KEY				200
+#define BUFFER_BLOCK_LENGTH		10			// can be edited by user to optimize speed
+#define NUM_BUFFERS				32			// Assumes 1024 KB program memory
+#define ROI_XSTART_REG			76			// x shift
+#define ROI_YSTART_REG			51			// y shift
+#define EXCITATION_LED_VALUE	0			// Brightness value of excitation LED: from 0 to 100.
 #define DUMMY_WORD_LENGTH		10
 #define DUMMY_WORD				0xff00cccc
 #define PREAMBLE_WORD			0x12345678
@@ -176,7 +210,7 @@ The modes should be a set of peripherals used in the specified mode.
 #ifdef DMA_TO_SPI_METRO_TESTMODE
 #define DMA_TO_SPI_ENABLE
 #define HEADER_DISABLE
-#define	TEST_BUFFER_ENABLE
+#define	TEST_PRBS_BUFFER_ENABLE
 #define SPI_SERCOM0_ENABLE
 #define BUFFER_BLOCK_LENGTH		40 // can be edited by user to optimize speed
 #define NUM_BUFFERS				8 // Assumes 1024 KB program memory
