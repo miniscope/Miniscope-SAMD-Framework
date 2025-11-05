@@ -23,8 +23,8 @@ The modes should be a set of peripherals used in the specified mode.
 
 // ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
-//#define WLMS_SPI_MODE
-#define BERT_MODE
+#define WLMS_SPI_MODE
+//#define BERT_MODE
 //#define GS_MODE
 //#define WLMS_USART_MODE
 //#define WLMS_SD_MODE
