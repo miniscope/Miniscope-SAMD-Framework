@@ -160,9 +160,7 @@
 #endif
 #else
 #define FRAME_RATE					1 // 1, 5, 10, 20, 0: 0.5 FPS
-#ifdef BERT_8MBPS
-#define SPI_BAUD_MS					2 //@48MHz
-#endif
+#define SPI_BAUD_MS					2
 #endif
 
 // SPI
