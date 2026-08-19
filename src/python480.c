@@ -45,10 +45,9 @@ void python480SetGain(uint32_t value)
 
 void python480SetFPS(uint32_t value)
 {
-	// TODO: correct and add more options once we settle on MCU output clock freq
 	switch (value)
 	{
-		// For 12 MHz camera input clock: Takuya
+		// For 12 MHz camera input clock
 		case (0): // 0.5 FPS
 		spi_BB_Write(0xC9, 20000);
 		spi_BB_Write(199, 280); // Exposure/Frame rate config, spi_BB_Write(199, 0x0299);

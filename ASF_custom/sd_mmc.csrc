@@ -1576,7 +1576,7 @@ sd_mmc_err_t sd_mmc_wait_end_of_ADMA_write(bool abort)
 		sr = hri_sdhc_read_EISTR_reg(SDHC0);
 
 		if (sr & (SDHC_EISTR_DATTEO | SDHC_EISTR_DATCRC | SDHC_EISTR_DATEND)) {
-			// TODO: We should reset here but I got lazy and didn't want to make mci_reset to access _mci_reset
+			// Note: a controller reset would be appropriate here, but _mci_reset is not accessible from this layer
 			//_mci_reset(SDHC0);
 			return false;
 		}
