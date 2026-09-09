@@ -35,6 +35,11 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 	adc_sync_read_channel(&ADC_1, 0, &adcValueWPT, 1);
 	wptVolt = adcValueWPT;
 	#endif
+
+	#ifdef MCU_TEMP_ENABLE
+	// Uses ADC0 as well; restores the battery ADC configuration when done
+	mcuTempCentiC = readMCUTemperature();
+	#endif
 	
 	// If under voltage, set device state to ...
 	// Compare to 1.1V band gap

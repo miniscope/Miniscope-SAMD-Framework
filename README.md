@@ -163,6 +163,14 @@ LED_PWM
 ENT_LED
 ```
 
+#### MCU_TEMP_ENABLE
+No pins. Requires ```BATTERY_ENABLE``` (ADC_0 on ADC0): the SAMD51 temperature sensor
+(SUPC PTAT/CTAT) is only reachable through ADC0. ```readMCUTemperature()``` reconfigures ADC0
+for the measurement and restores the battery-ADC settings afterwards. The result is written into
+```BUFFER_HEADER_MCU_TEMP_POS``` in the buffer header (signed int32, 0.01 degC, ```MCU_TEMP_INVALID```
+if unavailable), replacing the old DMA linked-list position field, which was always equal to
+```buffer count % NUM_BUFFERS``` and unused on the host side.
+
 ### Open questions / to do
 - Write everything for minimum prototype
 - Ask someone to add module
