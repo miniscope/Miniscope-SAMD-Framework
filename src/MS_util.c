@@ -355,6 +355,12 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
 	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
 	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt;
+
+	#if defined(TX_SLIP_TELEMETRY_ENABLE) && (defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE))
+	// Report the TX ring phase in header slot 9. See TX_SLIP_TELEMETRY_ENABLE.
+	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_TIMESTAMP_POS + DUMMY_WORD_LENGTH] =
+	    ((sdoResyncCount & 0xFF) << 16) | ((sdoPhaseErr & 0xFF) << 8) | (sdoPhaseRef & 0xFF);
+	#endif
 	
 	// TODO: Put the correct value for data length. This will change if it is a partially filled buffer
 	// UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer. We can calculate from this

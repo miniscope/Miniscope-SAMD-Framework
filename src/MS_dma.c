@@ -234,8 +234,45 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	sdo_dma_transfer_resume();
 	#endif
 }
+// Re-anchor writeBufferCount onto the TX DMA's real hardware slot, so the flow control in
+// sdo_dma_transfer_control() sees the true lag. Without this the two drift a slot at a time
+// and after NUM_BUFFERS slots the TX reads the buffer the camera is overwriting.
+void sdo_resync_write_count(void)
+{
+	uint32_t nextDesc = _dma_get_DESCADDR(SDO_DMA_CHANNEL);
+	uint32_t listBase = (uint32_t)&TXLinkedList[0];
+
+	uint32_t hwSlot = (nextDesc - listBase) / sizeof(TXLinkedList[0]);
+	if (hwSlot >= NUM_BUFFERS) return;
+
+	uint32_t swSlot = writeBufferCount % NUM_BUFFERS;
+	int32_t  err    = (int32_t)((hwSlot + NUM_BUFFERS - swSlot) % NUM_BUFFERS);
+	sdoPhaseErr = err;
+
+	// writeBufferCount is zeroed at the start of every recording, so this re-learns the
+	// baseline offset each time without needing an explicit reset hook.
+	if (writeBufferCount < 64) {
+		sdoPhaseRef = err;
+		sdoResyncCount = 0;
+		return;
+	}
+
+	int32_t d = err - sdoPhaseRef;
+	if (d >  (NUM_BUFFERS / 2)) d -= NUM_BUFFERS;
+	if (d < -(NUM_BUFFERS / 2)) d += NUM_BUFFERS;
+
+	if (d == 1) {			// hardware ran one slot ahead of the counter
+		writeBufferCount++;
+		sdoResyncCount++;
+	} else if (d == -1) {	// counter ran one slot ahead of the hardware
+		writeBufferCount--;
+		sdoResyncCount++;
+	}
+}
+
 void sdo_dma_transfer_resume(void)
 {
+	sdo_resync_write_count(); // channel is suspended here, so the write-back data is settled
 	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary

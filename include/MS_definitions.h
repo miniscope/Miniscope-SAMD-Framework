@@ -56,6 +56,7 @@
 #define BUFFER_HEADER_TIMESTAMP_POS				7
 #define BUFFER_HEADER_DATA_LENGTH_POS			8
 #define BUFFER_HEADER_WRITE_TIMESTAMP_POS		9
+#define TX_SLIP_TELEMETRY_ENABLE
 #define BUFFER_HEADER_BATTERY_VOLTAGE_POS		10
 #define BUFFER_HEADER_WPT_VOLTAGE_POS			11
 
@@ -203,6 +204,9 @@ extern volatile uint32_t frameBufferCount;
 // used for tracking recording and inc. DMA buffers
 extern volatile uint32_t writeFrameNum;
 extern volatile uint32_t writeBufferCount;
+extern volatile uint32_t sdoResyncCount;
+extern volatile int32_t  sdoPhaseRef;
+extern volatile int32_t  sdoPhaseErr;
 extern volatile uint32_t droppedBufferCount;
 extern volatile uint32_t droppedFrameCount;
 extern volatile uint32_t framesToDrop;
@@ -311,6 +315,7 @@ extern volatile DmacDescriptor TXLinkedList[];
 
 extern void sdo_dma_transfer_trigger(void);
 extern void sdo_dma_transfer_resume(void);
+extern void sdo_resync_write_count(void);
 extern void sdo_dma_transfer_suspend(void);
 extern void sdo_dma_irq_setup(void);
 void setTXLinkedListPosition(uint8_t pos);

@@ -52,6 +52,9 @@ volatile uint8_t wptVolt;
 // used for tracking recording and inc. DMA buffers
 volatile uint32_t writeFrameNum;
 volatile uint32_t writeBufferCount;
+volatile uint32_t sdoResyncCount = 0;   // times the TX ring phase has been corrected
+volatile int32_t  sdoPhaseRef = 0;
+volatile int32_t  sdoPhaseErr = 0;      // baseline (hwSlot - swSlot), learned at record start
 volatile uint32_t droppedBufferCount;
 volatile uint32_t droppedFrameCount;
 volatile uint32_t framesToDrop;
