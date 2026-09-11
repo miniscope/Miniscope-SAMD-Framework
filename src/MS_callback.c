@@ -37,8 +37,14 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 	#endif
 
 	#ifdef MCU_TEMP_ENABLE
-	// Uses ADC0 as well; restores the battery ADC configuration when done
-	mcuTempCentiC = readMCUTemperature();
+	// Uses ADC0 as well; restores the battery ADC configuration when done.
+	// The die temperature drifts slowly, and the read blocks this ISR for ~0.4 ms,
+	// so only sample it every MCU_TEMP_READ_PERIOD_TICKS ticks.
+	static uint8_t mcuTempTick = 0;
+	if (++mcuTempTick >= MCU_TEMP_READ_PERIOD_TICKS) {
+		mcuTempTick = 0;
+		mcuTempCentiC = readMCUTemperature();
+	}
 	#endif
 	
 	// If under voltage, set device state to ...

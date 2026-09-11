@@ -170,6 +170,8 @@ for the measurement and restores the battery-ADC settings afterwards. The result
 ```BUFFER_HEADER_MCU_TEMP_POS``` in the buffer header (signed int32, 0.01 degC, ```MCU_TEMP_INVALID```
 if unavailable), replacing the old DMA linked-list position field, which was always equal to
 ```buffer count % NUM_BUFFERS``` and unused on the host side.
+The temperature is only sampled every ```MCU_TEMP_READ_PERIOD_TICKS``` battery-check ticks (default 4, i.e.
+every 2 s) because the read blocks the timer ISR for ~0.4 ms; battery and WPT stay at 500 ms.
 
 ### Open questions / to do
 - Write everything for minimum prototype

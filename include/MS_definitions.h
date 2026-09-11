@@ -77,6 +77,7 @@
 
 // ------------ MCU temperature -------------
 #define MCU_TEMP_INVALID						0x7FFFFFFF // Written to the header when the NVM calibration row is unusable
+#define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
 // -------------------------------------------
 
 // -------------------------------------------
