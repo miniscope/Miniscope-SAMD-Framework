@@ -359,7 +359,8 @@ void setBufferHeader(uint32_t dataWordLength) {
 	#if defined(TX_SLIP_TELEMETRY_ENABLE) && (defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE))
 	// Report the TX ring phase in header slot 9. See TX_SLIP_TELEMETRY_ENABLE.
 	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_TIMESTAMP_POS + DUMMY_WORD_LENGTH] =
-	    ((sdoResyncCount & 0xFF) << 16) | ((sdoPhaseErr & 0xFF) << 8) | (sdoPhaseRef & 0xFF);
+	    ((sdoMaxBacklog & 0xFF) << 24) | ((sdoResyncCount & 0xFF) << 16)
+	    | ((sdoPhaseErr & 0xFF) << 8) | (sdoPhaseRef & 0xFF);
 	#endif
 	
 	// TODO: Put the correct value for data length. This will change if it is a partially filled buffer

@@ -207,6 +207,7 @@ extern volatile uint32_t writeBufferCount;
 extern volatile uint32_t sdoResyncCount;
 extern volatile int32_t  sdoPhaseRef;
 extern volatile int32_t  sdoPhaseErr;
+extern volatile uint32_t sdoMaxBacklog;
 extern volatile uint32_t droppedBufferCount;
 extern volatile uint32_t droppedFrameCount;
 extern volatile uint32_t framesToDrop;

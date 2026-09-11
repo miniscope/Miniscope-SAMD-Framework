@@ -204,7 +204,22 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 		writeBufferCount++; // not sure if this should be counted
 		return;
 	}
-	if (bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+	// Now that writeBufferCount tracks the hardware, this is a true backlog. Guard the
+	// subtraction: a correction can briefly put the counter one ahead of the producer,
+	// and unsigned underflow there would look like a huge backlog.
+	uint32_t accounted = writeBufferCount + droppedBufferCount;
+	uint32_t backlog   = (bufferCount > accounted) ? (bufferCount - accounted) : 0;
+
+	if (backlog > sdoMaxBacklog) sdoMaxBacklog = backlog;
+
+	if (backlog >= NUM_BUFFERS) {
+		// The camera has lapped the transmitter: the buffer we were about to send is
+		// already overwritten. Account for the loss so the stream stays aligned.
+		droppedBufferCount++;
+		backlog--;
+	}
+
+	if (backlog > 0){
 		#ifdef PYTHON480_ENABLE
 		// send out pending bits and return
 		if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND == 1){
@@ -254,6 +269,7 @@ void sdo_resync_write_count(void)
 	if (writeBufferCount < 64) {
 		sdoPhaseRef = err;
 		sdoResyncCount = 0;
+		sdoMaxBacklog = 0;
 		return;
 	}
 
