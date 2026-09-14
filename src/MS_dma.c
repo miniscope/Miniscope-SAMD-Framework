@@ -207,10 +207,15 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
-		writeBufferCount++; // not sure if this should be counted
+		writeBufferCount++; // block 0 starts with the enable
 		return;
 	}
-	if (bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+	// guarded: an unsigned underflow would read as a huge backlog
+	uint32_t accounted = writeBufferCount + droppedBufferCount;
+	uint32_t backlog   = (bufferCount > accounted) ? (bufferCount - accounted) : 0;
+	if (backlog > sdoMaxBacklog) sdoMaxBacklog = backlog;
+
+	if (backlog > 0){
 		#ifdef PYTHON480_ENABLE
 		// send out pending bits and return
 		if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND == 1){
@@ -223,8 +228,8 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 			return;
 		}	
 
-		// if coming from TRCMP callback and buffer is left just resume
-		if(callback_flag == 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+		// if coming from TRCMP callback just resume
+		if(callback_flag == 1){
 			sdo_dma_transfer_resume();
 			return;
 		}
@@ -240,8 +245,31 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	sdo_dma_transfer_resume();
 	#endif
 }
+// Telemetry: slot the hardware sends next (write-back DESCADDR) minus writeBufferCount, mod
+// NUM_BUFFERS. Must stay 0.
+static void sdo_measure_tx_phase(void)
+{
+	uint32_t nextDesc = _dma_get_DESCADDR(SDO_DMA_CHANNEL);
+	uint32_t hwSlot   = (nextDesc - (uint32_t)&TXLinkedList[0]) / sizeof(TXLinkedList[0]);
+	if (hwSlot >= NUM_BUFFERS) return; // write-back not valid before the first block
+
+	uint32_t err = (hwSlot + NUM_BUFFERS - (writeBufferCount % NUM_BUFFERS)) % NUM_BUFFERS;
+	if (err != sdoPhaseErr) sdoSlipCount++;
+	sdoPhaseErr = err;
+}
+
+// A RESUME issued while the previous block is still in flight (camera IRQ landing mid-block)
+// is ignored by the DMAC but used to be counted, so writeBufferCount drifted ahead of the
+// hardware until the TX read the buffer being written (~1 h image tearing). CHINTFLAG.SUSP
+// is set once per finished block and only cleared here, so it gates the resume.
 void sdo_dma_transfer_resume(void)
 {
+	if (DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP == 0) {
+		sdoSkippedResume++; // still in flight; the TX-complete callback will resume
+		return;
+	}
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.reg = DMAC_CHINTFLAG_SUSP;
+	sdo_measure_tx_phase();
 	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary
