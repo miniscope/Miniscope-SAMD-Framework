@@ -17,6 +17,36 @@ See documentation by cloning this repository and locally opening [html/index.htm
 - ASF_custom: customized ASF drivers
 - script: scripts for taking care of conflicts with Atmel START
 
+### Buffer header
+Every data buffer starts with `DUMMY_WORD_LENGTH` (10) dummy words followed by
+`BUFFER_HEADER_LENGTH` (12) header words, all 32-bit. Slot positions are the
+`BUFFER_HEADER_*_POS` defines in `MS_definitions.h`; the values are written by
+`setBufferHeader()` in `MS_util.c`.
+
+| slot | name | contents |
+|---|---|---|
+| 0 | HEADER_LENGTH | `PREAMBLE_WORD` 0x12345678 with `PREAMBLE_ENABLE`, else the header length |
+| 1 | LINKED_LIST | `bufferCount % NUM_BUFFERS` |
+| 2 | FRAME_NUM | frame index |
+| 3 | BUFFER_COUNT | buffers produced since recording start |
+| 4 | FRAME_BUFFER_COUNT | buffer index within the frame |
+| 5 | WRITE_BUFFER_COUNT | buffers handed to the transmitter |
+| 6 | DROPPED_BUFFER_COUNT | buffers skipped; on the optical path, buffers lost when the camera laps the transmitter |
+| 7 | TIMESTAMP | ms since recording start |
+| 8 | DATA_LENGTH | payload bytes in this buffer |
+| 9 | WRITE_TIMESTAMP | ms at SD-card write; unused on the optical path, see below |
+| 10 | BATTERY_VOLTAGE | battery ADC raw, 8-bit |
+| 11 | WPT_VOLTAGE | wireless-power input ADC raw, 8-bit |
+
+Slot order and size are unchanged, so miniscope-io parses these buffers unmodified (its
+index is the firmware slot minus one, since the preamble is stripped).
+
+`TX_SLIP_TELEMETRY_ENABLE` in `MS_definitions.h` repurposes slot 9 for TX ring
+diagnostics, packed as `(maxBacklog << 24) | (resyncCount << 16) | (phaseErr << 8) |
+phaseRef`. The drift `phaseErr - phaseRef` must stay near 0; at `NUM_BUFFERS` slots the
+transmitter reads the buffer the camera is overwriting. Comment the flag out for
+production recordings.
+
 ### How to configure the git submodule
 1. Set up an Atmel START project
     - Make sure to follow the Peripheral requirements stated below.
