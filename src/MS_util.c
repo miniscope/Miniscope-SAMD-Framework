@@ -256,7 +256,6 @@ void peripheralInit(void)
 
 void configPropInit(void){
 	// Set some parameters in config buffer to be written to SD card at end of recording
-	// TODO: Add additional info in the config block to cover everything needed for offline processing
 
 }
 
@@ -278,7 +277,6 @@ void SDCardInit(void){
 	SDHC0->HC1R.reg |= 1<<4;
 	
 	// Set some parameters in config buffer to be written to SD card at end of recording
-	// TODO: Add additional info in the config block to cover everything needed for offline processing
 
 	setConfigBlockProp(CONFIG_BLOCK_WIDTH_POS, WIDTH / BINNING);
 	setConfigBlockProp(CONFIG_BLOCK_HEIGHT_POS, HEIGHT / BINNING);
@@ -356,8 +354,8 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
 	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt;
 	
-	// TODO: Put the correct value for data length. This will change if it is a partially filled buffer
-	// UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer. We can calculate from this
+	// Note: this assumes a fully filled buffer; the value will differ for a partially filled buffer
+	// (UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer, so it can be calculated from this)
 	dataBuffer[numBuffer][BUFFER_HEADER_DATA_LENGTH_POS + DUMMY_WORD_LENGTH] = dataWordLength * 4; // In bytes
 }
 #endif

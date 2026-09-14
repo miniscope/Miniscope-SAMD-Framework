@@ -9,7 +9,6 @@
 
 #include <atmel_start.h>
 #include <utils.h>
-// test comment
 
 #include "MS_config.h"
 

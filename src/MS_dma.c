@@ -40,6 +40,12 @@ static inline void prbs15_reset_default(void) {
 	prbs15_state = 1u;  // change here if you want a different phase
 }
 
+// Reset using a caller-supplied seed (e.g. buffer index). 15-bit; 0 maps to 1.
+static inline void prbs15_reset_seed(uint16_t seed) {
+	prbs15_state = (uint16_t)(seed & 0x7FFFu);
+	if (prbs15_state == 0) prbs15_state = 1u;
+}
+
 // Return 32 PRBS bits packed MSB-first into a 32-bit word.
 static inline uint32_t prbs15_next_word(void) {
 	uint32_t w = 0;
@@ -253,8 +259,8 @@ void DataBufferInit(void)
 	{
 		dataBuffer[i][0] = PREAMBLE_WORD;
 		#ifdef TEST_PRBS_BUFFER_ENABLE
-		// Restart PRBS each buffer. this is for making all buffers same
-		prbs15_reset_default();
+		// Seed PRBS with buffer index so each buffer has a distinct, reproducible pattern.
+		prbs15_reset_seed((uint16_t)i);
 		#endif
 		for (uint32_t j = 1; j<BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS; j++)
 		{

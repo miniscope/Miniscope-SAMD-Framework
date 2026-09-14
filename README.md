@@ -1,120 +1,111 @@
-## README
-See documentation by cloning this repository and locally opening [html/index.html] with browser.
-- To do: host this somewhere after making this public.
+# Miniscope-SAMD-Framework
 
-### Tips
-- Use this as a Git submodule.
-    - If you're not building a Atmel project inside a git repository, you can do a normal clone too.
-- Only edit the files in Miniscope-SAMD-Framework
-    - To modify ASF drivers, add modified driver files to ASF_custom and add file path to ```MS_prebuild.ps1``` and ```MS_pre_reconfig.ps1``` as ```$cfilepatharray``` and ```$headerpatharray```.
-    - Don't directly modify ATMEL START generated driver files.
-- Follow git flow (main, dev, feature)
-    - You need to make a branch **inside** the nested git submodule.
+Firmware framework for wireless miniature microscopes (miniscopes) based on Microchip SAM D51 microcontrollers. The framework reads out a CMOS image sensor (ON Semiconductor PYTHON 480 or AMS NanEye) through the parallel capture controller (PCC), buffers image data in MCU RAM, and streams it via DMA to a serial data link (SPI/USART) or an SD card. It also controls miniscope peripherals such as the electrowetting lens (EWL), excitation LED, battery and wireless-power voltage monitoring, an IR receiver for remote control, and status LEDs.
 
-### Repository structure
-- src: custom functions
-- include: header files for files in src
-- ASF_custom: customized ASF drivers
-- script: scripts for taking care of conflicts with Atmel START
+The framework is designed to be used as a git submodule inside a Microchip Studio (Atmel START) project. Pre-build scripts link the framework sources into the generated project so that Atmel START files are never edited directly.
 
-### How to configure the git submodule
-1. Set up an Atmel START project
-    - Make sure to follow the Peripheral requirements stated below.
-2. Go to the directory including main.c using git bash (or equivalent shell) 
-3. Execute the following command
-```bash
-git submodule add https://github.com/Aharoni-Lab/Miniscope-SAMD-Framework ./MS_module
-```
-Might need to do the following here. (not sure if this is safe though)
-```bash
-git config --global protocol.file.allow always
-```
-4. In Solution Explorer (Microchip Studio), click "Show All Files".
-5. Right click on ```MS_module``` and select "Include in Project"
-6. Add following to the include path (Project -> Properties -> Toolchain -> ARM/GNU C Compiler -> Directories) (configuration: All configurations)
-```
-../MS_module/include
-```
-7. Add pre-build eventBuild events (configuration: All configurations)
-```ps
-powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "..\MS_module\script\MS_prebuild.ps1"
-```
+## Repository structure
 
-### Conditional compile flag
-- All mode/peripheral enable should be defined in MS_definitions.h
-    - Firmware mode: end by _MODE or _TESTMODE
-    - Peripheral mode  : end by _ENABLE or _DISABLE
-- Conditional compile should be flagged by _ENABLE or _DISABLE
+- `src/`: application sources
+- `include/`: headers, including the build configuration (`MS_config.h`)
+- `ASF_custom/`: customized Atmel Software Framework (ASF) drivers, stored with `.csrc`/`.hsrc` extensions and installed by the pre-build script
+- `script/`: PowerShell scripts that install/uninstall the framework sources into the parent Atmel START project
+- `atstart/`: Atmel START configuration archives (`.atzip`) for supported hardware
+- `main.csrc`: application entry point, installed as the parent project's `main.c`
+- `Doxyfile`, `html/`: Doxygen documentation; open `html/index.html` in a browser after cloning
 
-#### Mode flag
-- Select/define one of the modes using #define
-- End mode with _MODE or _TESTMODE
+## Requirements
+
+- Microchip Studio with an Atmel START project targeting a SAM D51 device
+- PowerShell (invoked by the pre-build event)
+
+## Setup
+
+1. Create an Atmel START project configured with the drivers and pins listed under [Peripheral requirements](#peripheral-requirements-atmel-start-config). The archives in `atstart/` can be used as a starting point.
+2. From the directory containing the project's `main.c`, add this repository as a submodule:
+   ```bash
+   git submodule add https://github.com/Aharoni-Lab/Miniscope-SAMD-Framework ./MS_module
+   ```
+3. In the Microchip Studio Solution Explorer, click "Show All Files", right-click `MS_module`, and select "Include in Project".
+4. Add the following to the include paths (Project -> Properties -> Toolchain -> ARM/GNU C Compiler -> Directories, configuration: All configurations):
+   ```
+   ../MS_module/include
+   ```
+5. Add the following pre-build event (configuration: All configurations):
+   ```
+   powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "..\MS_module\script\MS_prebuild.ps1"
+   ```
+
+The pre-build script replaces the generated `main.c` and selected ASF drivers with the versions in this repository (`main.csrc`, `ASF_custom/`) using hard links. Before re-running Atmel START code generation, run `script/MS_pre_reconfig.ps1` to restore the original files.
+
+Do not modify Atmel START generated driver files directly. To customize an ASF driver, add the modified file to `ASF_custom/` (with a `.csrc`/`.hsrc` extension) and register its path in `$cfilepatharray`/`$headerpatharray` in `MS_prebuild.ps1` and `MS_pre_reconfig.ps1`.
+
+## Configuration
+
+All build configuration is done with compile-time flags in `include/MS_config.h`.
+
+### Mode flags
+
+Select exactly one hardware mode (`*_MODE` or `*_TESTMODE`), which determines the data path and the set of peripherals compiled in:
+
 ```c
-// ------ FIRMWARE MODE ------------------------
-#define WLMS_MODE
+// ------ HARDWARE MODE ------------------------
 //#define V4WF_MODE
+#define WLMS_SPI_MODE
+//#define BERT_MODE
+//#define GS_MODE
+//#define WLMS_USART_MODE
+//#define WLMS_SD_MODE
 //#define DMA_TO_SPI_TESTMODE
 //#define DMA_TO_SPI_METRO_TESTMODE
 ```
 
-#### Peripheral enable flag
-- Select/define the enabled peripherals using #ifdef or #if
-- End with _ENABLE or _DISABLE
+For example, `WLMS_SPI_MODE` streams PYTHON 480 image data over SPI, `WLMS_SD_MODE` records to an SD card, and `BERT_MODE` streams a PRBS test pattern for bit-error-rate testing of the data link.
+
+### Peripheral flags
+
+Each mode defines the peripherals to enable (`*_ENABLE` / `*_DISABLE`) together with mode-specific parameters (buffer sizes, frame rate, sensor ROI, device ID, etc.):
+
 ```c
-// ------ PERIPHERAL ENABLE ------------------------
-#ifdef WLMS_MODE
+#ifdef WLMS_SPI_MODE
 #define PYTHON480_ENABLE
+#define EWL_ENABLE
 #define DMA_TO_SPI_ENABLE
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
-#define WPT_ADC_ENABLE
-#define EWL_ENABLE
-#define PUSH_BUT_ENABLE
-#define STATUS_LED_ENABLE
-#define 
-
+// ...
 #endif
 ```
 
-#### Conditional compile
-Define peripheral functions within a peripheral enable flag (avoid using mode flags)
+### Conditional compilation
+
+Peripheral code should be guarded by the peripheral's `_ENABLE` flag (not by mode flags):
 
 ```c
 #ifdef PYTHON480_ENABLE
-// Enable the 3.3V regulator
-gpio_set_pin_level(EN_3V3, true);
+gpio_set_pin_level(EN_3V3, true); // Enable the 3.3V regulator
 I2C_BB_init();
 #endif
 ```
 
-```c
-#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM7_ENABLE)
-hri_sercomspi_set_CTRLC_ICSPACE_bf(SERCOM7, SPI_ICSPACE_MS);
-hri_sercomspi_write_BAUD_reg(SERCOM7, SPI_BAUD_MS);
-spi_m_sync_enable(&
-);
-#endif
-   ```
+### SERCOM for data output
 
-#### SERCOM for DMA
-- Define SERCOM setting in ATMEL START
-- Only part that should be manually changed is the DMA's DSTADDR.reg in MS_dma.c. This should be defined using conditional compile.
-```c
-#if defined(DMA_TO_SPI_ENABLE) && defined(SPI_SERCOM0_ENABLE)
-TXLinkedList[i].DSTADDR.reg = (uint32_t) &SERCOM0->SPI.DATA.reg;
-#endif
-```
+The SERCOM used for serial data output is configured in Atmel START. On the firmware side, select the corresponding `SPI_SERCOMx_ENABLE` or `USART_SERCOMx_ENABLE` flag in the mode definition; the DMA destination register is resolved from this flag (see `src/MS_global_variable.c`).
 
-### Peripheral requirements (Atmel START config)
-#### PYTHON480_ENABLE
-Drivers
+## Peripheral requirements (Atmel START config)
+
+### PYTHON480_ENABLE
+
+Drivers:
+
 ```
 TIMER_0
 CAMERA_0
 EXTERNAL_IRQ_0
 ```
 
-Pins
+Pins:
+
 ```
 SPI_BB_SCK
 SPI_BB_MOSI
@@ -131,59 +122,48 @@ MONITOR0
 GCLK1_OUT
 ```
 
-#### BATTERY_ENABLE
+### BATTERY_ENABLE
+
 ```
 BATT_VOLT
 ```
 
-#### WPT_ENABLE
+### WPT_ADC_ENABLE
+
 ```
 WPT_VOLT
 ```
 
-#### EWL_ENABLE
+### EWL_ENABLE
+
 ```
 I2C_BB_SCL
 I2C_BB_SDA
 ```
 
-#### IR_TRIGGER_ENABLE
+### IR_TRIGGER_ENABLE / IR_UART_ENABLE
+
 ```
 IR_RX
 ```
 
-#### IR_UART_ENABLE
-```
-IR_RX
-```
+### EXLED_PWM_ENABLE
 
-#### EXLED_PWM_ENABLE
 ```
 LED_PWM
 ENT_LED
 ```
 
-#### MCU_TEMP_ENABLE
-No pins. Requires ```BATTERY_ENABLE``` (ADC_0 on ADC0): the SAMD51 temperature sensor
-(SUPC PTAT/CTAT) is only reachable through ADC0. ```readMCUTemperature()``` reconfigures ADC0
-for the measurement and restores the battery-ADC settings afterwards. The result is written into
-```BUFFER_HEADER_MCU_TEMP_POS``` in the buffer header (signed int32, 0.01 degC, ```MCU_TEMP_INVALID```
-if unavailable), replacing the old DMA linked-list position field, which was always equal to
-```buffer count % NUM_BUFFERS``` and unused on the host side.
-The temperature is only sampled every ```MCU_TEMP_READ_PERIOD_TICKS``` battery-check ticks (default 4, i.e.
-every 2 s) because the read blocks the timer ISR for ~0.4 ms; battery and WPT stay at 500 ms.
+### MCU_TEMP_ENABLE
 
-### Open questions / to do
-- Write everything for minimum prototype
-- Ask someone to add module
-    - I think Marcel is interesting in adding the LUTmodule
-- More safe/efficient coding rule
-- Branch protection
-- Code organization
-    - Probably the functions should be organized by peripherals? or Projects?
-    - Might need to narrow down namespaces
-- Good way to add error handling (if we need it)
-- Namespace is probably too wide than it should be
-    - Almost all global now
-    - Might be ok for this scale project
-- If conditional compile should be defined in main.c or in each function
+No pins. Requires `BATTERY_ENABLE` (ADC_0 on ADC0): the SAM D51 temperature sensor (SUPC PTAT/CTAT) is only reachable through ADC0. `readMCUTemperature()` reconfigures ADC0 for the measurement and restores the battery-ADC settings afterwards. The result is written into `BUFFER_HEADER_MCU_TEMP_POS` in the buffer header (signed int32, 0.01 degC, `MCU_TEMP_INVALID` if unavailable), replacing the old DMA linked-list position field, which was always equal to `buffer count % NUM_BUFFERS` and unused on the host side.
+
+The temperature is only sampled every `MCU_TEMP_READ_PERIOD_TICKS` battery-check ticks (default 4, i.e. every 2 s) because the read blocks the timer ISR for ~0.4 ms; battery and WPT monitoring stay at 500 ms.
+
+## Documentation
+
+API documentation is generated with Doxygen and committed under `html/`; open `html/index.html` in a browser. To regenerate, run `doxygen Doxyfile` in the repository root.
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0; see [LICENSE](LICENSE). The modified ASF driver files in `ASF_custom/` are derived from the Atmel Software Framework and retain their original Microchip/Atmel license headers.

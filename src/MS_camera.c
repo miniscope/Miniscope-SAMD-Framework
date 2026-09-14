@@ -12,7 +12,6 @@
 #ifdef PYTHON480_ENABLE
 void imageSensorInit(void){
 	// Setup Image Sensor
-	// TODO: Work on minimizing power draw
 	// Trigger pin gets init'ed as output low and shouldn't need to be adjusted
 	gpio_set_pin_level(RESET_CMOS, 0); // Make sure N_RESET of the PYTHON480 is low for a bit before going high. Shouldn't be needed
 	delay_ms(100);

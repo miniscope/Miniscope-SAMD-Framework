@@ -87,12 +87,8 @@ void stopRecording()
 	#endif
 	
 	//sd_mmc_wait_end_of_write_blocks(true); // Abort any initalized write blocks
-	// TODO: Change status LEDs
-	
-	// TODO: Update currentBlock maybe to get ready for next recording??
-	
+
 	// Write end of recording info to a block
-	// TODO: Add more meta data to this (frames dropped?, blocks written?, overall time, data starting block?)!
 	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_RECORDED_POS, writeBufferCount);
 	setConfigBlockProp(CONFIG_BLOCK_NUM_BUFFERS_DROPPED_POS, droppedBufferCount);
 	

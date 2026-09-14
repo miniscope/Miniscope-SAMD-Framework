@@ -459,8 +459,6 @@ void sdmmc_dma_transfer_control(void)
 				initBlocksRemaining = (BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK);
 			}
 			else {
-				// TODO: error checking with LED showing status
-				
 				// This finishes up the remaining blocks in the current set of initialized blocks
 				if (sd_mmc_start_write_blocks(bufferToWrite, initBlocksRemaining) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_WRITE_ERROR;
@@ -469,7 +467,6 @@ void sdmmc_dma_transfer_control(void)
 				currentBlock += initBlocksRemaining;
 				
 				// We now initialize the next set of blocks
-				// TODO: Probably handle errors better here and don't go forward with writing if init fails
 				if (sd_mmc_init_write_blocks(0, currentBlock, BUFFER_BLOCK_LENGTH * NB_BUFFER_WRITES_PER_CHUNK) != SD_MMC_OK)
 				deviceState |= DEVICE_STATE_SDCARD_INIT_WRITE_ERROR;
 				
