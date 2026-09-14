@@ -33,6 +33,27 @@ two-point factory calibration stored in the NVM Temperature Log Row.
 // so this is only bookkeeping; reuse the battery channel.
 #define MCU_TEMP_ADC_CHANNEL		ADC_CHANNEL_BATTERY
 
+// Upper bound on the RESRDY busy-wait. readMCUTemperature() runs inside
+// checkBattVoltage_cb, so a conversion that never completes would hang that ISR
+// permanently. One averaged 12-bit conversion takes ~75 us, so this leaves a wide
+// margin while still guaranteeing the loop terminates.
+#define MCU_TEMP_RESRDY_TIMEOUT		100000UL
+
+/**
+@brief Busy-wait for an ADC0 conversion, giving up instead of spinning forever.
+@return true if RESRDY came up, false if the wait timed out
+*/
+static bool waitADCResultReady(void)
+{
+	for (uint32_t spins = 0; spins < MCU_TEMP_RESRDY_TIMEOUT; spins++) {
+		if (hri_adc_get_INTFLAG_RESRDY_bit(ADC0)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /**
 @brief Read one internal temperature sensor input (PTAT or CTAT) on ADC0.
 @param input ADC_INPUTCTRL_MUXPOS_PTAT_Val or ADC_INPUTCTRL_MUXPOS_CTAT_Val
@@ -112,11 +133,13 @@ int32_t readMCUTemperature(void)
 	hri_adc_write_INPUTCTRL_reg(ADC0, inputctrl);
 	adc_sync_enable_channel(&ADC_0, MCU_TEMP_ADC_CHANNEL);
 
-	// Throw away the first conversion after switching the reference back
+	// Throw away the first conversion after switching the reference back. The
+	// temperature itself is already sampled at this point, so a timeout here only
+	// means the next battery reading may still be settling - report the reading.
 	hri_adc_set_SWTRIG_START_bit(ADC0);
-	while (!hri_adc_get_INTFLAG_RESRDY_bit(ADC0)) {
+	if (waitADCResultReady()) {
+		(void)hri_adc_read_RESULT_reg(ADC0);
 	}
-	(void)hri_adc_read_RESULT_reg(ADC0);
 
 	return calcTemperatureCentiC(ptat, ctat);
 }
