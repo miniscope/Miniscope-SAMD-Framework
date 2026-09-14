@@ -46,7 +46,7 @@
 // Buffer Header position definitions
 #define BUFFER_HEADER_LENGTH					12
 #define BUFFER_HEADER_HEADER_LENGTH_POS			0
-#define BUFFER_HEADER_LINKED_LIST_POS			1
+#define BUFFER_HEADER_MCU_TEMP_POS				1
 #define BUFFER_HEADER_FRAME_NUM_POS				2
 #define BUFFER_HEADER_BUFFER_COUNT_POS			3
 #define BUFFER_HEADER_FRAME_BUFFER_COUNT_POS	4
@@ -72,6 +72,11 @@
 // ------------ ADC channel Definitions -----
 #define ADC_CHANNEL_BATTERY						0
 #define ADC_CHANNEL_POWERBUS					2
+// -------------------------------------------
+
+// ------------ MCU temperature -------------
+#define MCU_TEMP_INVALID						0x7FFFFFFF // Written to the header when the NVM calibration row is unusable
+#define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
 // -------------------------------------------
 
 // -------------------------------------------
@@ -191,6 +196,7 @@ extern volatile uint32_t initBlocksRemaining;
 extern volatile uint32_t deviceState;
 extern volatile uint16_t battVolt;
 extern volatile uint8_t wptVolt;
+extern volatile int32_t mcuTempCentiC; // MCU die temperature in 0.01 degC, updated by checkBattVoltage_cb
 extern volatile uint32_t startTimeMS;
 extern volatile uint32_t endTimeMS;
 extern volatile uint32_t timeMS;
@@ -280,6 +286,7 @@ void setPCCCurrentLinkedListPosition(uint8_t pos);
 void debugHeaderProp(void);
 
 void setExcitationLED(uint32_t value, bool enable);
+int32_t readMCUTemperature(void);
 void setEWL(uint32_t value);
 void setStatusLED(bool value);
 

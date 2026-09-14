@@ -154,6 +154,12 @@ LED_PWM
 ENT_LED
 ```
 
+### MCU_TEMP_ENABLE
+
+No pins. Requires `BATTERY_ENABLE` (ADC_0 on ADC0): the SAM D51 temperature sensor (SUPC PTAT/CTAT) is only reachable through ADC0. `readMCUTemperature()` reconfigures ADC0 for the measurement and restores the battery-ADC settings afterwards. The result is written into `BUFFER_HEADER_MCU_TEMP_POS` in the buffer header (signed int32, 0.01 degC, `MCU_TEMP_INVALID` if unavailable), replacing the old DMA linked-list position field, which was always equal to `buffer count % NUM_BUFFERS` and unused on the host side.
+
+The temperature is only sampled every `MCU_TEMP_READ_PERIOD_TICKS` battery-check ticks (default 4, i.e. every 2 s) because the read blocks the timer ISR for ~0.4 ms; battery and WPT monitoring stay at 500 ms.
+
 ## Documentation
 
 API documentation is generated with Doxygen and committed under `html/`; open `html/index.html` in a browser. To regenerate, run `doxygen Doxyfile` in the repository root.
