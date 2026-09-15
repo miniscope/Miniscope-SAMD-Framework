@@ -355,6 +355,14 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
 	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
 	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt;
+
+	#ifdef TX_SLIP_TELEMETRY_ENABLE
+	// TX ring diagnostics in the write-timestamp slot, which is unused on the optical path.
+	// One byte each, MSB first: maxBacklog | skippedResume | phaseErr | slipCount.
+	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_TIMESTAMP_POS + DUMMY_WORD_LENGTH] =
+	    ((sdoMaxBacklog & 0xFF) << 24) | ((sdoSkippedResume & 0xFF) << 16)
+	    | ((sdoPhaseErr & 0xFF) << 8) | (sdoSlipCount & 0xFF);
+	#endif
 	
 	// TODO: Put the correct value for data length. This will change if it is a partially filled buffer
 	// UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer. We can calculate from this

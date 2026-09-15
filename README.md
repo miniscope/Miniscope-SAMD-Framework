@@ -17,6 +17,47 @@ See documentation by cloning this repository and locally opening [html/index.htm
 - ASF_custom: customized ASF drivers
 - script: scripts for taking care of conflicts with Atmel START
 
+### Buffer header
+Every data buffer starts with `DUMMY_WORD_LENGTH` (10) dummy words followed by
+`BUFFER_HEADER_LENGTH` (12) header words, all 32-bit. Slot positions are the
+`BUFFER_HEADER_*_POS` defines in `MS_definitions.h`; the values are written by
+`setBufferHeader()` in `MS_util.c`.
+
+| slot | name | contents |
+|---|---|---|
+| 0 | HEADER_LENGTH | `PREAMBLE_WORD` 0x12345678 with `PREAMBLE_ENABLE`, else the header length |
+| 1 | LINKED_LIST | `bufferCount % NUM_BUFFERS` |
+| 2 | FRAME_NUM | frame index |
+| 3 | BUFFER_COUNT | buffers produced since recording start |
+| 4 | FRAME_BUFFER_COUNT | buffer index within the frame |
+| 5 | WRITE_BUFFER_COUNT | buffers handed to the transmitter |
+| 6 | DROPPED_BUFFER_COUNT | buffers skipped (SD-card path only) |
+| 7 | TIMESTAMP | ms since recording start |
+| 8 | DATA_LENGTH | payload bytes in this buffer |
+| 9 | WRITE_TIMESTAMP | ms at SD-card write; 0 on the optical path unless `TX_SLIP_TELEMETRY_ENABLE` |
+| 10 | BATTERY_VOLTAGE | battery ADC raw, 8-bit |
+| 11 | WPT_VOLTAGE | wireless-power input ADC raw, 8-bit |
+
+miniscope-io parses these buffers unmodified; its index is the firmware slot minus one,
+since the preamble is stripped.
+
+### Optical TX flow control (control build: telemetry only)
+This branch keeps master's TX ring behaviour unchanged and only adds the diagnostics that
+`tx-ring-susp-gate` uses, so the two can be compared on the same telemetry. The TX DMA walks a
+fixed circular ring of `NUM_BUFFERS` descriptors, suspending after every block; firmware
+issues a RESUME per buffer from `sdo_dma_transfer_resume()` and counts it in
+`writeBufferCount`. A RESUME issued while a block is still in flight is ignored by the DMAC
+but still counted, so the counter drifts ahead of the hardware; here that is measured, not
+prevented.
+
+`TX_SLIP_TELEMETRY_ENABLE` (per mode in `MS_config.h`) reports this in header slot 9, one
+byte each, MSB first: `maxBacklog | spuriousResume | phaseErr | slipCount`. `phaseErr` is the
+hardware TX slot minus `writeBufferCount`, mod `NUM_BUFFERS` (0 while aligned; it walks away
+from 0 as the counter drifts); `slipCount` counts the times it changed; `spuriousResume`
+counts resumes issued while `CHINTFLAG.SUSP` was clear, i.e. how often the race fired (on the
+gate build the same byte counts the resumes it refused); `maxBacklog` is the deepest transmit
+backlog seen (of `NUM_BUFFERS`). Same byte layout as `tx-ring-susp-gate`.
+
 ### How to configure the git submodule
 1. Set up an Atmel START project
     - Make sure to follow the Peripheral requirements stated below.

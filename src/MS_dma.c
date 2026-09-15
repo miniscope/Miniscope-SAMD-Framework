@@ -201,9 +201,14 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
-		writeBufferCount++; // not sure if this should be counted
+		writeBufferCount++; // block 0 goes out with the enable itself, so it counts as issued
 		return;
 	}
+	// CONTROL BUILD: flow control below is unchanged from master. Only the telemetry is new.
+	uint32_t accounted = writeBufferCount + droppedBufferCount;
+	uint32_t backlog   = (bufferCount > accounted) ? (bufferCount - accounted) : 0;
+	if (backlog > sdoMaxBacklog) sdoMaxBacklog = backlog;
+
 	if (bufferCount - (writeBufferCount + droppedBufferCount) > 0){
 		#ifdef PYTHON480_ENABLE
 		// send out pending bits and return
@@ -234,8 +239,36 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	sdo_dma_transfer_resume();
 	#endif
 }
+// Telemetry only: compare the slot the hardware will send next with the slot the counter
+// says it should be. At resume time the channel is suspended, so the write-back DESCADDR
+// names the descriptor the RESUME will start; on a fresh boot that is always
+// writeBufferCount % NUM_BUFFERS (block 0 goes out with the enable and is counted at the
+// first call). Any other value means the counter and the hardware have parted ways.
+static void sdo_measure_tx_phase(void)
+{
+	uint32_t nextDesc = _dma_get_DESCADDR(SDO_DMA_CHANNEL);
+	uint32_t hwSlot   = (nextDesc - (uint32_t)&TXLinkedList[0]) / sizeof(TXLinkedList[0]);
+	if (hwSlot >= NUM_BUFFERS) return; // write-back section not filled in yet
+
+	uint32_t err = (hwSlot + NUM_BUFFERS - (writeBufferCount % NUM_BUFFERS)) % NUM_BUFFERS;
+	if (err != sdoPhaseErr) sdoSlipCount++;
+	sdoPhaseErr = err;
+}
+
+// CONTROL BUILD: resumes exactly as master does (unconditionally, counting every RESUME in
+// writeBufferCount), but records how often that RESUME was issued while the previous block
+// was still in flight. CHINTFLAG.SUSP is set by hardware once per block-end suspend and
+// cleared here on every resume, so a resume that finds it clear is one the DMAC will ignore:
+// on the fixed build (tx-ring-susp-gate) those are refused; here they are counted and let
+// through so the resulting drift can be measured against the same telemetry.
 void sdo_dma_transfer_resume(void)
 {
+	if (DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP == 0) {
+		sdoSkippedResume++; // spurious resume: counted, NOT skipped on this build
+	} else {
+		DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.reg = DMAC_CHINTFLAG_SUSP;
+	}
+	sdo_measure_tx_phase();
 	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary

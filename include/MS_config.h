@@ -50,6 +50,7 @@ The modes should be a set of peripherals used in the specified mode.
 //#define PYTHON480_304PX_NOSUBSAMPLE
 #define EWL_ENABLE
 #define DMA_TO_SPI_ENABLE
+#define TX_SLIP_TELEMETRY_ENABLE // TX ring diagnostics in header slot 9 (see README); CONTROL build: master ring behaviour + telemetry
 #define EXLED_PWM_ENABLE
 #define BATTERY_ENABLE
 #define BATTERY_CB_DISABLE
