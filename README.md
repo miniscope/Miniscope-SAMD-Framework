@@ -108,12 +108,23 @@ firmware slot minus one.
 | 3 | BUFFER_COUNT | buffers produced since recording start |
 | 4 | FRAME_BUFFER_COUNT | buffer index within the frame |
 | 5 | WRITE_BUFFER_COUNT | buffers handed to the transmitter |
-| 6 | DROPPED_BUFFER_COUNT | buffers skipped (SD-card path only) |
+| 6 | DROPPED_BUFFER_COUNT | `droppedBufferCount` + `sdoOverrunCount` (see below) |
 | 7 | TIMESTAMP | ms since recording start |
 | 8 | DATA_LENGTH | payload bytes in this buffer |
 | 9 | WRITE_TIMESTAMP | ms at SD-card write; 0 on the optical path unless `TX_SLIP_TELEMETRY_ENABLE` |
 | 10 | BATTERY_VOLTAGE | battery ADC raw, 8-bit |
 | 11 | WPT_VOLTAGE | wireless-power input ADC raw, 8-bit |
+
+### Dropped buffers on the optical path
+
+`droppedBufferCount` only moves in `sdmmc_dma_transfer_control()`, and both its call site and
+its timer registration sit inside `#if 0`, so on the optical link it is always 0. What that path
+can actually lose is a buffer the camera overwrites before the transmitter has sent it:
+`pcc_cb()` counts one `sdoOverrunCount` per buffer for which
+`writeBufferCount + droppedBufferCount < bufferCount - NUM_BUFFERS`. Header slot 6 carries the
+sum of the two, so the field means "buffers lost" on either path and miniscope-io needs no
+change. Should stay 0; a non-zero value means the transmitter fell more than `NUM_BUFFERS`
+behind the camera and image data was lost.
 
 ### TX_SLIP_TELEMETRY_ENABLE
 

@@ -21,6 +21,7 @@ void startRecording()
 	droppedBufferCount = 0;
 	droppedFrameCount = 0;
 	framesToDrop = 0;
+	sdoOverrunCount = 0;
 	sdoSkippedResume = 0;
 	sdoSlipCount = 0;
 	sdoPhaseErr = 0;

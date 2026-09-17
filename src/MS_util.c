@@ -349,7 +349,13 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = bufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = frameBufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_WRITE_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = writeBufferCount;
+	#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+	// The SD write path is compiled out on the optical link, so droppedBufferCount never
+	// moves there; sdoOverrunCount carries the losses that path can actually suffer.
+	dataBuffer[numBuffer][BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = droppedBufferCount + sdoOverrunCount;
+	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_DROPPED_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = droppedBufferCount;
+	#endif
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
 	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
 	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt;
