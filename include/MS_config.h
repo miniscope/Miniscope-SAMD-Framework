@@ -56,6 +56,10 @@ The modes should be a set of peripherals used in the specified mode.
 #define BATTERY_CB_DISABLE
 #define WPT_ADC_ENABLE
 #define MCU_TEMP_ENABLE // MCU die temperature in the buffer header (needs BATTERY_ENABLE: ADC_0 on ADC0)
+#define SENSOR_STATUS_ENABLE // PYTHON480 black-cal error + die temperature in header slot 11 bits 31:8 (see README)
+#define BLACKCAL_MODE			BLACKCAL_MODE_AUTO	// AUTO, FREEZE or MANUAL: black-level A/B test under wireless power
+#define BLACKCAL_MANUAL_OFFSET		0	// MANUAL only: reg 129[9:1], 0..511 LSB10
+#define BLACKCAL_MANUAL_OFFSET_DEC	0	// MANUAL only: 0 adds the offset, 1 subtracts it
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE

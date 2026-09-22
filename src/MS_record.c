@@ -59,6 +59,10 @@ void startRecording()
 	python480SetFPS(FRAME_RATE); // test value 1, 5, 10, 15, 20.
 	setStatusLED(1);
 	#endif
+
+	#ifdef SENSOR_STATUS_ENABLE
+	applyBlackCalMode();
+	#endif
 	
 	deviceState &= ~(DEVICE_STATE_IDLE);
 	deviceState &= ~(DEVICE_STATE_START_RECORDING);

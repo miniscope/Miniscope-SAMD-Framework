@@ -295,6 +295,12 @@ void frameValid_cb(void)
 				_dma_enable_transaction(CONF_PCC_DMA_CHANNEL, false); // Should enable DMA transfer
 				
 				PCC->MR.reg |= PCC_MR_PCEN; // Enables PCC
+
+				#ifdef SENSOR_STATUS_ENABLE
+				// After the PCC is re-armed so the SPI read (~120 us) never delays capture.
+				// Status of the frame that just ended lands in the next frame's headers.
+				readSensorStatus();
+				#endif
 			}
 			if (deviceState & DEVICE_STATE_STOP_RECORDING) {
 				// Reset linked lists so we will be ready to start recording again in the future

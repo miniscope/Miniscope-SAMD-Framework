@@ -103,7 +103,7 @@ firmware slot minus one.
 | slot | name | contents |
 |---|---|---|
 | 0 | HEADER_LENGTH | `PREAMBLE_WORD` 0x12345678 with `PREAMBLE_ENABLE`, else the header length |
-| 1 | LINKED_LIST | `bufferCount % NUM_BUFFERS` |
+| 1 | MCU_TEMP | MCU die temperature, signed, 0.01 degC (see `MCU_TEMP_ENABLE`) |
 | 2 | FRAME_NUM | frame index |
 | 3 | BUFFER_COUNT | buffers produced since recording start |
 | 4 | FRAME_BUFFER_COUNT | buffer index within the frame |
@@ -113,7 +113,7 @@ firmware slot minus one.
 | 8 | DATA_LENGTH | payload bytes in this buffer |
 | 9 | WRITE_TIMESTAMP | ms at SD-card write; 0 on the optical path unless `TX_SLIP_TELEMETRY_ENABLE` |
 | 10 | BATTERY_VOLTAGE | battery ADC raw, 8-bit |
-| 11 | WPT_VOLTAGE | wireless-power input ADC raw, 8-bit |
+| 11 | WPT_VOLTAGE | bits 7:0 wireless-power input ADC raw; bits 31:8 sensor status (see `SENSOR_STATUS_ENABLE`) |
 
 ### Dropped buffers on the optical path
 
@@ -203,6 +203,31 @@ ENT_LED
 No pins. Requires `BATTERY_ENABLE` (ADC_0 on ADC0): the SAM D51 temperature sensor (SUPC PTAT/CTAT) is only reachable through ADC0. `readMCUTemperature()` reconfigures ADC0 for the measurement and restores the battery-ADC settings afterwards. The result is written into `BUFFER_HEADER_MCU_TEMP_POS` in the buffer header (signed int32, 0.01 degC, `MCU_TEMP_INVALID` if unavailable), replacing the old DMA linked-list position field, which was always equal to `buffer count % NUM_BUFFERS` and unused on the host side.
 
 The temperature is only sampled every `MCU_TEMP_READ_PERIOD_TICKS` battery-check ticks (default 4, i.e. every 2 s) because the read blocks the timer ISR for ~0.4 ms; battery and WPT monitoring stay at 500 ms.
+
+### SENSOR_STATUS_ENABLE
+
+No pins (uses the sensor's bit-banged SPI). Makes the PYTHON480 black-level calibration visible, since
+wireless-power disturbance on the black lines is the suspect for frame-wide "whitening" offsets. The
+computed black offset itself is not readable, so header slot 11 bits 31:8 carry what is:
+
+| slot 11 bits | contents |
+|---|---|
+| 7:0 | `wptVolt` (unchanged) |
+| 15:8 | sensor die temperature, reg 97 raw (~0.75 degC/LSB, uncalibrated), refreshed every `SENSOR_TEMP_READ_PERIOD_FRAMES` (40) frames |
+| 17:16 | `blackcal_error` per data channel, reg 136: not enough black samples, calibration invalid |
+| 19:18 | `BLACKCAL_MODE` in effect: 0 auto, 1 freeze, 2 manual |
+| 22 | regs 96/128/129 read back different from what was written |
+| 23 | valid: 1 once `applyBlackCalMode()` ran; 0 in older firmware |
+
+`readSensorStatus()` runs in `frameValid_cb()` at end of frame, after the PCC is re-armed, with a faster
+bit-bang read (`SENSOR_SPI_HALF_PERIOD_US` = 2, ~120 us per register; the stock `spi_BB_Read()` takes
+~0.6 ms). The status of frame N therefore appears in the headers of frame N+1. `applyBlackCalMode()`
+runs at recording start, writes reg 129 for the chosen mode and verifies the configuration.
+
+`BLACKCAL_MODE` in `MS_config.h` selects the A/B test: `AUTO` (0x8001, default), `FREEZE` (0x83FF, meant to
+hold the current factors; not documented in the PYTHON family datasheet, verify on hardware) or `MANUAL`
+(auto calibration off, fixed `BLACKCAL_MANUAL_OFFSET`, documented behaviour). Expect a few transient frames
+after the reg 129 write in FREEZE/MANUAL.
 
 ## Documentation
 

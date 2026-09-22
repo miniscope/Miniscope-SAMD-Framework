@@ -79,6 +79,21 @@
 #define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
 // -------------------------------------------
 
+// ------------ PYTHON480 sensor status ------
+// sensorStatus goes into header slot 11 shifted left by 8 (wptVolt keeps bits 7:0).
+#define BLACKCAL_MODE_AUTO						0 // reg 129 = 0x8001, per-frame auto calibration (default)
+#define BLACKCAL_MODE_FREEZE					1 // reg 129 = 0x83FF, hold the current factors (handoff claim, not in the family datasheet)
+#define BLACKCAL_MODE_MANUAL					2 // reg 129 = 0x8000 | offset: auto calibration off, fixed offset
+#define SENSOR_STATUS_TEMP_SHIFT				0			// [7:0] sensor die temperature raw (reg 97, ~0.75 degC/LSB)
+#define SENSOR_STATUS_BLACKCAL_ERR_SHIFT		8			// [9:8] blackcal_error per channel (reg 136)
+#define SENSOR_STATUS_MODE_SHIFT				10			// [11:10] BLACKCAL_MODE in effect
+#define SENSOR_STATUS_MODE_MASK					(0x3 << SENSOR_STATUS_MODE_SHIFT)
+#define SENSOR_STATUS_CFG_MISMATCH				(1 << 14)	// regs 96/128/129 read back different from what was written
+#define SENSOR_STATUS_VALID						(1 << 15)	// set once applyBlackCalMode() ran; 0 in older firmware
+#define SENSOR_TEMP_READ_PERIOD_FRAMES			40			// sensor temperature read every N frames (2 s at 20 fps)
+#define SENSOR_SPI_HALF_PERIOD_US				2			// fast status read: ~250 kHz SCK, ~120 us per register
+// -------------------------------------------
+
 // -------------------------------------------
 // -------------- SD Definitions -------------
 #define STARTING_BLOCK				1024
@@ -197,6 +212,7 @@ extern volatile uint32_t deviceState;
 extern volatile uint16_t battVolt;
 extern volatile uint8_t wptVolt;
 extern volatile int32_t mcuTempCentiC; // MCU die temperature in 0.01 degC, updated by checkBattVoltage_cb
+extern volatile uint32_t sensorStatus; // PYTHON480 status for header slot 11 bits 31:8, see SENSOR_STATUS_*
 extern volatile uint32_t startTimeMS;
 extern volatile uint32_t endTimeMS;
 extern volatile uint32_t timeMS;
@@ -292,6 +308,8 @@ void debugHeaderProp(void);
 
 void setExcitationLED(uint32_t value, bool enable);
 int32_t readMCUTemperature(void);
+void applyBlackCalMode(void);
+void readSensorStatus(void);
 void setEWL(uint32_t value);
 void setStatusLED(bool value);
 

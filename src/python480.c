@@ -259,6 +259,9 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	spi_BB_Write(112, 0x0000); // LVDS powerdown config
 	spi_BB_Write(128, 0x470A); //spi_BB_Write(128, 0x470A); spi_BB_Write(128, 0x4714); black offset
 	spi_BB_Write(129, 0x8001);
+	#ifdef SENSOR_STATUS_ENABLE
+	spi_BB_Write(96, 0x0001); // Enable the die temperature sensor (read back in reg 97)
+	#endif
 	//spi_BB_Write(130, 0x0001); // Handles phase of pixel clock changed from 0x0001 to 0x0015
 
 	// Test Pattern
