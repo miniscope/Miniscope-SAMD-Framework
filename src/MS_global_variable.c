@@ -53,6 +53,11 @@ volatile int32_t mcuTempCentiC = MCU_TEMP_INVALID;
 // used for tracking recording and inc. DMA buffers
 volatile uint32_t writeFrameNum;
 volatile uint32_t writeBufferCount;
+volatile uint32_t sdoOverrunCount = 0;  // buffers the camera overwrote before the transmitter sent them
+volatile uint32_t sdoSkippedResume = 0; // RESUMEs refused because the TX block was still in flight
+volatile uint32_t sdoSlipCount = 0;     // times the hardware-vs-counter phase changed
+volatile uint32_t sdoPhaseErr = 0;      // (hardware TX slot - writeBufferCount) mod NUM_BUFFERS, must stay 0
+volatile uint32_t sdoMaxBacklog = 0;    // largest transmit backlog seen since recording start
 volatile uint32_t droppedBufferCount;
 volatile uint32_t droppedFrameCount;
 volatile uint32_t framesToDrop;

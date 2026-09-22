@@ -92,6 +92,50 @@ I2C_BB_init();
 
 The SERCOM used for serial data output is configured in Atmel START. On the firmware side, select the corresponding `SPI_SERCOMx_ENABLE` or `USART_SERCOMx_ENABLE` flag in the mode definition; the DMA destination register is resolved from this flag (see `src/MS_global_variable.c`).
 
+### Buffer header
+
+Every data buffer starts with `DUMMY_WORD_LENGTH` (10) dummy words followed by
+`BUFFER_HEADER_LENGTH` (12) header words, all 32-bit. Slot positions are the
+`BUFFER_HEADER_*_POS` defines in `include/MS_definitions.h`; the values are written by
+`setBufferHeader()` in `src/MS_util.c`. miniscope-io strips the preamble, so its index is the
+firmware slot minus one.
+
+| slot | name | contents |
+|---|---|---|
+| 0 | HEADER_LENGTH | `PREAMBLE_WORD` 0x12345678 with `PREAMBLE_ENABLE`, else the header length |
+| 1 | LINKED_LIST | `bufferCount % NUM_BUFFERS` |
+| 2 | FRAME_NUM | frame index |
+| 3 | BUFFER_COUNT | buffers produced since recording start |
+| 4 | FRAME_BUFFER_COUNT | buffer index within the frame |
+| 5 | WRITE_BUFFER_COUNT | buffers handed to the transmitter |
+| 6 | DROPPED_BUFFER_COUNT | `droppedBufferCount` + `sdoOverrunCount` (see below) |
+| 7 | TIMESTAMP | ms since recording start |
+| 8 | DATA_LENGTH | payload bytes in this buffer |
+| 9 | WRITE_TIMESTAMP | ms at SD-card write; 0 on the optical path unless `TX_SLIP_TELEMETRY_ENABLE` |
+| 10 | BATTERY_VOLTAGE | battery ADC raw, 8-bit |
+| 11 | WPT_VOLTAGE | wireless-power input ADC raw, 8-bit |
+
+### Dropped buffers on the optical path
+
+`droppedBufferCount` only moves in `sdmmc_dma_transfer_control()`, and both its call site and
+its timer registration sit inside `#if 0`, so on the optical link it is always 0. What that path
+can actually lose is a buffer the camera overwrites before the transmitter has sent it:
+`pcc_cb()` counts one `sdoOverrunCount` per buffer for which
+`writeBufferCount + droppedBufferCount < bufferCount - NUM_BUFFERS`. Header slot 6 carries the
+sum of the two, so the field means "buffers lost" on either path and miniscope-io needs no
+change. Should stay 0; a non-zero value means the transmitter fell more than `NUM_BUFFERS`
+behind the camera and image data was lost.
+
+### TX_SLIP_TELEMETRY_ENABLE
+
+Defined per mode in `include/MS_config.h`. Puts optical TX ring diagnostics in header slot 9,
+one byte each, MSB first: `maxBacklog | skippedResume | phaseErr | slipCount`.
+
+- `phaseErr`: hardware TX ring slot minus `writeBufferCount`, mod `NUM_BUFFERS`. Must stay 0.
+- `slipCount`: times `phaseErr` changed.
+- `skippedResume`: resumes refused because the previous TX block was still in flight.
+- `maxBacklog`: deepest transmit backlog seen, in buffers.
+
 ## Peripheral requirements (Atmel START config)
 
 ### PYTHON480_ENABLE

@@ -362,6 +362,17 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		setBufferHeader(BUFFER_BLOCK_LENGTH * PCC_BLOCK_SIZE_IN_WORDS - (BUFFER_HEADER_LENGTH + DUMMY_WORD_LENGTH));
 		bufferCount++;// increment counters
 		frameBufferCount++;
+
+		#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+		// The slot just filled, (bufferCount - 1) % NUM_BUFFERS, previously held buffer
+		// bufferCount - 1 - NUM_BUFFERS. If the transmitter had not reached that buffer yet
+		// it has now been overwritten unsent, which is the optical path's equivalent of a
+		// dropped buffer. Checked once per buffer, so each loss is counted exactly once.
+		if (bufferCount > NUM_BUFFERS
+		    && (writeBufferCount + droppedBufferCount) < (bufferCount - NUM_BUFFERS)) {
+			sdoOverrunCount++;
+		}
+		#endif
 		
 		#if 0
 		sdmmc_dma_transfer_control();
