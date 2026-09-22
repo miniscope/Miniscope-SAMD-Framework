@@ -229,6 +229,19 @@ hold the current factors; not documented in the PYTHON family datasheet, verify 
 (auto calibration off, fixed `BLACKCAL_MANUAL_OFFSET`, documented behaviour). Expect a few transient frames
 after the reg 129 write in FREEZE/MANUAL.
 
+### BLACKREF_LINE_ENABLE
+
+Puts the sensor's actual per-frame black level into the data stream. The PYTHON480 sends one
+reference line (reg 207 = 1) after its black lines, filled with the black average that the calibration
+block computed for each of the two kernel columns (reg 129[14] `ref_mode`), and reg 130[3] passes it to
+the PCC. Before this flag the init already generated 20 reference lines, gated from `line_valid`.
+
+The line is full sensor width (404 kernels = 808 pixels) and comes first in every frame. To keep a
+frame inside the same 8 buffers, the image shrinks by one ROI y unit to 200 x 196:
+196 * 200 + 808 = 40008 of 8 * 5032 = 40256 pixels. Only sized for `PYTHON480_200PX_NOSUBSAMPLE`.
+miniscope-io needs the matching config (`black_ref_px: 808`, `frame_height: 196`), which strips the
+line and logs the two channel averages per frame.
+
 ## Documentation
 
 API documentation is generated with Doxygen and committed under `html/`; open `html/index.html` in a browser. To regenerate, run `doxygen Doxyfile` in the repository root.

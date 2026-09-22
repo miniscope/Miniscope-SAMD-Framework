@@ -60,6 +60,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define BLACKCAL_MODE			BLACKCAL_MODE_AUTO	// AUTO, FREEZE or MANUAL: black-level A/B test under wireless power
 #define BLACKCAL_MANUAL_OFFSET		0	// MANUAL only: reg 129[9:1], 0..511 LSB10
 #define BLACKCAL_MANUAL_OFFSET_DEC	0	// MANUAL only: 0 adds the offset, 1 subtracts it
+#define BLACKREF_LINE_ENABLE // One reference line with the per-channel black average ahead of each frame; image becomes 200x196 (see README)
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE

@@ -94,6 +94,28 @@
 #define SENSOR_SPI_HALF_PERIOD_US				2			// fast status read: ~250 kHz SCK, ~120 us per register
 // -------------------------------------------
 
+// ------------ PYTHON480 black reference line
+// With BLACKREF_LINE_ENABLE the sensor sends one reference line (reg 207) after the gated black lines,
+// filled with the black average of each kernel column (reg 129[14] ref_mode) and passed to the PCC
+// (reg 130[3]). The image loses 4 rows (one ROI y unit) so a frame still fits in the same 8 buffers.
+#ifdef BLACKREF_LINE_ENABLE
+#ifndef PYTHON480_200PX_NOSUBSAMPLE
+#error "BLACKREF_LINE_ENABLE is only sized for PYTHON480_200PX_NOSUBSAMPLE"
+#endif
+#define BLACKREF_PIXELS_PER_FRAME				808			// one full-width line: 404 kernels x 2 px
+#define BLACKREF_IMAGE_ROWS_REMOVED				4			// one ROI y unit, makes room for the line
+#define PYTHON480_REG129_BASE					0xC000		// ref_bcal_enable | ref_mode (black average on ref lines)
+#define PYTHON480_REG130						0x001D		// 0x0015 plus ref_line_valid_enable
+#define PYTHON480_REF_LINES						1
+#else
+#define BLACKREF_PIXELS_PER_FRAME				0
+#define BLACKREF_IMAGE_ROWS_REMOVED				0
+#define PYTHON480_REG129_BASE					0x8000		// ref_bcal_enable
+#define PYTHON480_REG130						0x0015
+#define PYTHON480_REF_LINES						0x0014		// generated but gated from line_valid
+#endif
+// -------------------------------------------
+
 // -------------------------------------------
 // -------------- SD Definitions -------------
 #define STARTING_BLOCK				1024

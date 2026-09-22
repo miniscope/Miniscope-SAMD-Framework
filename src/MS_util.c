@@ -100,7 +100,7 @@ void initImageSize(void){
 
 	#ifdef PYTHON480_200PX_NOSUBSAMPLE
 	image_width = 200;
-	image_height = 200;
+	image_height = 200 - BLACKREF_IMAGE_ROWS_REMOVED;
 	subsampleEnable = 0;
 	#endif
 
@@ -118,7 +118,7 @@ void initImageSize(void){
 }
 
 void calcImaceSize(void){
-	num_pixels = ((image_width * image_height) / (subsampleEnable + 1) ^ 2);
+	num_pixels = ((image_width * image_height) / (subsampleEnable + 1) ^ 2) + BLACKREF_PIXELS_PER_FRAME;
 }
 void peripheralInit(void)
 {

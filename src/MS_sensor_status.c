@@ -23,7 +23,7 @@ BLACKCAL_MODE used for the auto vs frozen/manual A/B test under wireless power.
 
 #define PY_TEMP_CONFIG_VALUE		0x0001
 #define PY_BLACKCAL_VALUE			0x470A	// Must match RequiredUploads()
-#define PY_GENERAL_CONFIG_AUTO		0x8001	// Must match RequiredUploads()
+#define PY_GENERAL_CONFIG_AUTO		(PYTHON480_REG129_BASE | 0x0001)	// Must match RequiredUploads()
 // ---------------------------------------------------------------------------
 
 static uint32_t sensorTemp = 0;	// last reg 97 readout, reused between temperature reads
@@ -35,9 +35,9 @@ static uint8_t tempFrame = 0;	// frames since the last temperature read
 static uint16_t blackCalGeneralConfig(void)
 {
 	#if BLACKCAL_MODE == BLACKCAL_MODE_FREEZE
-	return 0x8000 | (0x1FF << 1) | 0x0001;
+	return PYTHON480_REG129_BASE | (0x1FF << 1) | 0x0001;
 	#elif BLACKCAL_MODE == BLACKCAL_MODE_MANUAL
-	return 0x8000 | ((BLACKCAL_MANUAL_OFFSET & 0x1FF) << 1) | ((BLACKCAL_MANUAL_OFFSET_DEC & 0x1) << 10);
+	return PYTHON480_REG129_BASE | ((BLACKCAL_MANUAL_OFFSET & 0x1FF) << 1) | ((BLACKCAL_MANUAL_OFFSET_DEC & 0x1) << 10);
 	#else
 	return PY_GENERAL_CONFIG_AUTO;
 	#endif
