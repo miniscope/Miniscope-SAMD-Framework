@@ -242,6 +242,30 @@ frame inside the same 8 buffers, the image shrinks by one ROI y unit to 200 x 19
 miniscope-io needs the matching config (`black_ref_px: 808`, `frame_height: 196`), which strips the
 line and logs the two channel averages per frame.
 
+### Open issues (feature-blacklevel-header)
+
+Hardware-validated so far (2026-09-22, dev board, battery, 15 min `test_long`): every frame 40,008 px in
+8 buffers, frame period unchanged, black reference steady at ~24 counts, unaffected by light, and
+tracking gain steps (2x: ~21, 3.5x: ~15).
+
+- [ ] **PYTHON480 temperature readout needs the same validation as `MCU_TEMP_ENABLE` got.** Long run next
+  to the MCU temperature, check every update lands on the 40-frame grid, and a raw-to-degC calibration
+  (one point at a cold start is the simplest). The PYTHON480 datasheet lists reg 96/97 only as registers:
+  the ~0.75 degC/count scale and "96[0] = enable" come from the PYTHON 1300 datasheet (on the 480, 96[0] is
+  "reserved"). Test whether the readout changes with 96 = 0, then fix the comments here and in the code.
+- [ ] **Move the reg 136 / reg 97 reads out of `frameValid_cb()`** to the 2 s tick in `checkBattVoltage_cb`
+  (next to the MCU temperature). The reference line already carries the black level at no MCU cost;
+  `blackcal_error` was 0 in all 146,776 headers of `test_long`, so a per-frame read is not needed.
+  Scope-time the read (GPIO toggle) either way; the ~120 us is calculated, not measured.
+- [ ] **Pin down what the reference-line value means in absolute terms.** It drops as gain rises, so it is
+  not simply raw dark level x gain. A short `BLACKCAL_MODE_MANUAL` run with a few known offsets relates
+  it to the applied correction.
+- [ ] **Frame period:** this branch runs 49.48 ms (20.2 fps), the same as the temperature branch; one earlier
+  capture (unknown build) ran 48.67 ms. Find which firmware that was and whether the period changed
+  on the way.
+- [ ] miniscope-io: commit the reference-line decoder (`black_ref_px`, period-4 kernel-column split, 200x196
+  reshape) and the `wireless-200px-blackref` config; currently uncommitted in the mio working tree.
+
 ## Documentation
 
 API documentation is generated with Doxygen and committed under `html/`; open `html/index.html` in a browser. To regenerate, run `doxygen Doxyfile` in the repository root.
