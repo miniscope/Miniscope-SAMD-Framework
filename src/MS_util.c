@@ -344,7 +344,7 @@ void setBufferHeader(uint32_t dataWordLength) {
 	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS + DUMMY_WORD_LENGTH] = BUFFER_HEADER_LENGTH;
 	#endif
-	dataBuffer[numBuffer][BUFFER_HEADER_LINKED_LIST_POS + DUMMY_WORD_LENGTH] = bufferCount % NUM_BUFFERS;
+	dataBuffer[numBuffer][BUFFER_HEADER_MCU_TEMP_POS + DUMMY_WORD_LENGTH] = (uint32_t)mcuTempCentiC; // signed, 0.01 degC
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_NUM_POS + DUMMY_WORD_LENGTH] = frameNum;
 	dataBuffer[numBuffer][BUFFER_HEADER_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = bufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = frameBufferCount;
