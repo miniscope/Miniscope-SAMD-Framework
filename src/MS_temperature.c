@@ -35,8 +35,9 @@ two-point factory calibration stored in the NVM Temperature Log Row.
 
 // Upper bound on the RESRDY busy-wait. readMCUTemperature() runs inside
 // checkBattVoltage_cb, so a conversion that never completes would hang that ISR
-// permanently. One averaged 12-bit conversion takes ~75 us, so this leaves a wide
-// margin while still guaranteeing the loop terminates.
+// permanently, so every conversion in this file goes through convertADC(). One
+// averaged 12-bit conversion takes ~75 us, so this leaves a wide margin while still
+// guaranteeing the loop terminates.
 #define MCU_TEMP_RESRDY_TIMEOUT		100000UL
 
 /**
@@ -55,20 +56,48 @@ static bool waitADCResultReady(void)
 }
 
 /**
+@brief Run one ADC0 conversion with a bounded wait. Used instead of adc_sync_read_channel(),
+which spins on RESRDY forever.
+On timeout the in-flight conversion is flushed and a late RESRDY is cleared. Otherwise the
+next ASF battery read would see RESRDY already set, return the stale result, and every
+battery reading after that would lag one conversion behind.
+@param result Raw ADC result, or NULL to discard it
+@return true if the conversion completed, false if it timed out
+*/
+static bool convertADC(uint16_t *result)
+{
+	uint16_t value;
+
+	hri_adc_clear_INTFLAG_RESRDY_bit(ADC0);
+	hri_adc_set_SWTRIG_START_bit(ADC0);
+
+	if (!waitADCResultReady()) {
+		// Plain write, not read-modify-write, so a START bit that still reads back as set
+		// is not re-triggered together with the flush.
+		hri_adc_write_SWTRIG_reg(ADC0, ADC_SWTRIG_FLUSH);	// abort the in-flight conversion
+		hri_adc_clear_INTFLAG_RESRDY_bit(ADC0);				// drop a result that landed between timeout and flush
+		return false;
+	}
+
+	value = hri_adc_read_RESULT_reg(ADC0);	// reading RESULT also clears RESRDY
+	if (result != NULL) {
+		*result = value;
+	}
+
+	return true;
+}
+
+/**
 @brief Read one internal temperature sensor input (PTAT or CTAT) on ADC0.
 @param input ADC_INPUTCTRL_MUXPOS_PTAT_Val or ADC_INPUTCTRL_MUXPOS_CTAT_Val
-@return Raw ADC result (ADC0 must be configured for 12-bit results)
+@param value Raw ADC result (ADC0 must be configured for 12-bit results)
+@return true on success, false if a conversion timed out
 */
-static uint16_t readTempSensorInput(adc_pos_input_t input)
+static bool readTempSensorInput(adc_pos_input_t input, uint16_t *value)
 {
-	uint16_t value = 0;
-
 	adc_sync_set_inputs(&ADC_0, input, ADC_INPUTCTRL_MUXNEG_GND_Val, MCU_TEMP_ADC_CHANNEL);
 	// The first conversion after changing the input mux / reference is discarded.
-	adc_sync_read_channel(&ADC_0, MCU_TEMP_ADC_CHANNEL, (uint8_t *)&value, sizeof(value));
-	adc_sync_read_channel(&ADC_0, MCU_TEMP_ADC_CHANNEL, (uint8_t *)&value, sizeof(value));
-
-	return value;
+	return convertADC(NULL) && convertADC(value);
 }
 
 /**
@@ -107,7 +136,8 @@ int32_t readMCUTemperature(void)
 	hri_adc_refctrl_reg_t   refctrl   = hri_adc_read_REFCTRL_reg(ADC0);
 	hri_adc_inputctrl_reg_t inputctrl = hri_adc_read_INPUTCTRL_reg(ADC0);
 	hri_supc_vref_reg_t     vref      = hri_supc_read_VREF_reg(SUPC);
-	uint16_t ptat, ctat;
+	uint16_t ptat = 0, ctat = 0;
+	bool sampled;
 
 	// CTRLB / REFCTRL are enable-protected
 	adc_sync_disable_channel(&ADC_0, MCU_TEMP_ADC_CHANNEL);
@@ -122,8 +152,9 @@ int32_t readMCUTemperature(void)
 	adc_sync_set_reference(&ADC_0, ADC_REFCTRL_REFSEL_INTVCC0_Val);
 	adc_sync_enable_channel(&ADC_0, MCU_TEMP_ADC_CHANNEL);
 
-	ptat = readTempSensorInput(ADC_INPUTCTRL_MUXPOS_PTAT_Val);
-	ctat = readTempSensorInput(ADC_INPUTCTRL_MUXPOS_CTAT_Val);
+	// No early return on a timeout: the battery configuration below must always be restored.
+	sampled = readTempSensorInput(ADC_INPUTCTRL_MUXPOS_PTAT_Val, &ptat)
+	       && readTempSensorInput(ADC_INPUTCTRL_MUXPOS_CTAT_Val, &ctat);
 
 	// Restore battery measurement configuration
 	adc_sync_disable_channel(&ADC_0, MCU_TEMP_ADC_CHANNEL);
@@ -134,11 +165,12 @@ int32_t readMCUTemperature(void)
 	adc_sync_enable_channel(&ADC_0, MCU_TEMP_ADC_CHANNEL);
 
 	// Throw away the first conversion after switching the reference back. The
-	// temperature itself is already sampled at this point, so a timeout here only
-	// means the next battery reading may still be settling - report the reading.
-	hri_adc_set_SWTRIG_START_bit(ADC0);
-	if (waitADCResultReady()) {
-		(void)hri_adc_read_RESULT_reg(ADC0);
+	// temperature is already sampled at this point, so a timeout here does not
+	// invalidate it; convertADC() has flushed the ADC for the next battery read.
+	(void)convertADC(NULL);
+
+	if (!sampled) {
+		return MCU_TEMP_INVALID;
 	}
 
 	return calcTemperatureCentiC(ptat, ctat);
