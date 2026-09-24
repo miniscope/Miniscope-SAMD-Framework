@@ -203,6 +203,10 @@ extern volatile uint32_t frameBufferCount;
 extern volatile uint32_t writeFrameNum;
 extern volatile uint32_t writeBufferCount;
 extern volatile uint32_t sdoOverrunCount;
+extern volatile uint32_t sdoUnsentMask;
+#if NUM_BUFFERS > 32
+#error "sdoUnsentMask holds one bit per ring slot, so NUM_BUFFERS must be <= 32"
+#endif
 extern volatile uint32_t sdoSkippedResume;
 extern volatile uint32_t sdoSlipCount;
 extern volatile uint32_t sdoPhaseErr;

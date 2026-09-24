@@ -53,6 +53,7 @@ volatile uint8_t wptVolt;
 volatile uint32_t writeFrameNum;
 volatile uint32_t writeBufferCount;
 volatile uint32_t sdoOverrunCount = 0;  // buffers the camera overwrote before the transmitter sent them
+volatile uint32_t sdoUnsentMask = 0;    // bit n set: ring slot n holds a buffer the transmitter has not started
 volatile uint32_t sdoSkippedResume = 0; // RESUMEs refused because the TX block was still in flight
 volatile uint32_t sdoSlipCount = 0;     // times the hardware-vs-counter phase changed
 volatile uint32_t sdoPhaseErr = 0;      // (hardware TX slot - writeBufferCount) mod NUM_BUFFERS, must stay 0

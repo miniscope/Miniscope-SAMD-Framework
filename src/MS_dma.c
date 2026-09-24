@@ -207,6 +207,7 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+		sdoUnsentMask &= ~(1UL << (writeBufferCount % NUM_BUFFERS)); // block 0 = slot 0
 		writeBufferCount++; // not sure if this should be counted
 		return;
 	}
@@ -268,6 +269,8 @@ void sdo_dma_transfer_resume(void)
 	}
 	DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.reg = DMAC_CHINTFLAG_SUSP;
 	sdo_measure_tx_phase();
+	// this resume starts slot writeBufferCount % NUM_BUFFERS (phaseErr above checks exactly that)
+	sdoUnsentMask &= ~(1UL << (writeBufferCount % NUM_BUFFERS));
 	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary
