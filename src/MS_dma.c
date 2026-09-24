@@ -210,7 +210,11 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 		writeBufferCount++; // not sure if this should be counted
 		return;
 	}
-	if (bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+	// guarded: an unsigned underflow would read as a huge backlog
+	uint32_t accounted = writeBufferCount + droppedBufferCount;
+	uint32_t backlog   = (bufferCount > accounted) ? (bufferCount - accounted) : 0;
+
+	if (backlog > 0){
 		#ifdef PYTHON480_ENABLE
 		// send out pending bits and return
 		if(DMAC->Channel[SDO_DMA_CHANNEL].CHSTATUS.bit.PEND == 1){
@@ -223,8 +227,8 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 			return;
 		}	
 
-		// if coming from TRCMP callback and buffer is left just resume
-		if(callback_flag == 1 && bufferCount - (writeBufferCount + droppedBufferCount) > 0){
+		// if coming from TRCMP callback just resume
+		if(callback_flag == 1){
 			sdo_dma_transfer_resume();
 			return;
 		}
@@ -240,8 +244,14 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	sdo_dma_transfer_resume();
 	#endif
 }
+// Resume only after the previous block has finished: SUSP is set once per block and cleared here.
+// A resume issued mid-block is ignored by the DMAC and must not be counted in writeBufferCount.
 void sdo_dma_transfer_resume(void)
 {
+	if (DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP == 0) {
+		return; // still in flight; the TX-complete callback will resume
+	}
+	DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.reg = DMAC_CHINTFLAG_SUSP;
 	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary
