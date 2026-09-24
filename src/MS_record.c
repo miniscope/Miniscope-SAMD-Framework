@@ -21,6 +21,12 @@ void startRecording()
 	droppedBufferCount = 0;
 	droppedFrameCount = 0;
 	framesToDrop = 0;
+	sdoOverrunCount = 0;
+	sdoUnsentMask = 0;
+	sdoSkippedResume = 0;
+	sdoSlipCount = 0;
+	sdoPhaseErr = 0;
+	sdoMaxBacklog = 0;
 	
 	#ifdef DMA_TO_SD_ENABLE
 	// This gets the next set of blocks ready to be written into

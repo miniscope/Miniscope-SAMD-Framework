@@ -207,12 +207,14 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
+		sdoUnsentMask &= ~(1UL << (writeBufferCount % NUM_BUFFERS)); // block 0 = slot 0
 		writeBufferCount++; // not sure if this should be counted
 		return;
 	}
 	// guarded: an unsigned underflow would read as a huge backlog
 	uint32_t accounted = writeBufferCount + droppedBufferCount;
 	uint32_t backlog   = (bufferCount > accounted) ? (bufferCount - accounted) : 0;
+	if (backlog > sdoMaxBacklog) sdoMaxBacklog = backlog;
 
 	if (backlog > 0){
 		#ifdef PYTHON480_ENABLE
@@ -244,14 +246,31 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	sdo_dma_transfer_resume();
 	#endif
 }
+// Telemetry: slot the hardware sends next (write-back DESCADDR) minus writeBufferCount, mod
+// NUM_BUFFERS. Must stay 0.
+static void sdo_measure_tx_phase(void)
+{
+	uint32_t nextDesc = _dma_get_DESCADDR(SDO_DMA_CHANNEL);
+	uint32_t hwSlot   = (nextDesc - (uint32_t)&TXLinkedList[0]) / sizeof(TXLinkedList[0]);
+	if (hwSlot >= NUM_BUFFERS) return; // write-back not valid before the first block
+
+	uint32_t err = (hwSlot + NUM_BUFFERS - (writeBufferCount % NUM_BUFFERS)) % NUM_BUFFERS;
+	if (err != sdoPhaseErr) sdoSlipCount++;
+	sdoPhaseErr = err;
+}
+
 // Resume only after the previous block has finished: SUSP is set once per block and cleared here.
 // A resume issued mid-block is ignored by the DMAC and must not be counted in writeBufferCount.
 void sdo_dma_transfer_resume(void)
 {
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP == 0) {
-		return; // still in flight; the TX-complete callback will resume
+		sdoSkippedResume++; // still in flight; the TX-complete callback will resume
+		return;
 	}
 	DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.reg = DMAC_CHINTFLAG_SUSP;
+	sdo_measure_tx_phase();
+	// this resume starts slot writeBufferCount % NUM_BUFFERS (phaseErr above checks exactly that)
+	sdoUnsentMask &= ~(1UL << (writeBufferCount % NUM_BUFFERS));
 	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary

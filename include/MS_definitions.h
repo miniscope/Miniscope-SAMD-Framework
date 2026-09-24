@@ -208,6 +208,15 @@ extern volatile uint32_t frameBufferCount;
 // used for tracking recording and inc. DMA buffers
 extern volatile uint32_t writeFrameNum;
 extern volatile uint32_t writeBufferCount;
+extern volatile uint32_t sdoOverrunCount;
+extern volatile uint32_t sdoUnsentMask;
+#if NUM_BUFFERS > 32
+#error "sdoUnsentMask holds one bit per ring slot, so NUM_BUFFERS must be <= 32"
+#endif
+extern volatile uint32_t sdoSkippedResume;
+extern volatile uint32_t sdoSlipCount;
+extern volatile uint32_t sdoPhaseErr;
+extern volatile uint32_t sdoMaxBacklog;
 extern volatile uint32_t droppedBufferCount;
 extern volatile uint32_t droppedFrameCount;
 extern volatile uint32_t framesToDrop;
