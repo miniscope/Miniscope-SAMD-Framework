@@ -120,8 +120,11 @@ firmware slot minus one.
 `droppedBufferCount` only moves in `sdmmc_dma_transfer_control()`, and both its call site and
 its timer registration sit inside `#if 0`, so on the optical link it is always 0. What that path
 can actually lose is a buffer the camera overwrites before the transmitter has sent it:
-`pcc_cb()` counts one `sdoOverrunCount` per buffer for which
-`writeBufferCount + droppedBufferCount < bufferCount - NUM_BUFFERS`. Header slot 6 carries the
+`countTxOverrun()` (called for every filled buffer, in `pcc_dma_cb()` and at frame end in
+`frameValid_cb()`) keeps one `sdoUnsentMask` bit per ring slot, set on fill and cleared when the
+transmitter starts that slot, and counts one `sdoOverrunCount` whenever a slot is refilled with its
+bit still set. Verified exact on hardware with a forced TX stall (140 counted vs 140 buffers missing
+on the host). Header slot 6 carries the
 sum of the two, so the field means "buffers lost" on either path and miniscope-io needs no
 change. Should stay 0; a non-zero value means the transmitter fell more than `NUM_BUFFERS`
 behind the camera and image data was lost.

@@ -207,7 +207,8 @@ void sdo_dma_transfer_control(bool callback_flag) // flag if called via callback
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLA.bit.ENABLE == 0)
 	{
 		_dma_enable_transaction(SDO_DMA_CHANNEL, false);
-		writeBufferCount++; // block 0 starts with the enable
+		sdoUnsentMask &= ~(1UL << (writeBufferCount % NUM_BUFFERS)); // block 0 = slot 0
+		writeBufferCount++; // not sure if this should be counted
 		return;
 	}
 	// guarded: an unsigned underflow would read as a huge backlog
@@ -258,10 +259,8 @@ static void sdo_measure_tx_phase(void)
 	sdoPhaseErr = err;
 }
 
-// A RESUME issued while the previous block is still in flight (camera IRQ landing mid-block)
-// is ignored by the DMAC but used to be counted, so writeBufferCount drifted ahead of the
-// hardware until the TX read the buffer being written (~1 h image tearing). CHINTFLAG.SUSP
-// is set once per finished block and only cleared here, so it gates the resume.
+// Resume only after the previous block has finished: SUSP is set once per block and cleared here.
+// A resume issued mid-block is ignored by the DMAC and must not be counted in writeBufferCount.
 void sdo_dma_transfer_resume(void)
 {
 	if (DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.bit.SUSP == 0) {
@@ -270,6 +269,8 @@ void sdo_dma_transfer_resume(void)
 	}
 	DMAC->Channel[SDO_DMA_CHANNEL].CHINTFLAG.reg = DMAC_CHINTFLAG_SUSP;
 	sdo_measure_tx_phase();
+	// this resume starts slot writeBufferCount % NUM_BUFFERS (phaseErr above checks exactly that)
+	sdoUnsentMask &= ~(1UL << (writeBufferCount % NUM_BUFFERS));
 	writeBufferCount++;
 	DMAC->Channel[SDO_DMA_CHANNEL].CHCTRLB.reg = 0x2;
 	//sdo_dma_transfer_trigger(); // SERCOM 5 is triggering so not necessary

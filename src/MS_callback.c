@@ -15,6 +15,26 @@
 #endif 
 #include <hpl_dma.h>
 
+#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+/**
+@brief Count a buffer lost to a TX ring overrun. Call right after bufferCount++ for every
+filled buffer, full (pcc_dma_cb) or partial at frame end (frameValid_cb).
+If the slot just filled still held a buffer the transmitter never started, that buffer is
+now overwritten unsent: the optical path's equivalent of a dropped buffer. Tracked per slot
+rather than from writeBufferCount, which stays behind after a ring lap while the
+transmitter is already sending the newer contents.
+*/
+static void countTxOverrun(void)
+{
+	uint32_t slotBit = 1UL << ((bufferCount - 1) % NUM_BUFFERS);
+
+	if (sdoUnsentMask & slotBit) {
+		sdoOverrunCount++;
+	}
+	sdoUnsentMask |= slotBit;
+}
+#endif
+
 #ifdef PYTHON480_ENABLE
 void millisecondTimer_cb(const struct timer_task *const timer_task)
 {
@@ -278,6 +298,9 @@ void frameValid_cb(void)
 			
 			frameBufferCount = 0;
 			bufferCount++; // A buffer has been filled (likely partially) and is ready for writing to SD card
+			#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
+			countTxOverrun();
+			#endif
 			frameNum++; // Zero-Indexed
 			
 			if (deviceState & DEVICE_STATE_RECORDING) { // Keep recording
@@ -370,14 +393,7 @@ void pcc_dma_cb(struct camera_async_descriptor *const descr, uint32_t ch)
 		frameBufferCount++;
 
 		#if defined(DMA_TO_SPI_ENABLE) || defined(DMA_TO_USART_ENABLE)
-		// The slot just filled, (bufferCount - 1) % NUM_BUFFERS, previously held buffer
-		// bufferCount - 1 - NUM_BUFFERS. If the transmitter had not reached that buffer yet
-		// it has now been overwritten unsent, which is the optical path's equivalent of a
-		// dropped buffer. Checked once per buffer, so each loss is counted exactly once.
-		if (bufferCount > NUM_BUFFERS
-		    && (writeBufferCount + droppedBufferCount) < (bufferCount - NUM_BUFFERS)) {
-			sdoOverrunCount++;
-		}
+		countTxOverrun();
 		#endif
 		
 		#if 0
