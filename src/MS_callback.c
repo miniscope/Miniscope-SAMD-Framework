@@ -45,7 +45,7 @@ void millisecondTimer_cb(const struct timer_task *const timer_task)
 #ifdef BATTERY_ENABLE
 void checkBattVoltage_cb(const struct timer_task *const timer_task)
 {
-	uint16_t adcValueBattery;
+	uint8_t adcValueBattery = 0; // 8-bit RESSEL: the HAL writes exactly one byte
 	uint8_t adcValueWPT;
 	// Uses ADC0 to check battery voltage
 	adc_sync_read_channel(&ADC_0, 0, &adcValueBattery, 1);
