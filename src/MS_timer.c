@@ -54,6 +54,11 @@ void timerInit(void)
 
 uint32_t getCurrentTimeMS(void)
 {
+	#ifdef RTC_TIMESTAMP_ENABLE
+	if (rtcIsRunning()) {
+		return rtcTimeMS(); // crystal-accurate; TC1 tick below only if XOSC32K failed to start
+	}
+	#endif
 	return timeMS;
 }
 
