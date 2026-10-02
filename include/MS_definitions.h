@@ -79,6 +79,14 @@
 #define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
 // -------------------------------------------
 
+// ------------ RTC timestamp ----------------
+// With RTC_TIMESTAMP_ENABLE, getCurrentTimeMS() derives the header timestamps from the RTC counting the
+// 32.768 kHz crystal instead of the TC1 tick on the open-loop DFLL. Header slot 11 bit 31 says which one is in use.
+#define RTC_XOSC32K_READY_TIMEOUT_US			500000	// XOSC32K start-up is ~62 ms (STARTUP 0); give up after 0.5 s and keep the TC1 tick
+#define RTC_XOSC32K_POLL_US						100
+#define TIMESTAMP_SRC_RTC						(1UL << 31)	// header slot 11 bit 31: 1 = RTC/crystal timestamps, 0 = TC1 ms tick
+// -------------------------------------------
+
 // ------------ PYTHON480 sensor status ------
 // sensorStatus goes into header slot 11 shifted left by 8 (wptVolt keeps bits 7:0).
 #define BLACKCAL_MODE_AUTO						0 // reg 129 = 0x8001, per-frame auto calibration (default)
@@ -334,6 +342,9 @@ void debugHeaderProp(void);
 
 void setExcitationLED(uint32_t value, bool enable);
 int32_t readMCUTemperature(void);
+void rtcInit(void);
+bool rtcIsRunning(void);
+uint32_t rtcTimeMS(void);
 void applyBlackCalMode(void);
 void readSensorStatus(void);
 void setEWL(uint32_t value);

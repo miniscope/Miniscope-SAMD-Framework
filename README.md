@@ -109,11 +109,11 @@ firmware slot minus one.
 | 4 | FRAME_BUFFER_COUNT | buffer index within the frame |
 | 5 | WRITE_BUFFER_COUNT | buffers handed to the transmitter |
 | 6 | DROPPED_BUFFER_COUNT | `droppedBufferCount` + `sdoOverrunCount` (see below) |
-| 7 | TIMESTAMP | ms since recording start |
+| 7 | TIMESTAMP | ms since recording start; from the RTC on the 32.768 kHz crystal with `RTC_TIMESTAMP_ENABLE`, else the TC1 tick |
 | 8 | DATA_LENGTH | payload bytes in this buffer |
 | 9 | WRITE_TIMESTAMP | ms at SD-card write; 0 on the optical path unless `TX_SLIP_TELEMETRY_ENABLE` |
 | 10 | BATTERY_VOLTAGE | battery ADC raw, 8-bit |
-| 11 | WPT_VOLTAGE | bits 7:0 wireless-power input ADC raw; bits 31:8 sensor status (see `SENSOR_STATUS_ENABLE`) |
+| 11 | WPT_VOLTAGE | bits 7:0 wireless-power input ADC raw; bits 23:8 sensor status (see `SENSOR_STATUS_ENABLE`); bit 31 timestamp source (see `RTC_TIMESTAMP_ENABLE`) |
 
 ### Dropped buffers on the optical path
 
@@ -138,6 +138,20 @@ one byte each, MSB first: `maxBacklog | skippedResume | phaseErr | slipCount`.
 - `slipCount`: times `phaseErr` changed.
 - `skippedResume`: resumes refused because the previous TX block was still in flight.
 - `maxBacklog`: deepest transmit backlog seen, in buffers.
+
+### RTC_TIMESTAMP_ENABLE
+
+No pins. Needs the 32.768 kHz crystal on XIN32/XOUT32 (populated on the dev board and the v0.2 motherboard)
+and `XOSC32K` enabled in Atmel START. The CPU runs from the DFLL48M in open loop, so the TC1 millisecond tick
+behind the header timestamps drifts by a few thousand ppm and differs per board (0.19 % slow on the rig board,
+2026-09-30). Closing the DFLL loop dithers the optical SPI rate, so the clock tree stays as it is; instead the
+RTC counts the crystal in 32-bit mode and `getCurrentTimeMS()` converts the count to ms, which makes slot 7
+crystal-accurate (about 20 ppm). TC1 keeps scheduling the periodic tasks.
+
+`rtcInit()` clears the oscillator's ONDEMAND bit, waits up to 0.5 s for XOSC32K ready and on failure keeps the
+TC1 tick. Header slot 11 bit 31 is 1 while the RTC is the timestamp source. The 32-bit count wraps after 36.4 h.
+Expected on the rig: `host_lag_s_per_min` in check_recording.py drops from about 0.11 s/min to about 0, and the
+frame period read from slot 7 becomes the true one.
 
 ## Peripheral requirements (Atmel START config)
 

@@ -153,6 +153,10 @@ void peripheralInit(void)
 	I2C_BB_init();
 	#endif
 
+	#ifdef RTC_TIMESTAMP_ENABLE
+	rtcInit(); // before timerInit so every getCurrentTimeMS() caller already sees the RTC
+	#endif
+
 	timerInit();
 	
 	irqInit();
@@ -358,7 +362,13 @@ void setBufferHeader(uint32_t dataWordLength) {
 	#endif
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
 	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
+	#ifdef RTC_TIMESTAMP_ENABLE
+	// bit 31 tells the host whether slot 7 came from the RTC/crystal (1) or the TC1 tick (0)
+	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt | (sensorStatus << 8)
+	    | (rtcIsRunning() ? TIMESTAMP_SRC_RTC : 0);
+	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt | (sensorStatus << 8);
+	#endif
 
 	#ifdef TX_SLIP_TELEMETRY_ENABLE
 	// TX ring diagnostics in the write-timestamp slot, which is unused on the optical path.
