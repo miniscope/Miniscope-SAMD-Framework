@@ -112,8 +112,8 @@ firmware slot minus one.
 | 7 | TIMESTAMP | ms since recording start; from the RTC on the 32.768 kHz crystal with `RTC_TIMESTAMP_ENABLE`, else the TC1 tick |
 | 8 | DATA_LENGTH | payload bytes in this buffer |
 | 9 | WRITE_TIMESTAMP | ms at SD-card write; 0 on the optical path unless `TX_SLIP_TELEMETRY_ENABLE` |
-| 10 | BATTERY_VOLTAGE | battery ADC raw, 8-bit |
-| 11 | WPT_VOLTAGE | bits 7:0 wireless-power input ADC raw; bits 23:8 sensor status (see `SENSOR_STATUS_ENABLE`); bit 31 timestamp source (see `RTC_TIMESTAMP_ENABLE`) |
+| 10 | BATTERY_VOLTAGE | bits 7:0 battery ADC raw, 8-bit; bits 31:8 header CRC (see `HEADER_CRC_ENABLE`) |
+| 11 | WPT_VOLTAGE | bits 7:0 wireless-power input ADC raw; bits 23:8 sensor status (see `SENSOR_STATUS_ENABLE`); bits 31:24 firmware version record byte (see `VERSION_SIDEBAND_ENABLE`; without it, bit 31 = timestamp source) |
 
 ### Dropped buffers on the optical path
 
@@ -149,9 +149,57 @@ RTC counts the crystal in 32-bit mode and `getCurrentTimeMS()` converts the coun
 crystal-accurate (about 20 ppm). TC1 keeps scheduling the periodic tasks.
 
 `rtcInit()` clears the oscillator's ONDEMAND bit, waits up to 0.5 s for XOSC32K ready and on failure keeps the
-TC1 tick. Header slot 11 bit 31 is 1 while the RTC is the timestamp source. The 32-bit count wraps after 36.4 h.
+TC1 tick. Whether the RTC is the timestamp source is flag bit 0 of the version record (`VERSION_SIDEBAND_ENABLE`);
+without the sideband it is header slot 11 bit 31. The 32-bit count wraps after 36.4 h.
 Expected on the rig: `host_lag_s_per_min` in check_recording.py drops from about 0.11 s/min to about 0, and the
 frame period read from slot 7 becomes the true one.
+
+### HEADER_CRC_ENABLE and VERSION_SIDEBAND_ENABLE
+
+No pins. Two fields for the host that use header bits which were unused until now, so older miniscope-io
+versions keep decoding the stream (they only need to mask slot 10 to its low 8 bits for the battery value).
+Reference decoder: `Wireless-Miniscope/analysis/header_version_crc/src/check_header_crc.py`.
+
+![version sideband and header CRC](img/header_version_sideband.png)
+
+**Header CRC** (`HEADER_CRC_ENABLE`): `setBufferHeader()` fills all 12 slots, then computes CRC-32 (IEEE,
+identical to Python's `zlib.crc32`) over the 12 header words as little-endian bytes with slot 10 bits 31:8
+zero, and stores the low 24 bits in slot 10 bits 31:8. The host recomputes it and drops a buffer whose CRC
+does not match, so a single flipped bit in `frame_num` or `buffer_count` can no longer mis-sequence a frame.
+Nibble-table implementation in `src/MS_header_info.c`, about 10 us per buffer. Only valid on the optical path;
+the SD path rewrites header slots after `setBufferHeader()`.
+
+```python
+words[10] &= 0xFF                      # the CRC field counts as zero
+crc_ok = (zlib.crc32(struct.pack("<12I", *words)) & 0xFFFFFF) == received_slot10 >> 8
+```
+
+**Firmware version record** (`VERSION_SIDEBAND_ENABLE`): the device streams from power-on and the host attaches
+at any time, so instead of a one-off announcement a 32-byte record repeats forever, one byte per buffer in
+slot 11 bits 31:24, byte index = `bufferCount % 32`. Any 32 consecutive buffers (4 frames, 0.2 s) give the
+whole record. Built once in `startRecording()` by `buildVersionRecord()`; version numbers live in
+`include/MS_version.h`, the git hash in `MS_version_git.h` written by `script/MS_prebuild.ps1` (0 = unknown,
+e.g. a build that skipped the pre-build step). Purpose: let the host check that firmware, mio version and
+FPGA bitfile are a known-good combination before data is lost.
+
+| byte | content |
+|---|---|
+| 0 | magic 0xA5 |
+| 1 | record format, 1 |
+| 2, 3, 4 | firmware version major, minor, patch |
+| 5..8 | git short hash, little endian, 0 = unknown |
+| 9 | header layout version (2 = MCU temp in 1, telemetry in 9, sensor status in 11) |
+| 10 | flags: bit 0 RTC timestamps, 1 black reference line, 2 TX telemetry, 3 sensor status, 4 MCU temp, 6:5 `BLACKCAL_MODE`, 7 header CRC |
+| 11 | `DEVICE_ID` |
+| 12, 13 | image width, little endian |
+| 14, 15 | image height, little endian |
+| 16, 17 | black reference pixels per frame, little endian |
+| 18 | frame rate |
+| 19 | `NUM_BUFFERS` |
+| 20 | `BUFFER_BLOCK_LENGTH` |
+| 21 | git tree dirty at build time |
+| 22..30 | reserved, 0 |
+| 31 | checksum: two's complement of the sum of bytes 0..30, so all 32 bytes sum to 0 mod 256 |
 
 ## Peripheral requirements (Atmel START config)
 

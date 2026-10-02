@@ -64,6 +64,10 @@ void startRecording()
 	#ifdef SENSOR_STATUS_ENABLE
 	applyBlackCalMode();
 	#endif
+
+	#ifdef VERSION_SIDEBAND_ENABLE
+	buildVersionRecord(); // after the RTC and sensor setup so the flags are final
+	#endif
 	
 	deviceState &= ~(DEVICE_STATE_IDLE);
 	deviceState &= ~(DEVICE_STATE_START_RECORDING);

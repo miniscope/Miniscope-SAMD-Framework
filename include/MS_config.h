@@ -57,6 +57,8 @@ The modes should be a set of peripherals used in the specified mode.
 #define WPT_ADC_ENABLE
 #define MCU_TEMP_ENABLE // MCU die temperature in the buffer header (needs BATTERY_ENABLE: ADC_0 on ADC0)
 #define RTC_TIMESTAMP_ENABLE // Header timestamps from the RTC on the 32.768 kHz crystal instead of the TC1 tick on the open-loop DFLL (see README)
+#define HEADER_CRC_ENABLE // CRC-32 (low 24 bits) of the 12 header words in slot 10 bits 31:8 so the host can drop corrupted headers (see README)
+#define VERSION_SIDEBAND_ENABLE // 32-byte firmware version record, one byte per buffer in slot 11 bits 31:24 (see README, MS_version.h)
 #define SENSOR_STATUS_ENABLE // PYTHON480 black-cal error + die temperature in header slot 11 bits 31:8 (see README)
 #define BLACKCAL_MODE			BLACKCAL_MODE_AUTO	// AUTO, FREEZE or MANUAL: black-level A/B test under wireless power
 #define BLACKCAL_MANUAL_OFFSET		0	// MANUAL only: reg 129[9:1], 0..511 LSB10
