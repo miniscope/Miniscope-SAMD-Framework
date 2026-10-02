@@ -57,6 +57,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define WPT_ADC_ENABLE
 #define MCU_TEMP_ENABLE // MCU die temperature in the buffer header (needs BATTERY_ENABLE: ADC_0 on ADC0)
 #define HEADER_CRC_ENABLE
+#define VERSION_SIDEBAND_ENABLE // 32-byte firmware version record, one byte per buffer in slot 11 bits 31:24 (see README, MS_version.h)
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE

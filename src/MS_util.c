@@ -358,7 +358,13 @@ void setBufferHeader(uint32_t dataWordLength) {
 	#endif
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
 	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
+	#ifdef VERSION_SIDEBAND_ENABLE
+	// bits 31:24: byte (bufferCount % 32) of the firmware version record (see README)
+	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt
+	    | ((uint32_t)versionRecordByte(bufferCount) << VERSION_RECORD_SHIFT);
+	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt;
+	#endif
 
 	#ifdef TX_SLIP_TELEMETRY_ENABLE
 	// TX ring diagnostics in the write-timestamp slot, which is unused on the optical path.
