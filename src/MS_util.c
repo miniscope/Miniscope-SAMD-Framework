@@ -371,6 +371,13 @@ void setBufferHeader(uint32_t dataWordLength) {
 	// Note: this assumes a fully filled buffer; the value will differ for a partially filled buffer
 	// (UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer, so it can be calculated from this)
 	dataBuffer[numBuffer][BUFFER_HEADER_DATA_LENGTH_POS + DUMMY_WORD_LENGTH] = dataWordLength * 4; // In bytes
+
+	#ifdef HEADER_CRC_ENABLE
+	// Last, once every other slot is final: CRC-32 low 24 bits of the 12 header words into slot 10 bits 31:8.
+	// Only valid on the optical path, where nothing touches the header after this point.
+	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = (battVolt & 0xFF)
+	    | (headerCRC24(&dataBuffer[numBuffer][DUMMY_WORD_LENGTH]) << HEADER_CRC_SHIFT);
+	#endif
 }
 #endif
 
