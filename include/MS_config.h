@@ -56,6 +56,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define BATTERY_CB_DISABLE
 #define WPT_ADC_ENABLE
 #define MCU_TEMP_ENABLE // MCU die temperature in the buffer header (needs BATTERY_ENABLE: ADC_0 on ADC0)
+#define RTC_TIMESTAMP_ENABLE // Header timestamps from the RTC on the 32.768 kHz crystal instead of the TC1 tick on the open-loop DFLL (see README)
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
