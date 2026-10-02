@@ -60,6 +60,9 @@ void startRecording()
 	python480SetFPS(FRAME_RATE); // test value 1, 5, 10, 15, 20.
 	setStatusLED(1);
 	#endif
+	#ifdef VERSION_SIDEBAND_ENABLE
+	buildVersionRecord(); // last, so every flag it reports is final
+	#endif
 	
 	deviceState &= ~(DEVICE_STATE_IDLE);
 	deviceState &= ~(DEVICE_STATE_START_RECORDING);

@@ -11,6 +11,7 @@
 #include <utils.h>
 
 #include "MS_config.h"
+#include "MS_version.h"
 
 // Peripheral address
 #define EWL_I2C_ADDR					0x23  //7 bit address!
@@ -77,6 +78,45 @@
 // ------------ MCU temperature -------------
 #define MCU_TEMP_INVALID						0x7FFFFFFF // Written to the header when the NVM calibration row is unusable
 #define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
+// -------------------------------------------
+
+// ------------ Header CRC and version record ----
+// HEADER_CRC_ENABLE: slot 10 = battery raw in bits 7:0, CRC-32 (zlib, low 24 bits) of the 12 header words as
+// little-endian bytes with these CRC bits zero in bits 31:8. VERSION_SIDEBAND_ENABLE: slot 11 bits 31:24 carry
+// byte (bufferCount % 32) of the record below. Layout and offsets are part of the host contract, see README.
+#define BUFFER_HEADER_LAYOUT_VERSION			2		// 1 = original 12 words; 2 = MCU temp (1), telemetry (9), sensor status (11)
+#define HEADER_CRC_SHIFT						8
+#define HEADER_CRC_MASK							0xFFFFFF00UL
+#define VERSION_RECORD_LENGTH					32
+#define VERSION_RECORD_SHIFT					24
+#define VERSION_RECORD_MAGIC					0xA5
+#define VERSION_RECORD_FORMAT					1
+// byte offsets in the version record
+#define VR_MAGIC								0
+#define VR_FORMAT								1
+#define VR_FW_MAJOR								2
+#define VR_FW_MINOR								3
+#define VR_FW_PATCH								4
+#define VR_GIT_HASH								5		// 4 bytes, little endian, 0 = unknown
+#define VR_HEADER_LAYOUT						9
+#define VR_FLAGS								10
+#define VR_DEVICE_ID							11
+#define VR_IMAGE_WIDTH							12		// 2 bytes, little endian
+#define VR_IMAGE_HEIGHT							14		// 2 bytes, little endian
+#define VR_BLACKREF_PX							16		// 2 bytes, little endian
+#define VR_FRAME_RATE							18
+#define VR_NUM_BUFFERS							19
+#define VR_BUFFER_BLOCK_LENGTH					20
+#define VR_GIT_DIRTY							21
+#define VR_CHECKSUM								31		// two's complement of the sum of bytes 0..30
+// VR_FLAGS bits
+#define VR_FLAG_RTC_TIMESTAMP					(1 << 0)	// slot 7 comes from the RTC/crystal
+#define VR_FLAG_BLACKREF_LINE					(1 << 1)
+#define VR_FLAG_TX_SLIP_TELEMETRY				(1 << 2)
+#define VR_FLAG_SENSOR_STATUS					(1 << 3)
+#define VR_FLAG_MCU_TEMP						(1 << 4)
+#define VR_FLAG_BLACKCAL_MODE_SHIFT				5			// bits 6:5
+#define VR_FLAG_HEADER_CRC						(1 << 7)
 // -------------------------------------------
 
 // -------------------------------------------
@@ -296,6 +336,9 @@ void debugHeaderProp(void);
 
 void setExcitationLED(uint32_t value, bool enable);
 int32_t readMCUTemperature(void);
+uint32_t headerCRC24(volatile uint32_t *header);
+void buildVersionRecord(void);
+uint8_t versionRecordByte(uint32_t index);
 void setEWL(uint32_t value);
 void setStatusLED(bool value);
 
