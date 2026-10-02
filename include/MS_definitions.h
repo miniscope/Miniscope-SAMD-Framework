@@ -79,6 +79,11 @@
 #define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
 // -------------------------------------------
 
+// ------------ Header CRC -------------------
+#define HEADER_CRC_SHIFT						8
+#define HEADER_CRC_MASK							0xFFFFFF00UL
+// -------------------------------------------
+
 // -------------------------------------------
 // -------------- SD Definitions -------------
 #define STARTING_BLOCK				1024
@@ -296,6 +301,7 @@ void debugHeaderProp(void);
 
 void setExcitationLED(uint32_t value, bool enable);
 int32_t readMCUTemperature(void);
+uint32_t headerCRC24(volatile uint32_t *header);
 void setEWL(uint32_t value);
 void setStatusLED(bool value);
 

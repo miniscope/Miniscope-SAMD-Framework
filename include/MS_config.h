@@ -56,6 +56,7 @@ The modes should be a set of peripherals used in the specified mode.
 #define BATTERY_CB_DISABLE
 #define WPT_ADC_ENABLE
 #define MCU_TEMP_ENABLE // MCU die temperature in the buffer header (needs BATTERY_ENABLE: ADC_0 on ADC0)
+#define HEADER_CRC_ENABLE
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
