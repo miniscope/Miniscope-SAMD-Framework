@@ -10,9 +10,9 @@ run the pre-build script report hash 0 (unknown).
 #ifndef MS_VERSION_H_
 #define MS_VERSION_H_
 
-// Placeholder until the numbering scheme is decided (release tags so far go up to v0.3.1).
+// Semantic version, the next after release tag v0.3.1; 0.4.0 adds the 13-word header with CRC word.
 #define FW_VERSION_MAJOR	0
-#define FW_VERSION_MINOR	0
+#define FW_VERSION_MINOR	4
 #define FW_VERSION_PATCH	0
 
 #if defined(__has_include)
