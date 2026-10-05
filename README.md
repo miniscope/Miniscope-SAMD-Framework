@@ -170,7 +170,7 @@ crystal in 32-bit mode and `getCurrentTimeMS()` converts the count to ms, which 
 (about 20 ppm). TC1 keeps scheduling the periodic tasks.
 
 `rtcInit()` clears the oscillator's ONDEMAND bit, waits up to 0.5 s for XOSC32K ready and on failure keeps the
-TC1 tick. Header slot 11 bit 31 is 1 while the RTC is the timestamp source (bits 7:0 stay the WPT ADC value).
+TC1 tick. The firmware version record flag `VR_FLAG_RTC_TIMESTAMP` is 1 while the RTC is the timestamp source.
 The 32-bit count wraps after 36.4 h. Rig-verified 2026-10-02: host-vs-MCU clock -23 ppm instead of +2405 ppm.
 
 ## Documentation

@@ -362,12 +362,7 @@ void setBufferHeader(uint32_t dataWordLength) {
 	#endif
 	dataBuffer[numBuffer][BUFFER_HEADER_TIMESTAMP_POS + DUMMY_WORD_LENGTH] = getCurrentTimeMS() - startTimeMS;
 	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = battVolt;
-	#ifdef RTC_TIMESTAMP_ENABLE
-	// bit 31 tells the host whether slot 7 came from the RTC/crystal (1) or the TC1 tick (0)
-	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt | (rtcIsRunning() ? TIMESTAMP_SRC_RTC : 0);
-	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_WPT_VOLTAGE_POS + DUMMY_WORD_LENGTH] = wptVolt;
-	#endif
 
 	#ifdef TX_SLIP_TELEMETRY_ENABLE
 	// TX ring diagnostics in the write-timestamp slot, which is unused on the optical path.
@@ -380,6 +375,19 @@ void setBufferHeader(uint32_t dataWordLength) {
 	// Note: this assumes a fully filled buffer; the value will differ for a partially filled buffer
 	// (UBLEN in XDMAC_CUBC gets decremented by MBSIZE or CSIZE for each memory or chunk transfer, so it can be calculated from this)
 	dataBuffer[numBuffer][BUFFER_HEADER_DATA_LENGTH_POS + DUMMY_WORD_LENGTH] = dataWordLength * 4; // In bytes
+
+	#ifdef HEADER_CRC_ENABLE
+	// Last, once every other slot is final: CRC low 24 bits into the last 3 header bytes, bits 7:0 hold
+	// byte (bufferCount % 32) of the firmware version record (0 without VERSION_SIDEBAND_ENABLE).
+	// Only valid on the optical path, where nothing touches the header after this point.
+	#ifdef VERSION_SIDEBAND_ENABLE
+	dataBuffer[numBuffer][BUFFER_HEADER_CRC_POS + DUMMY_WORD_LENGTH] = versionRecordByte(bufferCount);
+	#else
+	dataBuffer[numBuffer][BUFFER_HEADER_CRC_POS + DUMMY_WORD_LENGTH] = 0;
+	#endif
+	dataBuffer[numBuffer][BUFFER_HEADER_CRC_POS + DUMMY_WORD_LENGTH] |=
+	    headerCRC24(&dataBuffer[numBuffer][DUMMY_WORD_LENGTH]) << HEADER_CRC_SHIFT;
+	#endif
 }
 #endif
 

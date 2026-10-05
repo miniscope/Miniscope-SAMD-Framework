@@ -42,7 +42,7 @@ void rtcInit(void)
 	rtcRunning = false;
 
 	if (!startXOSC32K()) {
-		// No crystal: getCurrentTimeMS() keeps the TC1 tick and header slot 11 bit 31 stays 0.
+		// No crystal: getCurrentTimeMS() keeps the TC1 tick and the version record's RTC flag stays 0.
 		return;
 	}
 
