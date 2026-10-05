@@ -348,7 +348,16 @@ void setBufferHeader(uint32_t dataWordLength) {
 	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS + DUMMY_WORD_LENGTH] = BUFFER_HEADER_LENGTH;
 	#endif
+	#ifdef PYTHON480_SENSOR_ENABLE
+	// MCU temperature as int16 in bits 15:0, PYTHON480 temperature in bits 23:16 (layout in MS_definitions.h)
+	int32_t mcuTemp = mcuTempCentiC;
+	uint16_t mcuTemp16 = (mcuTemp == MCU_TEMP_INVALID || mcuTemp > INT16_MAX || mcuTemp < INT16_MIN) ? MCU_TEMP_INVALID_16 : (uint16_t)(int16_t)mcuTemp;
+	dataBuffer[numBuffer][BUFFER_HEADER_MCU_TEMP_POS + DUMMY_WORD_LENGTH] = mcuTemp16 | ((uint32_t)sensorTempRaw << SENSOR_TEMP_SHIFT);
+	// Byte p = reference-line pixels with index % 4 == p, captured at the start of this frame
+	dataBuffer[numBuffer][BUFFER_HEADER_BLACKREF_POS + DUMMY_WORD_LENGTH] = blackRefLine[0];
+	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_MCU_TEMP_POS + DUMMY_WORD_LENGTH] = (uint32_t)mcuTempCentiC; // signed, 0.01 degC
+	#endif
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_NUM_POS + DUMMY_WORD_LENGTH] = frameNum;
 	dataBuffer[numBuffer][BUFFER_HEADER_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = bufferCount;
 	dataBuffer[numBuffer][BUFFER_HEADER_FRAME_BUFFER_COUNT_POS + DUMMY_WORD_LENGTH] = frameBufferCount;

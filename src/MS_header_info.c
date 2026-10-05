@@ -74,15 +74,11 @@ void buildVersionRecord(void)
 	#ifdef RTC_TIMESTAMP_ENABLE
 	if (rtcIsRunning()) flags |= VR_FLAG_RTC_TIMESTAMP;
 	#endif
-	#ifdef BLACKREF_LINE_ENABLE
-	flags |= VR_FLAG_BLACKREF_LINE;
+	#ifdef PYTHON480_SENSOR_ENABLE
+	flags |= VR_FLAG_BLACKREF | VR_FLAG_SENSOR_TEMP;
 	#endif
 	#ifdef TX_SLIP_TELEMETRY_ENABLE
 	flags |= VR_FLAG_TX_SLIP_TELEMETRY;
-	#endif
-	#ifdef SENSOR_STATUS_ENABLE
-	flags |= VR_FLAG_SENSOR_STATUS;
-	flags |= (BLACKCAL_MODE & 0x3) << VR_FLAG_BLACKCAL_MODE_SHIFT;
 	#endif
 	#ifdef MCU_TEMP_ENABLE
 	flags |= VR_FLAG_MCU_TEMP;
@@ -102,9 +98,7 @@ void buildVersionRecord(void)
 	versionRecord[VR_DEVICE_ID]     = (uint8_t)DEVICE_ID;
 	putLE16(VR_IMAGE_WIDTH, image_width);
 	putLE16(VR_IMAGE_HEIGHT, image_height);
-	#ifdef BLACKREF_PIXELS_PER_FRAME
-	putLE16(VR_BLACKREF_PX, BLACKREF_PIXELS_PER_FRAME);
-	#endif
+	putLE16(VR_BLACKREF_PX, 0); // no reference line in the pixel stream (PYTHON480_SENSOR_ENABLE sends it in the header)
 	versionRecord[VR_FRAME_RATE]    = FRAME_RATE;
 	versionRecord[VR_NUM_BUFFERS]   = NUM_BUFFERS;
 	versionRecord[VR_BUFFER_BLOCK_LENGTH] = BUFFER_BLOCK_LENGTH;

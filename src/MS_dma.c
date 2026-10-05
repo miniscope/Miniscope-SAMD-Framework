@@ -27,6 +27,10 @@ COMPILER_ALIGNED(16)
 volatile DmacDescriptor PCCLinkedList[NUM_BUFFERS];
 #endif
 
+#ifdef PYTHON480_SENSOR_ENABLE
+volatile uint32_t blackRefLine[BLACKREF_LINE_WORDS];
+#endif
+
 #ifdef TEST_PRBS_BUFFER_ENABLE
 // PRBS-15 generator (x^15 + x^14 + 1), period 32767
 static uint16_t prbs15_state;
@@ -339,6 +343,17 @@ void PCCLinkedListInit(void)
 
 void setPCCLinkedListPosition(uint8_t pos)
 {
+	#ifdef PYTHON480_SENSOR_ENABLE
+	// Every frame starts with the black reference line. The first block captures it into blackRefLine[]
+	// without an interrupt (BLOCKACT NOACT), then the DMA follows DESCADDR into ring buffer pos.
+	_dma_set_source_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].SRCADDR.reg);
+	_dma_set_data_amount(CONF_PCC_DMA_CHANNEL, BLACKREF_LINE_WORDS);
+	_dma_set_BTCTRL(CONF_PCC_DMA_CHANNEL, (PCCLinkedList[pos].BTCTRL.reg & ~DMAC_BTCTRL_BLOCKACT_Msk) | DMAC_BTCTRL_BLOCKACT_NOACT);
+	_dma_set_destination_address(CONF_PCC_DMA_CHANNEL, (void *)((uint32_t)blackRefLine + BLACKREF_LINE_WORDS * 4)); // end address, as below
+	_dma_set_DESCADDR(CONF_PCC_DMA_CHANNEL, (uint32_t)&PCCLinkedList[pos]);
+	return;
+	#endif
+
 	// Set up initial DMA descriptor for DMA channel handling PCC. BTCNT is already setup in DMA init step
 	_dma_set_source_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].SRCADDR.reg);
 	//_dma_set_destination_address(CONF_PCC_DMA_CHANNEL, (void *)PCCLinkedList[pos].DSTADDR.reg);
