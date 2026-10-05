@@ -10,9 +10,10 @@ run the pre-build script report hash 0 (unknown).
 #ifndef MS_VERSION_H_
 #define MS_VERSION_H_
 
-// Semantic version, the next after release tag v0.3.1; 0.4.0 adds the 13-word header with CRC word.
+// Semantic version, the next after release tag v0.3.1; 0.4.0 adds the 13-word header with CRC word;
+// 0.5.0 adds the black reference word and the PYTHON480 temperature (header layout 4, 14 words).
 #define FW_VERSION_MAJOR	0
-#define FW_VERSION_MINOR	4
+#define FW_VERSION_MINOR	5
 #define FW_VERSION_PATCH	0
 
 #if defined(__has_include)

@@ -57,6 +57,13 @@ void python480SetGain(uint32_t value);
 void setROI(uint16_t image_width, uint16_t xshift, uint16_t yshift);
 
 /**
+@brief Reads the PYTHON480 die temperature (reg 97, enabled by reg 96 in RequiredUploads())
+@return raw temperature, ~0.75 degC/LSB, uncalibrated
+@note Bit-banged SPI (~0.6 ms). Call only where no other spi_BB_* transfer can be interrupted.
+*/
+uint8_t readSensorTemperature(void);
+
+/**
 @brief Sets FPS of image sensor
 @param value Value of FPS. For value = 1, 5, 10, 15, 20, FPS = value; for value = 0: FPS = 0.5; default: undefined
 @note Need to check what's default value of the image sensor.

@@ -66,6 +66,19 @@ void checkBattVoltage_cb(const struct timer_task *const timer_task)
 		mcuTempCentiC = readMCUTemperature();
 	}
 	#endif
+
+	#ifdef PYTHON480_SENSOR_ENABLE
+	// PYTHON480 temperature every MCU_TEMP_READ_PERIOD_TICKS ticks too, but two ticks after the MCU
+	// temperature so this ISR never blocks for both (~0.6 ms SPI read). Only while recording: then the
+	// main loop does no SPI, and other sensor writes come from ISRs that cannot preempt this one.
+	static uint8_t sensorTempTick = 0;
+	if (++sensorTempTick >= MCU_TEMP_READ_PERIOD_TICKS) {
+		sensorTempTick = 0;
+	}
+	if (sensorTempTick == MCU_TEMP_READ_PERIOD_TICKS / 2 && (deviceState & DEVICE_STATE_RECORDING)) {
+		sensorTempRaw = readSensorTemperature();
+	}
+	#endif
 	
 	// If under voltage, set device state to ...
 	// Compare to 1.1V band gap
