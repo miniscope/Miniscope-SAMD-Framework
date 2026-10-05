@@ -85,6 +85,12 @@
 #define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
 // -------------------------------------------
 
+// ------------ RTC timestamp ----------------
+// With RTC_TIMESTAMP_ENABLE, getCurrentTimeMS() derives the header timestamps from the RTC counting the
+// 32.768 kHz crystal instead of the TC1 tick on the open-loop DFLL. The version record flag VR_FLAG_RTC_TIMESTAMP
+// says which one is in use.
+#define RTC_XOSC32K_READY_TIMEOUT_US			500000	// XOSC32K start-up is ~62 ms (STARTUP 0); give up after 0.5 s and keep the TC1 tick
+#define RTC_XOSC32K_POLL_US						100
 // ------------ Header CRC and version record ----
 // HEADER_CRC_ENABLE: last header word (BUFFER_HEADER_CRC_POS)
 //   bits 7:0  = version record byte (VERSION_SIDEBAND_ENABLE), otherwise 0
@@ -348,6 +354,9 @@ int32_t readMCUTemperature(void);
 uint32_t headerCRC24(volatile uint32_t *header);
 void buildVersionRecord(void);
 uint8_t versionRecordByte(uint32_t index);
+void rtcInit(void);
+bool rtcIsRunning(void);
+uint32_t rtcTimeMS(void);
 void setEWL(uint32_t value);
 void setStatusLED(bool value);
 

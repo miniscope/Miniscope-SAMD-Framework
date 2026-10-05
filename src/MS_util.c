@@ -153,6 +153,10 @@ void peripheralInit(void)
 	I2C_BB_init();
 	#endif
 
+	#ifdef RTC_TIMESTAMP_ENABLE
+	rtcInit(); // before timerInit so every getCurrentTimeMS() caller already sees the RTC
+	#endif
+
 	timerInit();
 	
 	irqInit();
