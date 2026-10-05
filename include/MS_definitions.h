@@ -45,7 +45,12 @@
 #endif
 
 // Buffer Header position definitions
-#ifdef HEADER_CRC_ENABLE
+#if defined(PYTHON480_SENSOR_ENABLE) && !defined(HEADER_CRC_ENABLE)
+#error "PYTHON480_SENSOR_ENABLE adds its word before the header CRC word and needs HEADER_CRC_ENABLE"
+#endif
+#if defined(PYTHON480_SENSOR_ENABLE)
+#define BUFFER_HEADER_LENGTH					14 // + black reference word, then the header CRC word
+#elif defined(HEADER_CRC_ENABLE)
 #define BUFFER_HEADER_LENGTH					13 // one extra word at the end for the header CRC (and version record byte)
 #else
 #define BUFFER_HEADER_LENGTH					12
@@ -62,7 +67,12 @@
 #define BUFFER_HEADER_WRITE_TIMESTAMP_POS		9
 #define BUFFER_HEADER_BATTERY_VOLTAGE_POS		10
 #define BUFFER_HEADER_WPT_VOLTAGE_POS			11
+#ifdef PYTHON480_SENSOR_ENABLE
+#define BUFFER_HEADER_BLACKREF_POS				12
+#define BUFFER_HEADER_CRC_POS					13
+#else
 #define BUFFER_HEADER_CRC_POS					12 // only with HEADER_CRC_ENABLE
+#endif
 
 // -------------------------------------------
 
@@ -85,6 +95,36 @@
 #define MCU_TEMP_READ_PERIOD_TICKS				4 // Temperature is read every N checkBattVoltage_cb ticks (500 ms each): 4 -> 2 s
 // -------------------------------------------
 
+// ------------ PYTHON480 black reference and die temperature (PYTHON480_SENSOR_ENABLE) ----
+// Header layout 4. Word 1 (BUFFER_HEADER_MCU_TEMP_POS) holds both temperatures:
+//   bits 15:0  = MCU die temperature, int16, 0.01 degC (MCU_TEMP_INVALID_16 if unavailable)
+//   bits 23:16 = PYTHON480 die temperature, raw reg 97 (~0.75 degC/LSB, uncalibrated)
+//   bits 31:24 = 0
+// Word 12 (BUFFER_HEADER_BLACKREF_POS) holds the black reference level of the frame:
+//   byte p (bits 8p+7:8p) = reference-line pixels with index % 4 == p (one constant value per phase)
+// The sensor sends one reference line (reg 207) at the start of each frame, filled with the black
+// average of each kernel column (reg 129[14] ref_mode) and passed to the PCC (reg 130[3]). The PCC DMA
+// captures it into blackRefLine[] ahead of the ring buffer, so the image keeps its full size.
+#ifdef PYTHON480_SENSOR_ENABLE
+#ifndef PYTHON480_200PX_NOSUBSAMPLE
+#error "PYTHON480_SENSOR_ENABLE is only sized for PYTHON480_200PX_NOSUBSAMPLE"
+#endif
+#define BLACKREF_LINE_PIXELS					808			// one full-width line: 404 kernels x 2 px
+#define BLACKREF_LINE_WORDS						(BLACKREF_LINE_PIXELS / 4)
+#define PYTHON480_REG129						0xC001		// ref_bcal_enable | ref_mode | auto_blackcal_enable
+#define PYTHON480_REG130						0x001D		// 0x0015 plus ref_line_valid_enable
+#define PYTHON480_REF_LINES						1
+#define MCU_TEMP_INVALID_16						0x7FFF
+#define SENSOR_TEMP_SHIFT						16
+#else
+#define PYTHON480_REG129						0x8001		// ref_bcal_enable | auto_blackcal_enable
+#define PYTHON480_REG130						0x0015
+#define PYTHON480_REF_LINES						0x0014		// generated but gated from line_valid
+#endif
+#define PYTHON480_REG_TEMP_CONFIG				96			// [0] enable the die temperature sensor
+#define PYTHON480_REG_TEMP						97			// [7:0] die temperature, ~0.75 degC/LSB
+// -------------------------------------------
+
 // ------------ RTC timestamp ----------------
 // With RTC_TIMESTAMP_ENABLE, getCurrentTimeMS() derives the header timestamps from the RTC counting the
 // 32.768 kHz crystal instead of the TC1 tick on the open-loop DFLL. The version record flag VR_FLAG_RTC_TIMESTAMP
@@ -100,7 +140,13 @@
 #if defined(VERSION_SIDEBAND_ENABLE) && !defined(HEADER_CRC_ENABLE)
 #error "VERSION_SIDEBAND_ENABLE sends its byte in the header CRC word and needs HEADER_CRC_ENABLE"
 #endif
-#define BUFFER_HEADER_LAYOUT_VERSION			3		// 1 = original 12 words; 2 = MCU temp (1), telemetry (9), sensor status (11); 3 = 2 + CRC word (12)
+// 1 = original 12 words; 2 = MCU temp (1), telemetry (9), sensor status (11); 3 = 2 + CRC word (12);
+// 4 = 3 + MCU and PYTHON480 temperature in word 1, black reference word (12), CRC word (13)
+#ifdef PYTHON480_SENSOR_ENABLE
+#define BUFFER_HEADER_LAYOUT_VERSION			4
+#else
+#define BUFFER_HEADER_LAYOUT_VERSION			3
+#endif
 #define HEADER_CRC_SHIFT						8
 #define HEADER_CRC_BYTES						3
 #define VERSION_RECORD_LENGTH					32
@@ -126,11 +172,11 @@
 #define VR_CHECKSUM								31		// two's complement of the sum of bytes 0..30
 // VR_FLAGS bits
 #define VR_FLAG_RTC_TIMESTAMP					(1 << 0)	// slot 7 comes from the RTC/crystal
-#define VR_FLAG_BLACKREF_LINE					(1 << 1)
+#define VR_FLAG_BLACKREF						(1 << 1)	// word 12 carries the black reference level
 #define VR_FLAG_TX_SLIP_TELEMETRY				(1 << 2)
-#define VR_FLAG_SENSOR_STATUS					(1 << 3)
+#define VR_FLAG_SENSOR_TEMP						(1 << 3)	// word 1 bits 23:16 carry the PYTHON480 temperature
 #define VR_FLAG_MCU_TEMP						(1 << 4)
-#define VR_FLAG_BLACKCAL_MODE_SHIFT				5			// bits 6:5
+// bits 6:5 reserved, 0
 #define VR_FLAG_HEADER_CRC						(1 << 7)
 // -------------------------------------------
 
@@ -252,6 +298,10 @@ extern volatile uint32_t deviceState;
 extern volatile uint16_t battVolt;
 extern volatile uint8_t wptVolt;
 extern volatile int32_t mcuTempCentiC; // MCU die temperature in 0.01 degC, updated by checkBattVoltage_cb
+#ifdef PYTHON480_SENSOR_ENABLE
+extern volatile uint8_t sensorTempRaw; // PYTHON480 die temperature (reg 97), updated by checkBattVoltage_cb
+extern volatile uint32_t blackRefLine[BLACKREF_LINE_WORDS]; // reference line of the current frame, written by the PCC DMA
+#endif
 extern volatile uint32_t startTimeMS;
 extern volatile uint32_t endTimeMS;
 extern volatile uint32_t timeMS;

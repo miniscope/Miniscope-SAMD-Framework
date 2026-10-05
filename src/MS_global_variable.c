@@ -49,6 +49,9 @@ volatile uint32_t timeMS = 0;
 volatile uint16_t battVolt;
 volatile uint8_t wptVolt;
 volatile int32_t mcuTempCentiC = MCU_TEMP_INVALID;
+#ifdef PYTHON480_SENSOR_ENABLE
+volatile uint8_t sensorTempRaw = 0;
+#endif
 
 // used for tracking recording and inc. DMA buffers
 volatile uint32_t writeFrameNum;

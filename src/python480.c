@@ -176,6 +176,13 @@ uint16_t spi_BB_Read(uint16_t address)
 	return value;
 }
 
+#ifdef PYTHON480_SENSOR_ENABLE
+uint8_t readSensorTemperature(void)
+{
+	return (uint8_t)(spi_BB_Read(PYTHON480_REG_TEMP) & 0xFF);
+}
+#endif
+
 void EnableClockMngmnt1() {
 	// configure clock management blocks, activate clock generation and distribution circuits
 
@@ -213,11 +220,12 @@ void EnableClockMngmnt2() {// Enable internal clock distribution
 
 void setROI(uint16_t image_width, uint16_t xshift, uint16_t yshift){
 	uint16_t sensorReadoutUnit = 2;
-	if (xshift <= (ROI_XREG_MAX - image_width/sensorReadoutUnit/2) && yshift <= (ROI_YREG_MAX - image_width/sensorReadoutUnit/2)){
+	// ROI registers count in units of 4 pixels (x) and 4 rows (y); y uses the global image_height
+	if (xshift <= (ROI_XREG_MAX - image_width/sensorReadoutUnit/2) && yshift <= (ROI_YREG_MAX - image_height/sensorReadoutUnit/2)){
 		volatile uint16_t roi_x_start = xshift;
 		volatile uint16_t roi_x_stop = roi_x_start + image_width/sensorReadoutUnit/2 - 1;
 		volatile uint16_t roi_y_start = yshift;
-		volatile uint16_t roi_y_stop = roi_y_start + image_width/sensorReadoutUnit/2 - 1;
+		volatile uint16_t roi_y_stop = roi_y_start + image_height/sensorReadoutUnit/2 - 1;
 	
 		spi_BB_Write(256, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
 		spi_BB_Write(258, (uint16_t) ((roi_x_stop<<8) + roi_x_start));
@@ -258,7 +266,10 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	//spi_BB_Write(112, 0x0007);
 	spi_BB_Write(112, 0x0000); // LVDS powerdown config
 	spi_BB_Write(128, 0x470A); //spi_BB_Write(128, 0x470A); spi_BB_Write(128, 0x4714); black offset
-	spi_BB_Write(129, 0x8001);
+	spi_BB_Write(129, PYTHON480_REG129); // auto black calibration (+ ref_mode with PYTHON480_SENSOR_ENABLE)
+	#ifdef PYTHON480_SENSOR_ENABLE
+	spi_BB_Write(PYTHON480_REG_TEMP_CONFIG, 0x0001); // enable the die temperature sensor (read in reg 97)
+	#endif
 	//spi_BB_Write(130, 0x0001); // Handles phase of pixel clock changed from 0x0001 to 0x0015
 
 	// Test Pattern
@@ -268,7 +279,7 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	python480_testconfig = spi_BB_Read(144);
 	#endif
 
-	spi_BB_Write(130, 0x0015);
+	spi_BB_Write(130, PYTHON480_REG130);
 	spi_BB_Write(192, 0x0801); // Monitor select function. Sets subsampling too
 	spi_BB_Write(194, 0x00E4);	// reverse x and y enabled for demo kit compatibility
 	spi_BB_Write(197, 0x0104); // 0x0380) Num black lines spi_BB_Write(197, 0x030A);
@@ -283,7 +294,7 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	spi_BB_Write(201, 2900); // spi_BB_Write(201, 2900); // Exposure time spi_BB_Write(201, 0x01F4);
 	#endif
 	spi_BB_Write(204, 0x00E4); 	// (gain 1x : 0x00E1 // gain 2x : 0x00E4 // gain 3.5x : 0x0024)
-	spi_BB_Write(207, 0x0014);
+	spi_BB_Write(207, PYTHON480_REF_LINES); // Number of reference lines
 	spi_BB_Write(214, 0x0100);
 	spi_BB_Write(215, 0x101F);
 	spi_BB_Write(216, 0x0000);

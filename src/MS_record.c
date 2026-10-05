@@ -60,6 +60,9 @@ void startRecording()
 	python480SetFPS(FRAME_RATE); // test value 1, 5, 10, 15, 20.
 	setStatusLED(1);
 	#endif
+	#ifdef PYTHON480_SENSOR_ENABLE
+	sensorTempRaw = readSensorTemperature(); // first value; checkBattVoltage_cb updates it while recording
+	#endif
 	#ifdef VERSION_SIDEBAND_ENABLE
 	buildVersionRecord(); // last, so every flag it reports is final
 	#endif
