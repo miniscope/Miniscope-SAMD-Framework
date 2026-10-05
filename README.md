@@ -160,6 +160,19 @@ No pins. Requires `BATTERY_ENABLE` (ADC_0 on ADC0): the SAM D51 temperature sens
 
 The temperature is only sampled every `MCU_TEMP_READ_PERIOD_TICKS` battery-check ticks (default 4, i.e. every 2 s) because the read blocks the timer ISR for ~0.4 ms; battery and WPT monitoring stay at 500 ms.
 
+### RTC_TIMESTAMP_ENABLE
+
+No pins. Needs the 32.768 kHz crystal on XIN32/XOUT32 (populated on the dev board and the v0.2 motherboard) and
+`XOSC32K` enabled in Atmel START. The CPU runs from the DFLL48M in open loop, so the TC1 millisecond tick behind
+the header timestamps (slot 7) is off by a few thousand ppm and differs per board (0.24 % slow on the rig board).
+Closing the DFLL loop dithers the optical SPI rate, so the clock tree stays as it is; instead the RTC counts the
+crystal in 32-bit mode and `getCurrentTimeMS()` converts the count to ms, which makes slot 7 crystal-accurate
+(about 20 ppm). TC1 keeps scheduling the periodic tasks.
+
+`rtcInit()` clears the oscillator's ONDEMAND bit, waits up to 0.5 s for XOSC32K ready and on failure keeps the
+TC1 tick. Header slot 11 bit 31 is 1 while the RTC is the timestamp source (bits 7:0 stay the WPT ADC value).
+The 32-bit count wraps after 36.4 h. Rig-verified 2026-10-02: host-vs-MCU clock -23 ppm instead of +2405 ppm.
+
 ## Documentation
 
 API documentation is generated with Doxygen and committed under `html/`; open `html/index.html` in a browser. To regenerate, run `doxygen Doxyfile` in the repository root.
