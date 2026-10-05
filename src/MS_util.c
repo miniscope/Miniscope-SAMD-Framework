@@ -373,10 +373,11 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_DATA_LENGTH_POS + DUMMY_WORD_LENGTH] = dataWordLength * 4; // In bytes
 
 	#ifdef HEADER_CRC_ENABLE
-	// Last, once every other slot is final: CRC-32 low 24 bits of the 12 header words into slot 10 bits 31:8.
+	// Last, once every other slot is final: CRC low 24 bits into the last 3 header bytes, bits 7:0 stay 0.
 	// Only valid on the optical path, where nothing touches the header after this point.
-	dataBuffer[numBuffer][BUFFER_HEADER_BATTERY_VOLTAGE_POS + DUMMY_WORD_LENGTH] = (battVolt & 0xFF)
-	    | (headerCRC24(&dataBuffer[numBuffer][DUMMY_WORD_LENGTH]) << HEADER_CRC_SHIFT);
+	dataBuffer[numBuffer][BUFFER_HEADER_CRC_POS + DUMMY_WORD_LENGTH] = 0;
+	dataBuffer[numBuffer][BUFFER_HEADER_CRC_POS + DUMMY_WORD_LENGTH] |=
+	    headerCRC24(&dataBuffer[numBuffer][DUMMY_WORD_LENGTH]) << HEADER_CRC_SHIFT;
 	#endif
 }
 #endif

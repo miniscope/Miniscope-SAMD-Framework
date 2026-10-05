@@ -44,7 +44,11 @@
 #endif
 
 // Buffer Header position definitions
+#ifdef HEADER_CRC_ENABLE
+#define BUFFER_HEADER_LENGTH					13 // one extra word at the end for the header CRC (and version record byte)
+#else
 #define BUFFER_HEADER_LENGTH					12
+#endif
 #define BUFFER_HEADER_HEADER_LENGTH_POS			0
 #define BUFFER_HEADER_MCU_TEMP_POS				1
 #define BUFFER_HEADER_FRAME_NUM_POS				2
@@ -57,6 +61,7 @@
 #define BUFFER_HEADER_WRITE_TIMESTAMP_POS		9
 #define BUFFER_HEADER_BATTERY_VOLTAGE_POS		10
 #define BUFFER_HEADER_WPT_VOLTAGE_POS			11
+#define BUFFER_HEADER_CRC_POS					12 // only with HEADER_CRC_ENABLE
 
 // -------------------------------------------
 
@@ -80,8 +85,12 @@
 // -------------------------------------------
 
 // ------------ Header CRC -------------------
+// HEADER_CRC_ENABLE: last header word (BUFFER_HEADER_CRC_POS)
+//   bits 7:0  = version record byte (VERSION_SIDEBAND_ENABLE), otherwise 0
+//   bits 31:8 = the last 3 header bytes: low 24 bits of a CRC-32 (IEEE, as zlib.crc32) over every
+//               header byte after the preamble and before them (little-endian words)
 #define HEADER_CRC_SHIFT						8
-#define HEADER_CRC_MASK							0xFFFFFF00UL
+#define HEADER_CRC_BYTES						3
 // -------------------------------------------
 
 // -------------------------------------------

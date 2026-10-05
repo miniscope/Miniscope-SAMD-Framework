@@ -1,9 +1,10 @@
 /**
 @file
 @brief Header integrity check for the host.
-HEADER_CRC_ENABLE: CRC-32 (IEEE, as zlib.crc32) over the 12 header words as little-endian bytes,
-with slot 10 bits 31:8 zero, truncated to its low 24 bits and stored in slot 10 bits 31:8. A header
-whose CRC does not match was corrupted on the optical link and the host should drop that buffer.
+HEADER_CRC_ENABLE: CRC-32 (IEEE, as zlib.crc32) over the header bytes after the preamble, up to the
+last 3 bytes of the header, truncated to its low 24 bits and stored in those last 3 bytes (bits 31:8
+of the last header word). A header whose CRC does not match was corrupted on the optical link and
+the host should drop that buffer.
 @author Marcel
 */
 
@@ -27,17 +28,13 @@ static inline uint32_t crc32Byte(uint32_t crc, uint8_t byte)
 
 uint32_t headerCRC24(volatile uint32_t *header)
 {
+	// little-endian bytes from the word after the preamble up to the CRC (the last 3 header bytes)
+	volatile const uint8_t *bytes = (volatile const uint8_t *)&header[1];
+	const uint32_t length = (BUFFER_HEADER_LENGTH - 1) * 4 - HEADER_CRC_BYTES;
 	uint32_t crc = 0xFFFFFFFFUL;
 
-	for (uint32_t i = 0; i < BUFFER_HEADER_LENGTH; i++) {
-		uint32_t word = header[i];
-		if (i == BUFFER_HEADER_BATTERY_VOLTAGE_POS) {
-			word &= ~HEADER_CRC_MASK; // the CRC field itself counts as zero
-		}
-		crc = crc32Byte(crc, (uint8_t)(word));
-		crc = crc32Byte(crc, (uint8_t)(word >> 8));
-		crc = crc32Byte(crc, (uint8_t)(word >> 16));
-		crc = crc32Byte(crc, (uint8_t)(word >> 24));
+	for (uint32_t i = 0; i < length; i++) {
+		crc = crc32Byte(crc, bytes[i]);
 	}
 
 	return (crc ^ 0xFFFFFFFFUL) & 0x00FFFFFFUL;
