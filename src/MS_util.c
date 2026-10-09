@@ -348,6 +348,10 @@ void setBufferHeader(uint32_t dataWordLength) {
 	#else
 	dataBuffer[numBuffer][BUFFER_HEADER_HEADER_LENGTH_POS + DUMMY_WORD_LENGTH] = BUFFER_HEADER_LENGTH;
 	#endif
+	#ifdef HEADER_PROTOBUF_ENABLE
+	// One framed wlms.BufferHeader message after the preamble word (MS_header_proto.c)
+	setBufferHeaderProtobuf(&dataBuffer[numBuffer][DUMMY_WORD_LENGTH + 1], dataWordLength * 4);
+	#else
 	#ifdef PYTHON480_SENSOR_ENABLE
 	// MCU temperature as int16 in bits 15:0, PYTHON480 temperature in bits 23:16 (layout in MS_definitions.h)
 	int32_t mcuTemp = mcuTempCentiC;
@@ -397,6 +401,7 @@ void setBufferHeader(uint32_t dataWordLength) {
 	dataBuffer[numBuffer][BUFFER_HEADER_CRC_POS + DUMMY_WORD_LENGTH] |=
 	    headerCRC24(&dataBuffer[numBuffer][DUMMY_WORD_LENGTH]) << HEADER_CRC_SHIFT;
 	#endif
+	#endif // HEADER_PROTOBUF_ENABLE
 }
 #endif
 

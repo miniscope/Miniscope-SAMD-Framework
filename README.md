@@ -173,6 +173,17 @@ crystal in 32-bit mode and `getCurrentTimeMS()` converts the count to ms, which 
 TC1 tick. The firmware version record flag `VR_FLAG_RTC_TIMESTAMP` is 1 while the RTC is the timestamp source.
 The 32-bit count wraps after 36.4 h. Rig-verified 2026-10-02: host-vs-MCU clock -23 ppm instead of +2405 ppm.
 
+### HEADER_PROTOBUF_ENABLE
+
+No pins. Replaces `HEADER_CRC_ENABLE` and `VERSION_SIDEBAND_ENABLE`. After the preamble word comes a fixed 72-byte
+area: `[length][wlms.BufferHeader protobuf][zero pad][CRC-32 LE, as zlib.crc32]`. Schema: `proto/wlms_header.proto`,
+also used by mio (`header_format: protobuf`). The message starts with `firmware_id` so the host can pick its config.
+
+- Encoder: vendored [nanopb](https://github.com/nanopb/nanopb) 0.4.9.1 in `nanopb/` (no malloc).
+- After editing the `.proto`: run `script/gen_proto.sh` and commit the regenerated `wlms_header.pb.{h,c}`.
+- New fields get a new field number; older mio skips them.
+- A message that does not fit (67 bytes usable, ~55 typical) is sent with length 0 and counts `headerEncodeFailures`.
+
 ## Documentation
 
 API documentation is generated with Doxygen and committed under `html/`; open `html/index.html` in a browser. To regenerate, run `doxygen Doxyfile` in the repository root.
