@@ -45,11 +45,12 @@ message BufferHeader {
   // device state
   uint32 battery_adc = 12;       // 8-bit ADC
   uint32 input_adc = 13;         // 8-bit ADC, wireless power input
-  optional sint32 mcu_temp_centi_c = 14;  // 0.01 degC, absent if the sensor has not reported yet
-  uint32 sensor_temp_raw = 15;   // PYTHON480 die temperature, reg 97, ~0.75 degC/LSB
-  bytes black_ref = 16;          // black reference level of the frame, one byte per phase (pixel index % 4)
 
-  // transmit ring diagnostics
-  bytes tx_diag = 17;            // slips, slot out of order, restarts skipped, max waiting
-  uint32 encode_cycles = 18;     // CPU cycles the previous buffer's header encode took
+
+
+  // v8: smaller header area (64 bytes), temperatures and black reference removed, lens and ROI added
+  reserved 14, 15, 16, 17, 18;
+  uint32 ewl_value = 23;         // electrowetting lens setting
+  uint32 roi_x = 24;             // sensor ROI x shift
+  uint32 roi_y = 25;             // sensor ROI y shift
 }

@@ -21,8 +21,6 @@ typedef enum _wlms_HeaderFlag {
 } wlms_HeaderFlag;
 
 /* Struct definitions */
-typedef PB_BYTES_ARRAY_T(4) wlms_BufferHeader_black_ref_t;
-typedef PB_BYTES_ARRAY_T(4) wlms_BufferHeader_tx_diag_t;
 typedef struct _wlms_BufferHeader {
     /* decode key */
     uint32_t firmware_id; /* FW_VERSION_MAJOR << 8 | FW_VERSION_MINOR */
@@ -40,13 +38,9 @@ typedef struct _wlms_BufferHeader {
     /* device state */
     uint32_t battery_adc; /* 8-bit ADC */
     uint32_t input_adc; /* 8-bit ADC, wireless power input */
-    bool has_mcu_temp_centi_c;
-    int32_t mcu_temp_centi_c; /* 0.01 degC, absent if the sensor has not reported yet */
-    uint32_t sensor_temp_raw; /* PYTHON480 die temperature, reg 97, ~0.75 degC/LSB */
-    wlms_BufferHeader_black_ref_t black_ref; /* black reference level of the frame, one byte per phase (pixel index % 4) */
-    /* transmit ring diagnostics */
-    wlms_BufferHeader_tx_diag_t tx_diag; /* slips, slot out of order, restarts skipped, max waiting */
-    uint32_t encode_cycles; /* CPU cycles the previous buffer's header encode took */
+    uint32_t ewl_value; /* electrowetting lens setting */
+    uint32_t roi_x; /* sensor ROI x shift */
+    uint32_t roi_y; /* sensor ROI y shift */
 } wlms_BufferHeader;
 
 
@@ -67,8 +61,8 @@ extern "C" {
 
 
 /* Initializer values for message structs */
-#define wlms_BufferHeader_init_default           {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}, 0}
-#define wlms_BufferHeader_init_zero              {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}, 0}
+#define wlms_BufferHeader_init_default           {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+#define wlms_BufferHeader_init_zero              {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define wlms_BufferHeader_firmware_id_tag        1
@@ -84,11 +78,9 @@ extern "C" {
 #define wlms_BufferHeader_pixel_bytes_tag        11
 #define wlms_BufferHeader_battery_adc_tag        12
 #define wlms_BufferHeader_input_adc_tag          13
-#define wlms_BufferHeader_mcu_temp_centi_c_tag   14
-#define wlms_BufferHeader_sensor_temp_raw_tag    15
-#define wlms_BufferHeader_black_ref_tag          16
-#define wlms_BufferHeader_tx_diag_tag            17
-#define wlms_BufferHeader_encode_cycles_tag      18
+#define wlms_BufferHeader_ewl_value_tag          23
+#define wlms_BufferHeader_roi_x_tag              24
+#define wlms_BufferHeader_roi_y_tag              25
 
 /* Struct field encoding specification for nanopb */
 #define wlms_BufferHeader_FIELDLIST(X, a) \
@@ -105,11 +97,9 @@ X(a, STATIC,   SINGULAR, UINT32,   timestamp_ms,     10) \
 X(a, STATIC,   SINGULAR, UINT32,   pixel_bytes,      11) \
 X(a, STATIC,   SINGULAR, UINT32,   battery_adc,      12) \
 X(a, STATIC,   SINGULAR, UINT32,   input_adc,        13) \
-X(a, STATIC,   OPTIONAL, SINT32,   mcu_temp_centi_c,  14) \
-X(a, STATIC,   SINGULAR, UINT32,   sensor_temp_raw,  15) \
-X(a, STATIC,   SINGULAR, BYTES,    black_ref,        16) \
-X(a, STATIC,   SINGULAR, BYTES,    tx_diag,          17) \
-X(a, STATIC,   SINGULAR, UINT32,   encode_cycles,    18)
+X(a, STATIC,   SINGULAR, UINT32,   ewl_value,        23) \
+X(a, STATIC,   SINGULAR, UINT32,   roi_x,            24) \
+X(a, STATIC,   SINGULAR, UINT32,   roi_y,            25)
 #define wlms_BufferHeader_CALLBACK NULL
 #define wlms_BufferHeader_DEFAULT NULL
 
@@ -120,7 +110,7 @@ extern const pb_msgdesc_t wlms_BufferHeader_msg;
 
 /* Maximum encoded size of messages (where known) */
 #define WLMS_WLMS_HEADER_PB_H_MAX_SIZE           wlms_BufferHeader_size
-#define wlms_BufferHeader_size                   107
+#define wlms_BufferHeader_size                   95
 
 #ifdef __cplusplus
 } /* extern "C" */

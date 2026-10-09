@@ -58,29 +58,11 @@ void setBufferHeaderProtobuf(volatile uint32_t *areaWords, uint32_t dataBytes)
 
 	h.battery_adc = battVolt;
 	h.input_adc   = wptVolt;
-	if (mcuTempCentiC != MCU_TEMP_INVALID) {
-		h.has_mcu_temp_centi_c = true;
-		h.mcu_temp_centi_c     = mcuTempCentiC;
-	}
-	#ifdef PYTHON480_SENSOR_ENABLE
-	h.sensor_temp_raw = sensorTempRaw;
-	// Byte p = reference-line pixels with index % 4 == p, captured at the start of this frame
-	uint32_t ref = blackRefLine[0];
-	h.black_ref.size = 4;
-	h.black_ref.bytes[0] = (uint8_t)(ref);
-	h.black_ref.bytes[1] = (uint8_t)(ref >> 8);
-	h.black_ref.bytes[2] = (uint8_t)(ref >> 16);
-	h.black_ref.bytes[3] = (uint8_t)(ref >> 24);
-	#endif
 
-	#ifdef TX_SLIP_TELEMETRY_ENABLE
-	h.tx_diag.size = 4;
-	h.tx_diag.bytes[0] = (uint8_t)sdoSlipCount;     // slips
-	h.tx_diag.bytes[1] = (uint8_t)sdoPhaseErr;      // slot out of order
-	h.tx_diag.bytes[2] = (uint8_t)sdoSkippedResume; // restarts skipped
-	h.tx_diag.bytes[3] = (uint8_t)sdoMaxBacklog;    // max waiting
-	#endif
-	h.encode_cycles = headerEncodeCycles;
+
+	h.ewl_value = ewlvalue;
+	h.roi_x     = roi_x_shift;
+	h.roi_y     = roi_y_shift;
 
 	// The header area is CPU-owned until the transmitter picks the buffer up, so nanopb may write
 	// it through a plain pointer.

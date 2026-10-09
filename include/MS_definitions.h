@@ -56,7 +56,7 @@
 #error "PYTHON480_SENSOR_ENABLE adds its word before the header CRC word and needs HEADER_CRC_ENABLE"
 #endif
 #if defined(HEADER_PROTOBUF_ENABLE)
-#define HEADER_PB_AREA_BYTES					72
+#define HEADER_PB_AREA_BYTES					64
 #define HEADER_PB_AREA_WORDS					(HEADER_PB_AREA_BYTES / 4)
 #define BUFFER_HEADER_LENGTH					(1 + HEADER_PB_AREA_WORDS) // preamble word + protobuf area
 #elif defined(PYTHON480_SENSOR_ENABLE)
