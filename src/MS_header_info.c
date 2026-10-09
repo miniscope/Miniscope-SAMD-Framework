@@ -1,6 +1,8 @@
 /**
 @file
-@brief Header integrity check and firmware version record for the host.
+@brief Header integrity check and firmware version record for the host (legacy word layout).
+With HEADER_PROTOBUF_ENABLE this file compiles to nothing: MS_header_frame.c carries the CRC-32 and
+the firmware ID travels inside the protobuf message.
 - HEADER_CRC_ENABLE: CRC-32 (IEEE, as zlib.crc32) over the header bytes after the preamble, up to
   the last 3 bytes of the header, truncated to its low 24 bits and stored in those last 3 bytes
   (bits 31:8 of the last header word). A header whose CRC does not match was corrupted on the

@@ -11,10 +11,13 @@ run the pre-build script report hash 0 (unknown).
 #define MS_VERSION_H_
 
 // Semantic version, the next after release tag v0.3.1; 0.4.0 adds the 13-word header with CRC word;
-// 0.5.0 adds the black reference word and the PYTHON480 temperature (header layout 4, 14 words).
+// 0.5.0 adds the black reference word and the PYTHON480 temperature (header layout 4, 14 words);
+// 0.6.0 replaces the word layout with a protobuf header (HEADER_PROTOBUF_ENABLE, proto/wlms_header.proto).
 #define FW_VERSION_MAJOR	0
-#define FW_VERSION_MINOR	5
+#define FW_VERSION_MINOR	6
 #define FW_VERSION_PATCH	0
+// Decode key in the buffer header: a header change bumps at least FW_VERSION_MINOR.
+#define FW_ID				((FW_VERSION_MAJOR << 8) | FW_VERSION_MINOR)
 
 #if defined(__has_include)
 #if __has_include("MS_version_git.h")

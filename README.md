@@ -173,6 +173,28 @@ crystal in 32-bit mode and `getCurrentTimeMS()` converts the count to ms, which 
 TC1 tick. The firmware version record flag `VR_FLAG_RTC_TIMESTAMP` is 1 while the RTC is the timestamp source.
 The 32-bit count wraps after 36.4 h. Rig-verified 2026-10-02: host-vs-MCU clock -23 ppm instead of +2405 ppm.
 
+### HEADER_PROTOBUF_ENABLE
+
+No pins. Replaces `HEADER_CRC_ENABLE` and `VERSION_SIDEBAND_ENABLE`. The buffer header after the preamble word is a
+fixed `HEADER_PB_AREA_BYTES` (72 byte) area holding one `wlms.BufferHeader` protobuf message, defined in
+`proto/wlms_header.proto`: byte 0 is the encoded length, then the message, zero padding, and a little-endian CRC-32
+(as `zlib.crc32`) in the last 4 bytes over everything before it. The message starts with `firmware_id`
+(`FW_VERSION_MAJOR << 8 | FW_VERSION_MINOR`, see `MS_version.h`) and `packet_type`, so the host picks the decoder
+from the first fields; mio reads the same `.proto` (`header_format: protobuf` in the device config).
+
+The encoder is the vendored [nanopb](https://github.com/nanopb/nanopb) 0.4.9.1 runtime in `nanopb/`
+(`pb_encode.c`, `pb_common.c`, no malloc). `src/MS_header_proto.c` fills the message from the device state and
+`src/MS_header_frame.c` frames it (plain C99, also compiles on a host for tests). After editing the `.proto`, run
+`script/gen_proto.sh` (needs `nanopb_generator` 0.4.9.1 on PATH) and commit the regenerated
+`include/wlms_header.pb.h` and `src/wlms_header.pb.c`. Adding a field is a new field number at the end: an older
+mio skips it, a newer mio reads a missing field as 0.
+
+The area is sized so the pixel payload stays above 5000 bytes (5004) and a 200x200 frame still fills 8 buffers with
+the last one partial. A typical message is ~55 bytes, the realistic worst case 66 of the 67 usable; a message that
+does not fit leaves length byte 0 and increments `headerEncodeFailures`. `headerEncodeCycles` /
+`headerEncodeCyclesMax` (DWT cycle counter) hold the encode time of the last and the slowest header, and the last
+value is also sent in the message as `encode_cycles`.
+
 ## Documentation
 
 API documentation is generated with Doxygen and committed under `html/`; open `html/index.html` in a browser. To regenerate, run `doxygen Doxyfile` in the repository root.

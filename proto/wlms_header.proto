@@ -1,0 +1,55 @@
+// Buffer header of the wireless miniscope optical link, one per buffer.
+//
+// Wire framing around this message (not part of protobuf, see MS_definitions.h):
+//   preamble word 0x12345678, then a fixed area of HEADER_PB_AREA_BYTES:
+//   byte 0        = n, the encoded length of this message
+//   bytes 1..n    = this message
+//   bytes n+1..   = zero padding
+//   last 4 bytes  = CRC-32 (IEEE, as zlib.crc32), little endian, over every area byte before it
+// The pixel data starts right after the area.
+//
+// Field numbers 1..15 cost one tag byte, 16 and up cost two. Add new fields at the end with new
+// numbers, never reuse or renumber: an older mio skips unknown fields, a newer mio sees missing
+// fields as 0 (or absent, for `optional` fields).
+
+syntax = "proto3";
+
+package wlms;
+
+enum PacketType {
+  PACKET_TYPE_UNSPECIFIED = 0;
+  PACKET_TYPE_IMAGE = 1;  // pixel data follows the header area
+}
+
+enum HeaderFlag {
+  HEADER_FLAG_NONE = 0;
+  HEADER_FLAG_RTC_TIMESTAMP = 1;  // timestamp_ms counts the 32.768 kHz crystal, not the TC1 tick
+}
+
+message BufferHeader {
+  // decode key
+  uint32 firmware_id = 1;        // FW_VERSION_MAJOR << 8 | FW_VERSION_MINOR
+  PacketType packet_type = 2;
+  uint32 device_id = 3;
+  uint32 flags = 4;              // HeaderFlag bits
+
+  // buffer and frame
+  uint32 frame_number = 5;       // since boot
+  uint32 buffer_count = 6;       // since boot
+  uint32 buffer_in_frame = 7;    // 0..7
+  uint32 tx_backlog = 8;         // buffers filled but not yet handed to the transmitter
+  uint32 buffers_lost = 9;       // send-queue overruns since boot
+  uint32 timestamp_ms = 10;      // since recording start
+  uint32 pixel_bytes = 11;       // pixel bytes in this buffer
+
+  // device state
+  uint32 battery_adc = 12;       // 8-bit ADC
+  uint32 input_adc = 13;         // 8-bit ADC, wireless power input
+  optional sint32 mcu_temp_centi_c = 14;  // 0.01 degC, absent if the sensor has not reported yet
+  uint32 sensor_temp_raw = 15;   // PYTHON480 die temperature, reg 97, ~0.75 degC/LSB
+  bytes black_ref = 16;          // black reference level of the frame, one byte per phase (pixel index % 4)
+
+  // transmit ring diagnostics
+  bytes tx_diag = 17;            // slips, slot out of order, restarts skipped, max waiting
+  uint32 encode_cycles = 18;     // CPU cycles the previous buffer's header encode took
+}

@@ -45,10 +45,21 @@
 #endif
 
 // Buffer Header position definitions
-#if defined(PYTHON480_SENSOR_ENABLE) && !defined(HEADER_CRC_ENABLE)
+// HEADER_PROTOBUF_ENABLE: word 0 is the preamble, then HEADER_PB_AREA_BYTES holding one framed
+// wlms.BufferHeader message (proto/wlms_header.proto, framing in MS_header_frame.h); the word
+// positions below only apply to the legacy word layout. The area must keep the pixel payload at
+// least 5000 bytes so a 200x200 frame still fills exactly 8 buffers with the last one partial.
+#if defined(HEADER_PROTOBUF_ENABLE) && (defined(HEADER_CRC_ENABLE) || defined(VERSION_SIDEBAND_ENABLE))
+#error "HEADER_PROTOBUF_ENABLE replaces HEADER_CRC_ENABLE and VERSION_SIDEBAND_ENABLE"
+#endif
+#if defined(PYTHON480_SENSOR_ENABLE) && !defined(HEADER_CRC_ENABLE) && !defined(HEADER_PROTOBUF_ENABLE)
 #error "PYTHON480_SENSOR_ENABLE adds its word before the header CRC word and needs HEADER_CRC_ENABLE"
 #endif
-#if defined(PYTHON480_SENSOR_ENABLE)
+#if defined(HEADER_PROTOBUF_ENABLE)
+#define HEADER_PB_AREA_BYTES					72
+#define HEADER_PB_AREA_WORDS					(HEADER_PB_AREA_BYTES / 4)
+#define BUFFER_HEADER_LENGTH					(1 + HEADER_PB_AREA_WORDS) // preamble word + protobuf area
+#elif defined(PYTHON480_SENSOR_ENABLE)
 #define BUFFER_HEADER_LENGTH					14 // + black reference word, then the header CRC word
 #elif defined(HEADER_CRC_ENABLE)
 #define BUFFER_HEADER_LENGTH					13 // one extra word at the end for the header CRC (and version record byte)
@@ -404,6 +415,10 @@ int32_t readMCUTemperature(void);
 uint32_t headerCRC24(volatile uint32_t *header);
 void buildVersionRecord(void);
 uint8_t versionRecordByte(uint32_t index);
+void setBufferHeaderProtobuf(volatile uint32_t *areaWords, uint32_t dataBytes);
+extern volatile uint32_t headerEncodeCycles;    // DWT cycles of the last protobuf header encode
+extern volatile uint32_t headerEncodeCyclesMax;
+extern volatile uint32_t headerEncodeFailures;  // headers that did not fit HEADER_PB_AREA_BYTES
 void rtcInit(void);
 bool rtcIsRunning(void);
 uint32_t rtcTimeMS(void);
