@@ -23,6 +23,7 @@ typedef enum _wlms_HeaderFlag {
 /* Struct definitions */
 typedef PB_BYTES_ARRAY_T(4) wlms_BufferHeader_black_ref_t;
 typedef PB_BYTES_ARRAY_T(4) wlms_BufferHeader_tx_diag_t;
+typedef PB_BYTES_ARRAY_T(8) wlms_BufferHeader_timing_t;
 typedef struct _wlms_BufferHeader {
     /* decode key */
     uint32_t firmware_id; /* FW_VERSION_MAJOR << 8 | FW_VERSION_MINOR */
@@ -47,6 +48,7 @@ typedef struct _wlms_BufferHeader {
     /* transmit ring diagnostics */
     wlms_BufferHeader_tx_diag_t tx_diag; /* slips, slot out of order, restarts skipped, max waiting */
     uint32_t encode_cycles; /* CPU cycles the previous buffer's header encode took */
+    wlms_BufferHeader_timing_t timing; /* encoder experiment: 4 x uint16 LE cycles of the previous header: nanopb frame, fast frame, struct fill + CRC, CRC alone */
 } wlms_BufferHeader;
 
 
@@ -67,8 +69,8 @@ extern "C" {
 
 
 /* Initializer values for message structs */
-#define wlms_BufferHeader_init_default           {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}, 0}
-#define wlms_BufferHeader_init_zero              {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}, 0}
+#define wlms_BufferHeader_init_default           {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}, 0, {0, {0}}}
+#define wlms_BufferHeader_init_zero              {0, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}, 0, {0, {0}}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define wlms_BufferHeader_firmware_id_tag        1
@@ -89,6 +91,7 @@ extern "C" {
 #define wlms_BufferHeader_black_ref_tag          16
 #define wlms_BufferHeader_tx_diag_tag            17
 #define wlms_BufferHeader_encode_cycles_tag      18
+#define wlms_BufferHeader_timing_tag             20
 
 /* Struct field encoding specification for nanopb */
 #define wlms_BufferHeader_FIELDLIST(X, a) \
@@ -109,7 +112,8 @@ X(a, STATIC,   OPTIONAL, SINT32,   mcu_temp_centi_c,  14) \
 X(a, STATIC,   SINGULAR, UINT32,   sensor_temp_raw,  15) \
 X(a, STATIC,   SINGULAR, BYTES,    black_ref,        16) \
 X(a, STATIC,   SINGULAR, BYTES,    tx_diag,          17) \
-X(a, STATIC,   SINGULAR, UINT32,   encode_cycles,    18)
+X(a, STATIC,   SINGULAR, UINT32,   encode_cycles,    18) \
+X(a, STATIC,   SINGULAR, BYTES,    timing,           20)
 #define wlms_BufferHeader_CALLBACK NULL
 #define wlms_BufferHeader_DEFAULT NULL
 
@@ -120,7 +124,7 @@ extern const pb_msgdesc_t wlms_BufferHeader_msg;
 
 /* Maximum encoded size of messages (where known) */
 #define WLMS_WLMS_HEADER_PB_H_MAX_SIZE           wlms_BufferHeader_size
-#define wlms_BufferHeader_size                   107
+#define wlms_BufferHeader_size                   118
 
 #ifdef __cplusplus
 } /* extern "C" */

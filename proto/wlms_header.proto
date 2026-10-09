@@ -52,4 +52,5 @@ message BufferHeader {
   // transmit ring diagnostics
   bytes tx_diag = 17;            // slips, slot out of order, restarts skipped, max waiting
   uint32 encode_cycles = 18;     // CPU cycles the previous buffer's header encode took
+  bytes timing = 20;             // encoder experiment: 4 x uint16 LE cycles of the previous header: nanopb frame, fast frame, struct fill + CRC, CRC alone
 }

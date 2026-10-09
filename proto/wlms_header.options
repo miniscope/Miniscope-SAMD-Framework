@@ -1,3 +1,4 @@
 # nanopb options: bounded sizes so the message lives in a fixed C struct, no malloc
 wlms.BufferHeader.black_ref  max_size:4
 wlms.BufferHeader.tx_diag    max_size:4
+wlms.BufferHeader.timing     max_size:8

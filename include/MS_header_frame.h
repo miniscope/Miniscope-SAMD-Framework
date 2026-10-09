@@ -27,4 +27,12 @@ host sees an empty message.
 */
 bool headerFrameEncode(uint8_t *area, uint32_t areaBytes, const wlms_BufferHeader *header);
 
+/**
+@brief Same framing and byte-identical protobuf output as headerFrameEncode(), but written by hand
+for this one message instead of nanopb's generic field iterator. Field numbers come from the
+generated wlms_header.pb.h, so a renumbered field fails to compile; a field added to the .proto
+must be added here as well.
+*/
+bool headerFrameEncodeFast(uint8_t *area, uint32_t areaBytes, const wlms_BufferHeader *header);
+
 #endif /* MS_HEADER_FRAME_H_ */
