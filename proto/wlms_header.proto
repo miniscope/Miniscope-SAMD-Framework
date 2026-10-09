@@ -49,7 +49,10 @@ message BufferHeader {
   uint32 sensor_temp_raw = 15;   // PYTHON480 die temperature, reg 97, ~0.75 degC/LSB
   bytes black_ref = 16;          // black reference level of the frame, one byte per phase (pixel index % 4)
 
-  // transmit ring diagnostics
-  bytes tx_diag = 17;            // slips, slot out of order, restarts skipped, max waiting
-  uint32 encode_cycles = 18;     // CPU cycles the previous buffer's header encode took
+
+
+  // v7: acquisition settings as configured, TX diagnostics removed
+  reserved 17, 18;
+  uint32 led_level = 21;         // excitation LED, percent
+  uint32 gain = 22;              // PYTHON480 analog gain setting (1, 2, 4)
 }

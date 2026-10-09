@@ -73,14 +73,9 @@ void setBufferHeaderProtobuf(volatile uint32_t *areaWords, uint32_t dataBytes)
 	h.black_ref.bytes[3] = (uint8_t)(ref >> 24);
 	#endif
 
-	#ifdef TX_SLIP_TELEMETRY_ENABLE
-	h.tx_diag.size = 4;
-	h.tx_diag.bytes[0] = (uint8_t)sdoSlipCount;     // slips
-	h.tx_diag.bytes[1] = (uint8_t)sdoPhaseErr;      // slot out of order
-	h.tx_diag.bytes[2] = (uint8_t)sdoSkippedResume; // restarts skipped
-	h.tx_diag.bytes[3] = (uint8_t)sdoMaxBacklog;    // max waiting
-	#endif
-	h.encode_cycles = headerEncodeCycles;
+
+	h.led_level = ledvalue;
+	h.gain      = getPropFromHeader(HEADER_GAIN_POS);
 
 	// The header area is CPU-owned until the transmitter picks the buffer up, so nanopb may write
 	// it through a plain pointer.
