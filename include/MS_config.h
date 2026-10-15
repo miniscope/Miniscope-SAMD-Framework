@@ -57,9 +57,8 @@ The modes should be a set of peripherals used in the specified mode.
 #define WPT_ADC_ENABLE
 #define MCU_TEMP_ENABLE // MCU die temperature in the buffer header (needs BATTERY_ENABLE: ADC_0 on ADC0)
 #define RTC_TIMESTAMP_ENABLE // Header timestamps from the RTC on the 32.768 kHz crystal instead of the TC1 tick on the open-loop DFLL (see README)
-#define HEADER_CRC_ENABLE
-#define VERSION_SIDEBAND_ENABLE // 32-byte firmware version record, one byte per buffer in bits 7:0 of the header CRC word (see README, MS_version.h)
-#define PYTHON480_SENSOR_ENABLE // PYTHON480 black reference level (header word 12) and die temperature (word 1): header layout 4 (see MS_definitions.h)
+#define HEADER_PROTOBUF_ENABLE // protobuf buffer header with CRC-32 (proto/wlms_header.proto, MS_header_proto.c); replaces HEADER_CRC_ENABLE and VERSION_SIDEBAND_ENABLE
+#define PYTHON480_SENSOR_ENABLE // PYTHON480 black reference level and die temperature in the buffer header
 #define PUSH_BUT_ENABLE
 #define STATUS_LED_ENABLE
 #define IR_UART_ENABLE
