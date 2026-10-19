@@ -16,8 +16,7 @@ run the pre-build script report hash 0 (unknown).
 #define FW_VERSION_MAJOR	0
 #define FW_VERSION_MINOR	6
 #define FW_VERSION_PATCH	0
-// Decode key in the buffer header: a header change bumps at least FW_VERSION_MINOR.
-#define FW_ID				((FW_VERSION_MAJOR << 8) | FW_VERSION_MINOR)
+// Decode key in the buffer header (fw_version_major/minor/patch): a header change bumps at least FW_VERSION_MINOR.
 
 #if defined(__has_include)
 #if __has_include("MS_version_git.h")

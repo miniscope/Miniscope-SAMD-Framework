@@ -177,7 +177,7 @@ The 32-bit count wraps after 36.4 h. Rig-verified 2026-10-02: host-vs-MCU clock 
 
 No pins. Replaces `HEADER_CRC_ENABLE` and `VERSION_SIDEBAND_ENABLE`. After the preamble word comes a fixed 72-byte
 area: `[length][wlms.BufferHeader protobuf][zero pad][CRC-32 LE, as zlib.crc32]`. Schema: `proto/wlms_header.proto`,
-also used by mio (`header_format: protobuf`). The message starts with `firmware_id` so the host can pick its config.
+also used by mio (`header_format: protobuf`). The message starts with `fw_version_major/minor/patch` (always encoded) so the host can pick its config.
 
 - Encoder: vendored [nanopb](https://github.com/nanopb/nanopb) 0.4.9.1 in `nanopb/` (no malloc).
 - After editing the `.proto`: run `script/gen_proto.sh` and commit the regenerated `wlms_header.pb.{h,c}`.

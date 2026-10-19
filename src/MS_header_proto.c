@@ -20,12 +20,19 @@ void setBufferHeaderProtobuf(volatile uint32_t *areaWords, uint32_t dataBytes)
 {
 	wlms_BufferHeader h = wlms_BufferHeader_init_zero;
 
-	h.firmware_id = FW_ID;
+	// has_* set: encoded even when 0, so the version always leads the message
+	h.has_fw_version_major = true;
+	h.fw_version_major     = FW_VERSION_MAJOR;
+	h.has_fw_version_minor = true;
+	h.fw_version_minor     = FW_VERSION_MINOR;
+	h.has_fw_version_patch = true;
+	h.fw_version_patch     = FW_VERSION_PATCH;
+	h.timestamp_source = wlms_TimestampSource_TIMESTAMP_SOURCE_TC1;
+	#ifdef RTC_TIMESTAMP_ENABLE
+	if (rtcIsRunning()) h.timestamp_source = wlms_TimestampSource_TIMESTAMP_SOURCE_RTC;
+	#endif
 	h.packet_type = wlms_PacketType_PACKET_TYPE_IMAGE;
 	h.device_id   = DEVICE_ID;
-	#ifdef RTC_TIMESTAMP_ENABLE
-	if (rtcIsRunning()) h.flags |= wlms_HeaderFlag_HEADER_FLAG_RTC_TIMESTAMP;
-	#endif
 
 	h.frame_number    = frameNum;
 	h.buffer_count    = bufferCount;
@@ -41,8 +48,8 @@ void setBufferHeaderProtobuf(volatile uint32_t *areaWords, uint32_t dataBytes)
 	h.timestamp_ms = getCurrentTimeMS() - startTimeMS;
 	h.pixel_bytes  = dataBytes;
 
-	h.battery_adc = battVolt;
-	h.input_adc   = wptVolt;
+	h.battery_voltage_raw = battVolt;
+	h.input_voltage_raw   = wptVolt;
 	if (mcuTempCentiC != MCU_TEMP_INVALID) {
 		h.has_mcu_temp_centi_c = true;
 		h.mcu_temp_centi_c     = mcuTempCentiC;
