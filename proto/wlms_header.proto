@@ -27,32 +27,38 @@ enum TimestampSource {
   TIMESTAMP_SOURCE_TC1 = 1;  // fallback: TC1 tick on the open-loop DFLL, RTC not running
 }
 
+// Firmware version, FW_VERSION_* in MS_version.h. Keep this message unchanged: a host decodes it on
+// its own to pick the BufferHeader schema.
+message Version {
+  uint32 major = 1;
+  uint32 minor = 2;
+  uint32 patch = 3;
+}
+
 message BufferHeader {
-  // decode key: always encoded (optional = explicit presence, written even when 0) and always first,
-  // so a host can read the version from the raw bytes before it picks the schema
-  optional uint32 fw_version_major = 1;
-  optional uint32 fw_version_minor = 2;
-  optional uint32 fw_version_patch = 3;
+  // decode key: always encoded and always first (tag 0x0A, then its length), so a host can read the
+  // version from the raw bytes before it picks the schema
+  Version fw_version = 1;
+  PacketType packet_type = 2;
+  uint32 device_id = 3;          // DEVICE_ID, also the IR command address
   TimestampSource timestamp_source = 4;
-  PacketType packet_type = 5;
-  uint32 device_id = 6;          // DEVICE_ID, also the IR command address
 
   // buffer and frame
-  uint32 frame_number = 7;       // since boot
-  uint32 buffer_count = 8;       // since boot
-  uint32 buffer_in_frame = 9;    // 0..7
-  uint32 tx_backlog = 10;        // buffers filled but not yet handed to the transmitter
-  uint32 buffers_lost = 11;      // send-queue overruns since boot
-  uint32 timestamp_ms = 12;      // since recording start
-  uint32 pixel_bytes = 13;       // pixel bytes in this buffer
+  uint32 frame_number = 5;       // since boot
+  uint32 buffer_count = 6;       // since boot
+  uint32 buffer_in_frame = 7;    // 0..7
+  uint32 tx_backlog = 8;         // buffers filled but not yet handed to the transmitter
+  uint32 buffers_lost = 9;       // send-queue overruns since boot
+  uint32 timestamp_ms = 10;      // since recording start
+  uint32 pixel_bytes = 11;       // pixel bytes in this buffer
 
   // device state
-  uint32 battery_voltage_raw = 14;  // 8-bit ADC count
-  uint32 input_voltage_raw = 15;    // 8-bit ADC count, wireless power input
-  optional sint32 mcu_temp_centi_c = 16;  // 0.01 degC, absent if the sensor has not reported yet
-  uint32 sensor_temp_raw = 17;   // PYTHON480 die temperature, reg 97, ~0.75 degC/LSB
-  bytes black_ref = 18;          // black reference level of the frame, one byte per phase (pixel index % 4)
+  uint32 battery_voltage_raw = 12;  // 8-bit ADC count
+  uint32 input_voltage_raw = 13;    // 8-bit ADC count, wireless power input
+  optional sint32 mcu_temp_centi_c = 14;  // 0.01 degC, absent if the sensor has not reported yet
+  uint32 sensor_temp_raw = 15;   // PYTHON480 die temperature, reg 97, ~0.75 degC/LSB
+  bytes black_ref = 16;          // black reference level of the frame, one byte per phase (pixel index % 4)
 
   // transmit ring diagnostics
-  bytes tx_diag = 19;            // slips, slot out of order, restarts skipped, max waiting
+  bytes tx_diag = 17;            // slips, slot out of order, restarts skipped, max waiting
 }

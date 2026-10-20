@@ -22,20 +22,24 @@ typedef enum _wlms_TimestampSource {
 } wlms_TimestampSource;
 
 /* Struct definitions */
+/* Firmware version, FW_VERSION_* in MS_version.h. Keep this message unchanged: a host decodes it on
+ its own to pick the BufferHeader schema. */
+typedef struct _wlms_Version {
+    uint32_t major;
+    uint32_t minor;
+    uint32_t patch;
+} wlms_Version;
+
 typedef PB_BYTES_ARRAY_T(4) wlms_BufferHeader_black_ref_t;
 typedef PB_BYTES_ARRAY_T(4) wlms_BufferHeader_tx_diag_t;
 typedef struct _wlms_BufferHeader {
-    /* decode key: always encoded (optional = explicit presence, written even when 0) and always first,
- so a host can read the version from the raw bytes before it picks the schema */
-    bool has_fw_version_major;
-    uint32_t fw_version_major;
-    bool has_fw_version_minor;
-    uint32_t fw_version_minor;
-    bool has_fw_version_patch;
-    uint32_t fw_version_patch;
-    wlms_TimestampSource timestamp_source;
+    /* decode key: always encoded and always first (tag 0x0A, then its length), so a host can read the
+ version from the raw bytes before it picks the schema */
+    bool has_fw_version;
+    wlms_Version fw_version;
     wlms_PacketType packet_type;
     uint32_t device_id; /* DEVICE_ID, also the IR command address */
+    wlms_TimestampSource timestamp_source;
     /* buffer and frame */
     uint32_t frame_number; /* since boot */
     uint32_t buffer_count; /* since boot */
@@ -69,67 +73,80 @@ extern "C" {
 #define _wlms_TimestampSource_MAX wlms_TimestampSource_TIMESTAMP_SOURCE_TC1
 #define _wlms_TimestampSource_ARRAYSIZE ((wlms_TimestampSource)(wlms_TimestampSource_TIMESTAMP_SOURCE_TC1+1))
 
-#define wlms_BufferHeader_timestamp_source_ENUMTYPE wlms_TimestampSource
+
 #define wlms_BufferHeader_packet_type_ENUMTYPE wlms_PacketType
+#define wlms_BufferHeader_timestamp_source_ENUMTYPE wlms_TimestampSource
 
 
 /* Initializer values for message structs */
-#define wlms_BufferHeader_init_default           {false, 0, false, 0, false, 0, _wlms_TimestampSource_MIN, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}}
-#define wlms_BufferHeader_init_zero              {false, 0, false, 0, false, 0, _wlms_TimestampSource_MIN, _wlms_PacketType_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}}
+#define wlms_Version_init_default                {0, 0, 0}
+#define wlms_BufferHeader_init_default           {false, wlms_Version_init_default, _wlms_PacketType_MIN, 0, _wlms_TimestampSource_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}}
+#define wlms_Version_init_zero                   {0, 0, 0}
+#define wlms_BufferHeader_init_zero              {false, wlms_Version_init_zero, _wlms_PacketType_MIN, 0, _wlms_TimestampSource_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, {0, {0}}, {0, {0}}}
 
 /* Field tags (for use in manual encoding/decoding) */
-#define wlms_BufferHeader_fw_version_major_tag   1
-#define wlms_BufferHeader_fw_version_minor_tag   2
-#define wlms_BufferHeader_fw_version_patch_tag   3
+#define wlms_Version_major_tag                   1
+#define wlms_Version_minor_tag                   2
+#define wlms_Version_patch_tag                   3
+#define wlms_BufferHeader_fw_version_tag         1
+#define wlms_BufferHeader_packet_type_tag        2
+#define wlms_BufferHeader_device_id_tag          3
 #define wlms_BufferHeader_timestamp_source_tag   4
-#define wlms_BufferHeader_packet_type_tag        5
-#define wlms_BufferHeader_device_id_tag          6
-#define wlms_BufferHeader_frame_number_tag       7
-#define wlms_BufferHeader_buffer_count_tag       8
-#define wlms_BufferHeader_buffer_in_frame_tag    9
-#define wlms_BufferHeader_tx_backlog_tag         10
-#define wlms_BufferHeader_buffers_lost_tag       11
-#define wlms_BufferHeader_timestamp_ms_tag       12
-#define wlms_BufferHeader_pixel_bytes_tag        13
-#define wlms_BufferHeader_battery_voltage_raw_tag 14
-#define wlms_BufferHeader_input_voltage_raw_tag  15
-#define wlms_BufferHeader_mcu_temp_centi_c_tag   16
-#define wlms_BufferHeader_sensor_temp_raw_tag    17
-#define wlms_BufferHeader_black_ref_tag          18
-#define wlms_BufferHeader_tx_diag_tag            19
+#define wlms_BufferHeader_frame_number_tag       5
+#define wlms_BufferHeader_buffer_count_tag       6
+#define wlms_BufferHeader_buffer_in_frame_tag    7
+#define wlms_BufferHeader_tx_backlog_tag         8
+#define wlms_BufferHeader_buffers_lost_tag       9
+#define wlms_BufferHeader_timestamp_ms_tag       10
+#define wlms_BufferHeader_pixel_bytes_tag        11
+#define wlms_BufferHeader_battery_voltage_raw_tag 12
+#define wlms_BufferHeader_input_voltage_raw_tag  13
+#define wlms_BufferHeader_mcu_temp_centi_c_tag   14
+#define wlms_BufferHeader_sensor_temp_raw_tag    15
+#define wlms_BufferHeader_black_ref_tag          16
+#define wlms_BufferHeader_tx_diag_tag            17
 
 /* Struct field encoding specification for nanopb */
+#define wlms_Version_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   major,             1) \
+X(a, STATIC,   SINGULAR, UINT32,   minor,             2) \
+X(a, STATIC,   SINGULAR, UINT32,   patch,             3)
+#define wlms_Version_CALLBACK NULL
+#define wlms_Version_DEFAULT NULL
+
 #define wlms_BufferHeader_FIELDLIST(X, a) \
-X(a, STATIC,   OPTIONAL, UINT32,   fw_version_major,   1) \
-X(a, STATIC,   OPTIONAL, UINT32,   fw_version_minor,   2) \
-X(a, STATIC,   OPTIONAL, UINT32,   fw_version_patch,   3) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  fw_version,        1) \
+X(a, STATIC,   SINGULAR, UENUM,    packet_type,       2) \
+X(a, STATIC,   SINGULAR, UINT32,   device_id,         3) \
 X(a, STATIC,   SINGULAR, UENUM,    timestamp_source,   4) \
-X(a, STATIC,   SINGULAR, UENUM,    packet_type,       5) \
-X(a, STATIC,   SINGULAR, UINT32,   device_id,         6) \
-X(a, STATIC,   SINGULAR, UINT32,   frame_number,      7) \
-X(a, STATIC,   SINGULAR, UINT32,   buffer_count,      8) \
-X(a, STATIC,   SINGULAR, UINT32,   buffer_in_frame,   9) \
-X(a, STATIC,   SINGULAR, UINT32,   tx_backlog,       10) \
-X(a, STATIC,   SINGULAR, UINT32,   buffers_lost,     11) \
-X(a, STATIC,   SINGULAR, UINT32,   timestamp_ms,     12) \
-X(a, STATIC,   SINGULAR, UINT32,   pixel_bytes,      13) \
-X(a, STATIC,   SINGULAR, UINT32,   battery_voltage_raw,  14) \
-X(a, STATIC,   SINGULAR, UINT32,   input_voltage_raw,  15) \
-X(a, STATIC,   OPTIONAL, SINT32,   mcu_temp_centi_c,  16) \
-X(a, STATIC,   SINGULAR, UINT32,   sensor_temp_raw,  17) \
-X(a, STATIC,   SINGULAR, BYTES,    black_ref,        18) \
-X(a, STATIC,   SINGULAR, BYTES,    tx_diag,          19)
+X(a, STATIC,   SINGULAR, UINT32,   frame_number,      5) \
+X(a, STATIC,   SINGULAR, UINT32,   buffer_count,      6) \
+X(a, STATIC,   SINGULAR, UINT32,   buffer_in_frame,   7) \
+X(a, STATIC,   SINGULAR, UINT32,   tx_backlog,        8) \
+X(a, STATIC,   SINGULAR, UINT32,   buffers_lost,      9) \
+X(a, STATIC,   SINGULAR, UINT32,   timestamp_ms,     10) \
+X(a, STATIC,   SINGULAR, UINT32,   pixel_bytes,      11) \
+X(a, STATIC,   SINGULAR, UINT32,   battery_voltage_raw,  12) \
+X(a, STATIC,   SINGULAR, UINT32,   input_voltage_raw,  13) \
+X(a, STATIC,   OPTIONAL, SINT32,   mcu_temp_centi_c,  14) \
+X(a, STATIC,   SINGULAR, UINT32,   sensor_temp_raw,  15) \
+X(a, STATIC,   SINGULAR, BYTES,    black_ref,        16) \
+X(a, STATIC,   SINGULAR, BYTES,    tx_diag,          17)
 #define wlms_BufferHeader_CALLBACK NULL
 #define wlms_BufferHeader_DEFAULT NULL
+#define wlms_BufferHeader_fw_version_MSGTYPE wlms_Version
 
+extern const pb_msgdesc_t wlms_Version_msg;
 extern const pb_msgdesc_t wlms_BufferHeader_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
+#define wlms_Version_fields &wlms_Version_msg
 #define wlms_BufferHeader_fields &wlms_BufferHeader_msg
 
 /* Maximum encoded size of messages (where known) */
 #define WLMS_WLMS_HEADER_PB_H_MAX_SIZE           wlms_BufferHeader_size
 #define wlms_BufferHeader_size                   110
+#define wlms_Version_size                        18
 
 #ifdef __cplusplus
 } /* extern "C" */

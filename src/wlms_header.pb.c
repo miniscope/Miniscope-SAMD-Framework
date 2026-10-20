@@ -6,6 +6,9 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
+PB_BIND(wlms_Version, wlms_Version, AUTO)
+
+
 PB_BIND(wlms_BufferHeader, wlms_BufferHeader, AUTO)
 
 

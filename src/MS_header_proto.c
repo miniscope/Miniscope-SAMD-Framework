@@ -20,19 +20,17 @@ void setBufferHeaderProtobuf(volatile uint32_t *areaWords, uint32_t dataBytes)
 {
 	wlms_BufferHeader h = wlms_BufferHeader_init_zero;
 
-	// has_* set: encoded even when 0, so the version always leads the message
-	h.has_fw_version_major = true;
-	h.fw_version_major     = FW_VERSION_MAJOR;
-	h.has_fw_version_minor = true;
-	h.fw_version_minor     = FW_VERSION_MINOR;
-	h.has_fw_version_patch = true;
-	h.fw_version_patch     = FW_VERSION_PATCH;
+	// has_fw_version set: encoded even for version 0.0.0, so the version always leads the message
+	h.has_fw_version   = true;
+	h.fw_version.major = FW_VERSION_MAJOR;
+	h.fw_version.minor = FW_VERSION_MINOR;
+	h.fw_version.patch = FW_VERSION_PATCH;
+	h.packet_type = wlms_PacketType_PACKET_TYPE_IMAGE;
+	h.device_id   = DEVICE_ID;
 	h.timestamp_source = wlms_TimestampSource_TIMESTAMP_SOURCE_TC1;
 	#ifdef RTC_TIMESTAMP_ENABLE
 	if (rtcIsRunning()) h.timestamp_source = wlms_TimestampSource_TIMESTAMP_SOURCE_RTC;
 	#endif
-	h.packet_type = wlms_PacketType_PACKET_TYPE_IMAGE;
-	h.device_id   = DEVICE_ID;
 
 	h.frame_number    = frameNum;
 	h.buffer_count    = bufferCount;
