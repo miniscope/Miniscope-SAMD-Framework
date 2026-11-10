@@ -123,6 +123,11 @@
 #endif
 #define PYTHON480_REG_TEMP_CONFIG				96			// [0] enable the die temperature sensor
 #define PYTHON480_REG_TEMP						97			// [7:0] die temperature, ~0.75 degC/LSB
+// Reg 128 [7:0] black offset: the dark level auto black-cal steers the output to. Raised from 0x0A to
+// leave headroom, so a per-frame negative offset (wireless-power coupling) does not clip dark pixels at 0.
+// TODO: final value still to be decided by a sweep under wireless charging. 0x14 is a placeholder.
+#define PYTHON480_BLACK_OFFSET					0x14
+#define PYTHON480_REG128						(0x4700 | PYTHON480_BLACK_OFFSET)	// [15:8] unchanged
 // -------------------------------------------
 
 // ------------ RTC timestamp ----------------

@@ -265,7 +265,7 @@ void RequiredUploads(uint16_t image_width) {// Reserved register settings upload
 	spi_BB_Write(72, 0x0117);
 	//spi_BB_Write(112, 0x0007);
 	spi_BB_Write(112, 0x0000); // LVDS powerdown config
-	spi_BB_Write(128, 0x470A); //spi_BB_Write(128, 0x470A); spi_BB_Write(128, 0x4714); black offset
+	spi_BB_Write(128, PYTHON480_REG128); // black offset, was 0x470A
 	spi_BB_Write(129, PYTHON480_REG129); // auto black calibration (+ ref_mode with PYTHON480_SENSOR_ENABLE)
 	#ifdef PYTHON480_SENSOR_ENABLE
 	spi_BB_Write(PYTHON480_REG_TEMP_CONFIG, 0x0001); // enable the die temperature sensor (read in reg 97)
